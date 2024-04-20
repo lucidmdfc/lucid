@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 
 import { PropertyList } from 'src/components/property-list';
 import { PropertyListItem } from 'src/components/property-list-item';
-import type { Company } from 'src/types/job';
+import type { Company } from 'src/types/template-types/job';
 import { getInitials } from 'src/utils/get-initials';
 
 interface CompanySummaryProps {

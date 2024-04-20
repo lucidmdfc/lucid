@@ -9,13 +9,10 @@ import Chip from '@mui/material/Chip';
 import { Grid, Stack, Typography } from '@mui/material';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import FirebaseProjects from 'src/firebaseServices/projets';
 import { Project } from 'src/types/project';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
-
-const firebaseNewProject = new FirebaseProjects();
 
 const validationSchema = yup.object({
   project_name: yup.string().required('Nom projet est requis'),
@@ -64,6 +61,7 @@ const NewProject = () => {
 
   const formik = useFormik({
     initialValues: {
+      id: '', // Add id field to store the generated ID
       project_name: '',
       amount: 0,
       email: '',
@@ -77,8 +75,21 @@ const NewProject = () => {
       formik.values.financial_backer = financialBackersList;
 
       try {
+        // Generate unique ID for the project
+        const projectId = Math.random().toString(36).substring(7);
+        // Assign the generated ID to the project
+        values.id = projectId;
+
         // Handle form submission
-        await firebaseNewProject.createProject(values as unknown as Project);
+        const storedProjects = localStorage.getItem('projects');
+        const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
+
+        // Add the new project to the array
+        const updatedProjects = [...existingProjects, values];
+
+        // Store the updated projects array in local storage
+        localStorage.setItem('projects', JSON.stringify(updatedProjects));
+        console.log(values as unknown as Project);
         toast.success('Projet créé avec succès !');
         router.replace(paths.dashboard.projets.index);
         resetForm();

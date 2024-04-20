@@ -10,7 +10,7 @@ import Input from '@mui/material/Input';
 import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 
-import type { Connection } from 'src/types/social';
+import type { Connection } from 'src/types/template-types/social';
 
 import { SocialConnection } from './social-connection';
 

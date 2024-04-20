@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 
 import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
-import type { Course } from 'src/types/academy';
+import type { Course } from 'src/types/template-types/academy';
 
 interface CourseCardProps {
   course: Course;

@@ -20,7 +20,7 @@ import { PropertyListItem } from 'src/components/property-list-item';
 import type { SeverityPillColor } from 'src/components/severity-pill';
 import { SeverityPill } from 'src/components/severity-pill';
 import { Scrollbar } from 'src/components/scrollbar';
-import type { Order, OrderStatus } from 'src/types/order';
+import type { Order, OrderStatus } from 'src/types/template-types/order';
 
 const statusMap: Record<OrderStatus, string> = {
   canceled: 'warning',

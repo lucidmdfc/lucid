@@ -16,7 +16,7 @@ import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
-import type { Item } from 'src/types/file-manager';
+import type { Item } from 'src/types/template-types/file-manager';
 import { bytesToSize } from 'src/utils/bytes-to-size';
 
 import { ItemIcon } from '../item-icon';

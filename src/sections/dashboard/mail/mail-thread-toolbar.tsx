@@ -23,7 +23,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import type { Theme } from '@mui/material/styles/createTheme';
 
 import { RouterLink } from 'src/components/router-link';
-import type { EmailParticipant } from 'src/types/mail';
+import type { EmailParticipant } from 'src/types/template-types/mail';
 import { getInitials } from 'src/utils/get-initials';
 
 interface MailThreadToolbarProps {

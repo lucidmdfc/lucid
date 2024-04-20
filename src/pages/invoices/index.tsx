@@ -22,7 +22,6 @@ import { InvoiceListSidebar } from 'src/sections/dashboard/invoice/invoice-list-
 import { InvoiceListSummary } from 'src/sections/dashboard/invoice/invoice-list-summary';
 import { InvoiceListTable } from 'src/sections/dashboard/invoice/invoice-list-table';
 import type { Invoice, InvoiceStatus } from 'src/types/invoice';
-import Link from 'next/link';
 import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
 

@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 
 import type { RootState } from 'src/store';
 import { useSelector } from 'src/store';
-import type { Member, Task } from 'src/types/kanban';
+import type { Member, Task } from 'src/types/template-types/kanban';
 
 const useTask = (taskId: string): Task | undefined => {
   return useSelector((state: RootState) => {

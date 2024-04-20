@@ -11,7 +11,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
 import { Scrollbar } from 'src/components/scrollbar';
-import type { Settings } from 'src/types/settings';
+import type { Settings } from 'src/types/template-types/settings';
 
 import { OptionsColorPreset } from './options-color-preset';
 import { OptionsContrast } from './options-contrast';

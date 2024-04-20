@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
-import type { Asset } from 'src/types/job';
+import type { Asset } from 'src/types/template-types/job';
 
 interface CompanyAssetsProps {
   assets?: Asset[];

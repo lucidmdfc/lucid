@@ -5,11 +5,11 @@ import { Auth0Client } from '@auth0/auth0-spa-js';
 
 import { auth0Config } from 'src/config';
 import { paths } from 'src/paths';
-import type { User } from 'src/types/user';
 import { Issuer } from 'src/utils/auth';
 
 import type { State } from './auth-context';
 import { AuthContext, initialState } from './auth-context';
+import { User } from 'src/types/template-types/user';
 
 const auth0Client: Auth0Client = new Auth0Client({
   domain: auth0Config.issuer_base_url!,

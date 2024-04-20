@@ -1,7 +1,15 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { Board, CheckItem, Checklist, Column, Comment, Member, Task } from 'src/types/kanban';
+import type {
+  Board,
+  CheckItem,
+  Checklist,
+  Column,
+  Comment,
+  Member,
+  Task,
+} from 'src/types/template-types/kanban';
 import { objFromArray } from 'src/utils/obj-from-array';
 
 interface KanbanState {

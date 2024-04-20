@@ -13,14 +13,14 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 
-import InvoiceUpdateForm from './components/items/edit-item';
+import InvoiceUpdateForm from './components/invoice-edit-form';
 
 const Page: NextPage = () => {
   usePageView();
 
   return (
     <>
-      <Seo title="Dashboard: Modifier facture" />
+      <Seo title="Revenus: Modifier facture" />
       <Box
         component="main"
         sx={{

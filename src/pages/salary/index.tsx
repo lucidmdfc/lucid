@@ -17,9 +17,7 @@ import { Divider } from '@mui/material';
 import { OrderListContainer } from 'src/sections/dashboard/order/order-list-container';
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDialog } from 'src/hooks/use-dialog';
-import { Customer } from 'src/types/customer';
 import { useMounted } from 'src/hooks/use-mounted';
-import { customersApi } from 'src/api/customers';
 import SalaryListSearch from './sections/salary-list-search';
 import SalaryListTable from './sections/salary-list-table';
 import SalaryDrawer from './sections/salary-drawer';
@@ -27,6 +25,11 @@ import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
+import { salary } from 'src/types/salary';
+import { applyPagination } from 'src/utils/apply-pagination';
+import { applySort } from 'src/utils/apply-sort';
+import { deepCopy } from 'src/utils/deep-copy';
+import { slariesApi } from 'src/api/salaries';
 
 interface Filters {
   query?: string;
@@ -34,15 +37,16 @@ interface Filters {
 }
 type SortDir = 'asc' | 'desc';
 
-interface MemberSearchState {
+interface SalarySearchState {
   filters: Filters;
   page: number;
   rowsPerPage: number;
   sortBy?: string;
   sortDir?: SortDir;
 }
-const useMembersSearch = () => {
-  const [state, setState] = useState<MemberSearchState>({
+
+const useSalariesSearch = () => {
+  const [state, setState] = useState<SalarySearchState>({
     filters: {
       query: undefined,
       status: undefined,
@@ -92,25 +96,25 @@ const useMembersSearch = () => {
     state,
   };
 };
-interface MemberStoreState {
-  members: Customer[];
-  membersCount: number;
+interface SalariesStoreState {
+  salaries: salary[];
+  salariesCount: number;
 }
-const useMembersStore = (searchState: MemberSearchState) => {
+const useSalariesStore = (searchState: SalarySearchState) => {
   const isMounted = useMounted();
-  const [state, setState] = useState<MemberStoreState>({
-    members: [],
-    membersCount: 0,
+  const [state, setState] = useState<SalariesStoreState>({
+    salaries: [],
+    salariesCount: 0,
   });
 
   const handleOrdersGet = useCallback(async () => {
     try {
-      const response = await customersApi.getCustomers(searchState);
+      const response = await slariesApi.getSalaries(searchState);
 
       if (isMounted()) {
         setState({
-          members: response.data,
-          membersCount: response.count,
+          salaries: response.data,
+          salariesCount: response.count,
         });
       }
     } catch (err) {
@@ -130,30 +134,22 @@ const useMembersStore = (searchState: MemberSearchState) => {
     ...state,
   };
 };
-const useCurrentOrder = (members: Customer[], memberId?: string): Customer | undefined => {
-  return useMemo((): Customer | undefined => {
-    if (!memberId) {
-      return undefined;
-    }
-
-    return members.find((member) => member.id === memberId);
-  }, [members, memberId]);
-};
 
 const Page: NextPage = () => {
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const membersSearch = useMembersSearch();
-  const membersStore = useMembersStore(membersSearch.state);
+  const salariesSearch = useSalariesSearch();
+  const salariesStore = useSalariesStore(salariesSearch.state);
   const dialog = useDialog<string>();
-  const currentOrder = useCurrentOrder(membersStore.members, dialog.data);
+  const currentOrder = useMemo(
+    () => salariesStore.salaries.find((salary) => salary.id === dialog.data),
+    [salariesStore.salaries, dialog.data]
+  );
   const { t } = useTranslation();
-  const settings = useSettings();
 
   usePageView();
+
   const handleOrderOpen = useCallback(
     (orderId: string): void => {
-      // Close drawer if is the same order
-
       if (dialog.open && dialog.data === orderId) {
         dialog.handleClose();
         return;
@@ -163,6 +159,7 @@ const Page: NextPage = () => {
     },
     [dialog]
   );
+
   return (
     <Box
       component="main"
@@ -232,26 +229,26 @@ const Page: NextPage = () => {
 
           <Divider />
           <SalaryListSearch
-            onFiltersChange={membersSearch.handleFiltersChange}
-            sortBy={membersSearch.state.sortBy}
-            sortDir={membersSearch.state.sortDir}
+            onFiltersChange={salariesSearch.handleFiltersChange}
+            sortBy={salariesSearch.state.sortBy}
+            sortDir={salariesSearch.state.sortDir}
           />
           <Divider />
           <SalaryListTable
-            count={membersStore.membersCount}
-            items={membersStore.members}
-            onPageChange={membersSearch.handlePageChange}
-            onRowsPerPageChange={membersSearch.handleRowsPerPageChange}
+            count={salariesStore.salariesCount}
+            salaries={salariesStore.salaries}
+            onPageChange={salariesSearch.handlePageChange}
+            onRowsPerPageChange={salariesSearch.handleRowsPerPageChange}
             onSelect={handleOrderOpen}
-            page={membersSearch.state.page}
-            rowsPerPage={membersSearch.state.rowsPerPage}
+            page={salariesSearch.state.page}
+            rowsPerPage={salariesSearch.state.rowsPerPage}
           />
         </OrderListContainer>
         <SalaryDrawer
           container={rootRef.current}
           onClose={dialog.handleClose}
           open={dialog.open}
-          member={currentOrder}
+          salary={currentOrder}
         />
       </Box>
     </Box>

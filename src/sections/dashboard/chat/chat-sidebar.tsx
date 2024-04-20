@@ -19,7 +19,7 @@ import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { useRouter } from 'src/hooks/use-router';
 import { paths } from 'src/paths';
 import { useSelector } from 'src/store';
-import type { Contact, Thread } from 'src/types/chat';
+import type { Contact, Thread } from 'src/types/template-types/chat';
 
 import { ChatSidebarSearch } from './chat-sidebar-search';
 import { ChatThreadItem } from './chat-thread-item';

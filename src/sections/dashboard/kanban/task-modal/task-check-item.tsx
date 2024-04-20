@@ -9,7 +9,7 @@ import Input from '@mui/material/Input';
 import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 
-import type { CheckItem } from 'src/types/kanban';
+import type { CheckItem } from 'src/types/template-types/kanban';
 
 interface TaskCheckItemProps {
   checkItem: CheckItem;

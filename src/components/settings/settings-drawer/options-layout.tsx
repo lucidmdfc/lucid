@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { Logo } from 'src/components/logo';
-import type { Layout } from 'src/types/settings';
+import type { Layout } from 'src/types/template-types/settings';
 
 interface Option {
   label: string;

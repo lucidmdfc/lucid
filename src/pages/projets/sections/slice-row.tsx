@@ -2,13 +2,12 @@
 import Check from '@mui/icons-material/Check';
 import Clear from '@mui/icons-material/Clear';
 import Edit from '@mui/icons-material/Edit';
-import { IconButton, Input, SvgIcon, TableCell, TableRow, TextField } from '@mui/material';
+import { IconButton, TableCell, TableRow, TextField } from '@mui/material';
 import Trash02 from '@untitled-ui/icons-react/build/esm/Trash02';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import FirebaseSlices from 'src/firebaseServices/tranches';
 import { paths } from 'src/paths';
 import DeleteSliceModal from '../components/delete-slice-modal';
 import * as yup from 'yup';
@@ -22,19 +21,19 @@ interface SliceRowProps {
   onRefresh: () => void;
   onUpdate: () => void;
 }
+
 const validationSchema = yup.object({
   amount: yup.number().min(0, 'Montant est requis'),
   received_date: yup.date().required('date reçu est requis'),
 });
+
 const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) => {
-  const issueDate = slice.received_date ? format(slice.received_date.toDate(), 'MM/dd/yyyy') : '';
+  const issueDate = new Date(slice.received_date);
 
   const [editRowId, setEditRowId] = useState<string | null>(null);
   const [sliceId, setSliceId] = useState<string | null>(null);
-
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
-  const firebaseSlice = new FirebaseSlices();
   const router = useRouter();
 
   const formik = useFormik({
@@ -53,7 +52,8 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
       try {
         // Handle form submission
         if (projectId) {
-          await firebaseSlice.updateSlice(projectId, id, sliceData as unknown as slice, onUpdate);
+          console.log(projectId, id, sliceData);
+          // await firebaseSlice.updateSlice(projectId, id, sliceData as unknown as slice, onUpdate);
         }
         toast.success('Slice modfiée avec succès !');
         handleCancelEdit();
@@ -75,17 +75,55 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
     setEditRowId(null);
   };
 
-  const handleSaveEdit = (sliceId: string) => {
-    // Add logic to save the edited data
-    formik.handleSubmit();
-    setEditRowId(null);
+  const handleSaveEdit = async (sliceId: string) => {
+    try {
+      // Make sure formik values are valid
+      await formik.validateForm();
+
+      // Update the slice with the formik values
+      const updatedSlice = {
+        ...slice,
+        amount: formik.values.amount,
+        received_date: new Date(formik.values.received_date),
+      };
+
+      // Get slices from local storage
+      const slicesJson = localStorage.getItem('slices');
+      if (!slicesJson) {
+        throw new Error('No slices found in local storage');
+      }
+      const slices: slice[] = JSON.parse(slicesJson);
+
+      // Find the index of the slice to update
+      const index = slices.findIndex((slice) => slice.id === sliceId);
+      if (index === -1) {
+        throw new Error('Slice not found in local storage');
+      }
+
+      // Update the slice in the array
+      slices[index] = updatedSlice;
+
+      // Save the updated slices back to local storage
+      localStorage.setItem('slices', JSON.stringify(slices));
+
+      // Notify user and refresh
+      toast.success('Slice modifiée avec succès !');
+      onRefresh();
+    } catch (error) {
+      toast.error('Erreur lors de la modification de la tranche');
+      console.error('Error editing slice:', error);
+    } finally {
+      // Close edit mode
+      setEditRowId(null);
+    }
   };
+
   useEffect(() => {
     formik.setFieldValue('id', slice.id);
-
     formik.setFieldValue('amount', slice.amount);
-    formik.setFieldValue('received_date', slice.received_date.toDate());
+    formik.setFieldValue('received_date', new Date(slice.received_date));
   }, [slice.id]);
+
   const handleDeleteClick = (id: string) => {
     setSliceId(id);
     setDeleteModalOpen(true);
@@ -93,12 +131,32 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
 
   const handleDeleteConfirmation = async (sliceId: string) => {
     try {
-      await firebaseSlice.deleteSlice(projectId, sliceId, onRefresh);
+      if (!sliceId) {
+        throw new Error('Slice ID is undefined');
+      }
+
+      const slicesJson = localStorage.getItem('slices');
+      if (!slicesJson) {
+        throw new Error('No slices found for the project in local storage');
+      }
+      const slices: { id: string; name: string }[] = JSON.parse(slicesJson);
+
+      const sliceIndex = slices.findIndex((slice) => slice.id === sliceId);
+      if (sliceIndex === -1) {
+        throw new Error('Slice not found');
+      }
+
+      slices.splice(sliceIndex, 1);
+
+      localStorage.setItem('slices', JSON.stringify(slices));
+
+      console.log('deleted slice: ' + sliceId);
       toast.success('La tranche a été supprimé avec succès!');
       router.replace(paths.dashboard.projets.details.replace(':projetId', projectId));
+      onRefresh();
     } catch (error) {
-      console.error('Error deleting member: ', error);
-      toast.error('Échec de la suppression du tranche. Veuillez réessayer.');
+      console.error('Error deleting slice: ', error);
+      toast.error('Échec de la suppression de la tranche. Veuillez réessayer.');
     }
     setDeleteModalOpen(false);
   };
@@ -107,6 +165,7 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
     setSliceId(null);
     setDeleteModalOpen(false);
   };
+
   return (
     <TableRow>
       <TableCell>
@@ -115,9 +174,10 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
             label="Reçu le"
             onChange={(newDate) => formik.setFieldValue('received_date', newDate)}
             value={formik.values.received_date}
+            format="dd/MM/yyyy"
           />
         ) : (
-          issueDate
+          `${issueDate.getDate()}/${issueDate.getMonth() + 1}/${issueDate.getFullYear()}`
         )}
       </TableCell>
       <TableCell>
@@ -143,17 +203,13 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
               color="success"
               onClick={() => handleSaveEdit(slice.id)}
             >
-              <SvgIcon>
-                <Check />
-              </SvgIcon>
+              <Check />
             </IconButton>
             <IconButton
               color="error"
               onClick={handleCancelEdit}
             >
-              <SvgIcon>
-                <Clear />
-              </SvgIcon>
+              <Clear />
             </IconButton>
           </>
         ) : (
@@ -162,17 +218,13 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
               color="warning"
               onClick={() => handleEditClick(slice.id)}
             >
-              <SvgIcon>
-                <Edit />
-              </SvgIcon>
+              <Edit />
             </IconButton>
             <IconButton
               color="error"
               onClick={() => handleDeleteClick(slice.id)}
             >
-              <SvgIcon>
-                <Trash02 />
-              </SvgIcon>
+              <Trash02 />
             </IconButton>
             <DeleteSliceModal
               isOpen={isDeleteModalOpen}

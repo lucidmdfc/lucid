@@ -22,7 +22,7 @@ import { ItemDrawer } from 'src/sections/dashboard/file-manager/item-drawer';
 import { ItemList } from 'src/sections/dashboard/file-manager/item-list';
 import { ItemSearch } from 'src/sections/dashboard/file-manager/item-search';
 import { StorageStats } from 'src/sections/dashboard/file-manager/storage-stats';
-import type { Item } from 'src/types/file-manager';
+import type { Item } from 'src/types/template-types/file-manager';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 

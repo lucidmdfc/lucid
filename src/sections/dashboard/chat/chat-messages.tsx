@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import Stack from '@mui/material/Stack';
 
 import { useMockedUser } from 'src/hooks/use-mocked-user';
-import type { Message, Participant } from 'src/types/chat';
-import type { User } from 'src/types/user';
+import type { Message, Participant } from 'src/types/template-types/chat';
 
 import { ChatMessage } from './chat-message';
+import { User } from 'src/types/template-types/user';
 
 const getAuthor = (message: Message, participants: Participant[], user: User) => {
   const participant = participants.find((participant) => participant.id === message.authorId);

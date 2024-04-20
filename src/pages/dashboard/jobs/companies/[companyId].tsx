@@ -30,7 +30,7 @@ import { CompanyOverview } from 'src/sections/dashboard/jobs/company-overview';
 import { CompanyReviews } from 'src/sections/dashboard/jobs/company-reviews';
 import { CompanySummary } from 'src/sections/dashboard/jobs/company-summary';
 import { CompanyTeam } from 'src/sections/dashboard/jobs/company-team';
-import type { Company } from 'src/types/job';
+import type { Company } from 'src/types/template-types/job';
 import { getInitials } from 'src/utils/get-initials';
 
 const tabs = [

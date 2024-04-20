@@ -10,7 +10,6 @@ import { Project } from 'src/types/project';
 import { Formik, useFormik } from 'formik';
 import * as Yup from 'yup';
 import UpdateConfirmationModal from './update-confirmation-modal';
-import FirebaseProjects from 'src/firebaseServices/projets';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
@@ -30,7 +29,6 @@ const EditProject: FC<EditProjectProps> = (props) => {
   const [beneficiaryList, setBeneficiaryList] = useState<string[]>(project.beneficiaries);
   const [isUpdateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const handleUpdateConfirmation = () => {
-    // Add logic to Update the selected invoice
     setUpdateModalOpen(true);
   };
   const handleUpdateCancel = () => {
@@ -72,7 +70,7 @@ const EditProject: FC<EditProjectProps> = (props) => {
 
   const { values, handleChange, handleSubmit, setFieldValue, touched, errors } = useFormik({
     initialValues: {
-      id: '',
+      id: '', // Add id field to store the project ID
       project_name: '',
       email: '',
       amount: 0,
@@ -87,12 +85,29 @@ const EditProject: FC<EditProjectProps> = (props) => {
     onSubmit: async (formValues) => {
       formValues.beneficiaries = beneficiaryList;
       formValues.financial_backer = financialBackersList;
-      const firebaseUpdateProjects = new FirebaseProjects();
       try {
-        await firebaseUpdateProjects.updateProject(formValues?.id, formValues);
-        toast.success('projet modifié avec succès !');
-        handleUpdateCancel();
-        router.replace(paths.dashboard.projets.details.replace(':projetId', project?.id));
+        // Fetch existing projects from local storage
+        const storedProjects = localStorage.getItem('projects');
+        const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
+
+        // Find the index of the project with the provided ID
+        const projectIndex = existingProjects.findIndex((proj: any) => proj.id === formValues.id);
+
+        if (projectIndex !== -1) {
+          // Update the project with the new values
+          existingProjects[projectIndex] = formValues;
+
+          // Save the updated projects array back to local storage
+          localStorage.setItem('projects', JSON.stringify(existingProjects));
+
+          console.log(formValues.id, formValues);
+          toast.success('Projet modifié avec succès !');
+          handleUpdateCancel();
+          router.replace(paths.dashboard.projets.details.replace(':projetId', formValues.id));
+        } else {
+          // Handle the case where the project with the provided ID is not found
+          toast.error('Projet non trouvé');
+        }
       } catch (error) {
         handleUpdateCancel();
         toast.error('Erreur lors de la modification du projet!');
@@ -237,8 +252,6 @@ const EditProject: FC<EditProjectProps> = (props) => {
                   }}
                 >
                   {beneficiaryList.map((beneficiary, index) => {
-                    console.log(beneficiary);
-
                     return (
                       <Chip
                         key={index}

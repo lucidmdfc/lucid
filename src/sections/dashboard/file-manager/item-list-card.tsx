@@ -17,7 +17,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 import { usePopover } from 'src/hooks/use-popover';
-import type { Item } from 'src/types/file-manager';
+import type { Item } from 'src/types/template-types/file-manager';
 import { bytesToSize } from 'src/utils/bytes-to-size';
 
 import { ItemIcon } from './item-icon';

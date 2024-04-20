@@ -15,7 +15,7 @@ import { RouterLink } from 'src/components/router-link';
 import { Scrollbar } from 'src/components/scrollbar';
 import { usePathname } from 'src/hooks/use-pathname';
 import { paths } from 'src/paths';
-import type { NavColor } from 'src/types/settings';
+import type { NavColor } from 'src/types/template-types/settings';
 
 import { AccountButton } from '../account-button';
 import { ContactsButton } from '../contacts-button';

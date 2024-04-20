@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import PropTypes from 'prop-types';
 
 import { FileIcon } from 'src/components/file-icon';
-import type { ItemType } from 'src/types/file-manager';
+import type { ItemType } from 'src/types/template-types/file-manager';
 
 interface ItemIconProps {
   extension?: string;

@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import type { Job } from 'src/types/job';
+import type { Job } from 'src/types/template-types/job';
 
 interface CompanyJobsProps {
   jobs?: Job[];

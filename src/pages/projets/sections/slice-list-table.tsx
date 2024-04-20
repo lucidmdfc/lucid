@@ -21,13 +21,20 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import DeleteConfirmationModal from '../components/delete-confirmation-modal';
 import { slice } from 'src/types/slice';
-import FirebaseSlices from 'src/firebaseServices/tranches';
 import DeleteSliceModal from '../components/delete-slice-modal';
 import { useRouter } from 'next/router';
 import { paths } from 'src/paths';
 import { useFormik } from 'formik';
 import SliceRow from './slice-row';
-import { LinearProgress, Typography } from '@mui/material';
+import {
+  Divider,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 
 interface SlicesListTableProps {
   slices?: slice[] | null;

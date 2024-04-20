@@ -26,10 +26,10 @@ const Transition = React.forwardRef(function Transition(
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
-  onConfirm: (memberId: string | undefined) => void;
+  onConfirm: (salaryId: string | undefined) => void;
   onCancel: () => void;
   message: string;
-  memberId?: string;
+  salaryId?: string;
 }
 
 const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
@@ -37,7 +37,7 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
   onConfirm,
   onCancel,
   message,
-  memberId,
+  salaryId,
 }) => (
   <Dialog
     open={isOpen}
@@ -98,7 +98,7 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
           },
         }}
         variant="contained"
-        onClick={() => onConfirm(memberId)}
+        onClick={() => onConfirm(salaryId)}
       >
         Supprimer
       </Button>

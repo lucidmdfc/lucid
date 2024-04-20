@@ -1,4 +1,4 @@
-import type { Order } from 'src/types/order';
+import type { Order } from 'src/types/template-types/order';
 import { order, orders } from './data';
 import { deepCopy } from 'src/utils/deep-copy';
 import { applyPagination } from 'src/utils/apply-pagination';

@@ -13,9 +13,9 @@ import Edit02Icon from '@untitled-ui/icons-react/build/esm/Edit02';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
 
-import type { Order, OrderStatus } from 'src/types/order';
+import type { Order, OrderStatus } from 'src/types/template-types/order';
 import { IconButton, SvgIcon, TableHead } from '@mui/material';
-import { Customer } from 'src/types/customer';
+import { Customer } from 'src/types/template-types/customer';
 import { format } from 'date-fns';
 
 interface CashListTableProps {

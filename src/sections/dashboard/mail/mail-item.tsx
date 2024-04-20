@@ -15,7 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 import { RouterLink } from 'src/components/router-link';
-import type { Email } from 'src/types/mail';
+import type { Email } from 'src/types/template-types/mail';
 import { getInitials } from 'src/utils/get-initials';
 
 interface MailItemProps {

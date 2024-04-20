@@ -1,4 +1,4 @@
-import type { User } from 'src/types/user';
+import { User } from 'src/types/template-types/user';
 
 export const useMockedUser = (): User => {
   // To get the user from the authContext, you can use

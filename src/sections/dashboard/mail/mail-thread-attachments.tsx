@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
-import { Attachment } from 'src/types/mail';
+import { Attachment } from 'src/types/template-types/mail';
 
 interface MailThreadAttachmentsProps {
   attachments?: Attachment[];

@@ -24,7 +24,7 @@ import { CalendarToolbar } from 'src/sections/dashboard/calendar/calendar-toolba
 import { CalendarContainer } from 'src/sections/dashboard/calendar/calendar-container';
 import { useDispatch, useSelector } from 'src/store';
 import { thunks } from 'src/thunks/calendar';
-import type { CalendarEvent, CalendarView } from 'src/types/calendar';
+import type { CalendarEvent, CalendarView } from 'src/types/template-types/calendar';
 
 interface CreateDialogData {
   range?: {

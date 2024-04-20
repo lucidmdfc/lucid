@@ -11,26 +11,19 @@ import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack } from '@mui/system';
 import toast from 'react-hot-toast';
+import { DatePicker } from '@mui/x-date-pickers';
+import { payment } from 'src/types/payment';
 
-interface PaymentHistory {
-  date: string;
-  amount: string;
-  id: number;
+interface PaymentHistoryTableRowProps {
+  onDelete: (id: string) => void;
+  payment: payment;
 }
 
-interface PaymentHistoryTableRowProps extends PaymentHistory {
-  onDelete: (id: number) => void;
-}
-
-const PaymentHistoryTableRow: React.FC<PaymentHistoryTableRowProps> = ({
-  id,
-  date,
-  amount,
-  onDelete,
-}) => {
+const PaymentHistoryTableRow: React.FC<PaymentHistoryTableRowProps> = ({ payment, onDelete }) => {
   const [editMode, setEditMode] = useState(false);
-  const [editedDate, setEditedDate] = useState(date);
-  const [editedAmount, setEditedAmount] = useState(amount);
+  const [editedDate, setEditedDate] = useState(new Date(payment.updatedDate));
+  const [editedAmount, setEditedAmount] = useState(payment.amount);
+  const date = new Date(payment.date);
 
   const handleEditClick = () => {
     setEditMode(true);
@@ -50,7 +43,7 @@ const PaymentHistoryTableRow: React.FC<PaymentHistoryTableRowProps> = ({
   const handleDeleteClick = () => {
     // Handle deleting the record
     toast.success('Le virement a été supprimé avec succès');
-    onDelete(id);
+    onDelete(payment.id);
   };
 
   return (
@@ -58,12 +51,10 @@ const PaymentHistoryTableRow: React.FC<PaymentHistoryTableRowProps> = ({
       {editMode ? (
         <>
           <TableCell>
-            <TextField
-              size="small"
-              type="text"
+            <DatePicker
+              label="Reçu le"
               value={editedDate}
-              onChange={(e) => setEditedDate(e.target.value)}
-              variant="standard"
+              format="dd/MM/yyyy"
             />
           </TableCell>
           <TableCell>
@@ -72,7 +63,6 @@ const PaymentHistoryTableRow: React.FC<PaymentHistoryTableRowProps> = ({
               type="text"
               variant="standard"
               value={editedAmount}
-              onChange={(e) => setEditedAmount(e.target.value)}
             />
           </TableCell>
           <TableCell>
@@ -101,8 +91,10 @@ const PaymentHistoryTableRow: React.FC<PaymentHistoryTableRowProps> = ({
         </>
       ) : (
         <>
-          <TableCell>{date}</TableCell>
-          <TableCell>{amount}</TableCell>
+          <TableCell>
+            {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+          </TableCell>
+          <TableCell>{payment.amount}</TableCell>
           <TableCell align="right">
             <Stack
               direction="row"

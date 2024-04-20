@@ -1,4 +1,4 @@
-import type { Connection, Post, Profile } from 'src/types/social';
+import type { Connection, Post, Profile } from 'src/types/template-types/social';
 import { deepCopy } from 'src/utils/deep-copy';
 import { connections, feed, posts, profile } from './data';
 

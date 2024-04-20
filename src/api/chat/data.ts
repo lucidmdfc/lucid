@@ -1,6 +1,6 @@
 import { subDays, subHours, subMinutes } from 'date-fns';
 
-import type { Contact, Thread } from 'src/types/chat';
+import type { Contact, Thread } from 'src/types/template-types/chat';
 
 const now = new Date();
 

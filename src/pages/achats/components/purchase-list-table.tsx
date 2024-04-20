@@ -1,165 +1,57 @@
 import type { ChangeEvent, FC, MouseEvent } from 'react';
-import { format } from 'date-fns';
-import numeral from 'numeral';
 import PropTypes from 'prop-types';
-import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
-import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
-import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import SvgIcon from '@mui/material/SvgIcon';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import EditIcon from '@mui/icons-material/Edit';
 
-import { RouterLink } from 'src/components/router-link';
 import { Scrollbar } from 'src/components/scrollbar';
-import type { SeverityPillColor } from 'src/components/severity-pill';
-import { SeverityPill } from 'src/components/severity-pill';
-import { paths } from 'src/paths';
-import type { Invoice, InvoiceStatus } from 'src/types/invoice';
-import { getInitials } from 'src/utils/get-initials';
+import { ProviderStatus, provider } from 'src/types/provider';
+import ProviderRow from './provider-row';
 
-type GroupedInvoices = {
-  [key in InvoiceStatus]: Invoice[];
+export type GroupedProviders = {
+  canceled: provider[];
+  paid: provider[];
+  pending: provider[];
 };
 
-const groupInvoices = (invoices: Invoice[]): GroupedInvoices => {
+const groupProviders = (invoices: provider[]) => {
   return invoices.reduce(
     (acc, invoice) => {
       const { status } = invoice;
+      const providerStatus: ProviderStatus = status as ProviderStatus; // Type assertion
+
+      if (!(providerStatus in acc)) {
+        // If the status is not a key in acc, initialize it as an empty array
+        acc[providerStatus] = [];
+      }
 
       return {
         ...acc,
-        [status]: [...acc[status], invoice],
+        [providerStatus]: [...acc[providerStatus], invoice],
       };
     },
     {
-      canceled: [],
-      paid: [],
-      pending: [],
+      [ProviderStatus.Canceled]: [],
+      [ProviderStatus.Paid]: [],
+      [ProviderStatus.Pending]: [],
     }
   );
-};
-
-const statusColorsMap: Record<InvoiceStatus, SeverityPillColor> = {
-  canceled: 'error',
-  paid: 'success',
-  pending: 'warning',
-};
-
-interface InvoiceRowProps {
-  invoice: Invoice;
-}
-
-const InvoiceRow: FC<InvoiceRowProps> = (props) => {
-  const { invoice, ...other } = props;
-
-  const statusColor = statusColorsMap[invoice.status];
-
-  const totalAmount = numeral(invoice.totalAmount).format('0,0.00');
-  const issueDate = invoice.issueDate && format(invoice.issueDate, 'dd/MM/yyyy');
-  const dueDate = invoice.dueDate && format(invoice.dueDate, 'dd/MM/yyyy');
-
-  return (
-    <TableRow
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-      {...other}
-    >
-      <TableCell width="25%">
-        <Stack
-          alignItems="center"
-          direction="row"
-          spacing={2}
-          component={RouterLink}
-          href={paths.dashboard.invoices.details}
-          sx={{
-            display: 'inline-flex',
-            textDecoration: 'none',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <div>
-            <Typography
-              color="text.primary"
-              variant="subtitle2"
-            >
-              {invoice.customer.name}
-            </Typography>
-            <Typography
-              color="text.secondary"
-              variant="body2"
-            >
-              {invoice.number}
-            </Typography>
-          </div>
-        </Stack>
-      </TableCell>
-      <TableCell>
-        <Typography variant="subtitle2">{totalAmount}</Typography>
-      </TableCell>
-      <TableCell>
-        <Typography variant="subtitle2">Déposée le</Typography>
-        <Typography
-          color="text.secondary"
-          variant="body2"
-        >
-          {issueDate}
-        </Typography>
-      </TableCell>
-      <TableCell>
-        <Typography variant="subtitle2">Due le</Typography>
-        <Typography
-          color="text.secondary"
-          variant="body2"
-        >
-          {dueDate}
-        </Typography>
-      </TableCell>
-      <TableCell align="right">
-        <SeverityPill color={statusColor}>
-          {invoice.status == 'canceled'
-            ? 'Impayée'
-            : invoice.status == 'paid'
-            ? 'payé'
-            : 'en attente'}
-        </SeverityPill>
-      </TableCell>
-      <TableCell align="right">
-        <IconButton
-          component={RouterLink}
-          href={paths.dashboard.achats.edit}
-          color="warning"
-        >
-          <SvgIcon>
-            <EditIcon />
-          </SvgIcon>
-        </IconButton>
-      </TableCell>
-    </TableRow>
-  );
-};
-
-InvoiceRow.propTypes = {
-  // @ts-ignore
-  invoice: PropTypes.object.isRequired,
 };
 
 interface PurchaseListTableProps {
   count?: number;
   group?: boolean;
-  items?: Invoice[];
+  items?: provider[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   page?: number;
   rowsPerPage?: number;
 }
 
- const PurchaseListTable: FC<PurchaseListTableProps> = (props) => {
+const PurchaseListTable: FC<PurchaseListTableProps> = (props) => {
   const {
     group = false,
     items = [],
@@ -173,17 +65,17 @@ interface PurchaseListTableProps {
   let content: JSX.Element;
 
   if (group) {
-    const groupedInvoices = groupInvoices(items);
+    const groupedProviders = groupProviders(items);
 
-    const statuses = Object.keys(groupedInvoices) as InvoiceStatus[];
+    const statuses = Object.keys(groupedProviders) as ProviderStatus[];
 
     content = (
       <Stack spacing={6}>
         {statuses.map((status) => {
           const groupTitle = status.charAt(0).toUpperCase() + status.slice(1);
-          const count = groupedInvoices[status].length;
-          const invoices = groupedInvoices[status];
-          const hasInvoices = invoices.length > 0;
+          const count = groupedProviders[status].length;
+          const providers = groupedProviders[status];
+          const hasInvoices = providers.length > 0;
 
           return (
             <Stack
@@ -202,10 +94,10 @@ interface PurchaseListTableProps {
                   <Scrollbar>
                     <Table sx={{ minWidth: 600 }}>
                       <TableBody>
-                        {invoices.map((invoice) => (
-                          <InvoiceRow
-                            key={invoice.id}
-                            invoice={invoice}
+                        {providers.map((provider, i) => (
+                          <ProviderRow
+                            key={i}
+                            provider={provider}
                           />
                         ))}
                       </TableBody>
@@ -223,10 +115,10 @@ interface PurchaseListTableProps {
       <Card>
         <Table>
           <TableBody>
-            {items.map((invoice) => (
-              <InvoiceRow
-                key={invoice.id}
-                invoice={invoice}
+            {items.map((provider) => (
+              <ProviderRow
+                key={provider.id}
+                provider={provider}
               />
             ))}
           </TableBody>
@@ -251,7 +143,7 @@ interface PurchaseListTableProps {
     </Stack>
   );
 };
-export default PurchaseListTable
+export default PurchaseListTable;
 PurchaseListTable.propTypes = {
   count: PropTypes.number,
   group: PropTypes.bool,

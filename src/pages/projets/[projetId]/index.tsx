@@ -29,9 +29,7 @@ import ProjectDetails from '../sections/project-details';
 import SlicesListTable from '../sections/slice-list-table';
 import { Project } from 'src/types/project';
 import { useRouter } from 'next/router';
-import FirebaseProjects from 'src/firebaseServices/projets';
 import { slice } from 'src/types/slice';
-import FirebaseSlices from 'src/firebaseServices/tranches';
 import Plus from '@untitled-ui/icons-react/build/esm/Plus';
 
 const tabs = [
@@ -51,16 +49,29 @@ const useProject = (projectId: string): Project | null => {
   const [project, setProject] = useState<Project | null>(null);
 
   const handleProjectGet = useCallback(async () => {
-    const firebaseProjects = new FirebaseProjects();
     try {
-      const response = await firebaseProjects.getProjectById(projectId);
-      if (isMounted()) {
-        setProject(response); // Update the project state with the fetched data
+      // Retrieve projects from local storage
+      const storedProjects = localStorage.getItem('projects');
+      const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
+
+      // Find the project with the specified ID
+      const project = existingProjects.find((proj: Project) => proj?.id === projectId);
+
+      // Handle the project accordingly
+      if (project) {
+        console.log('Project found:', project);
+        // Handle further actions with the project
+        setProject(project);
+      } else {
+        console.log('Project not found');
+        // Handle the case where project is not found
       }
     } catch (error) {
       console.error('Error fetching project:', error);
+      // Handle the error
     }
-  }, [projectId, isMounted]);
+  }, [projectId]);
+
   useEffect(() => {
     handleProjectGet();
   }, [projectId, handleProjectGet]);
@@ -71,19 +82,34 @@ const useProject = (projectId: string): Project | null => {
 const useSlices = (projectId: string) => {
   const isMounted = useMounted();
   const [slices, setSlices] = useState<slice[]>([]);
-  const [totalSlicesAmounts, setTotalSlicesAmounts] = useState(0);
+  const [totalSlicesAmounts, setTotalSlicesAmounts] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const handleSlicesGet = useCallback(async () => {
-    const firebaseSlices = new FirebaseSlices();
+  const calculateTotalSlicesAmounts = useCallback((slices: slice[]) => {
+    let total = 0;
+    slices.forEach((slice) => {
+      total += slice.amount;
+    });
+    return total;
+  }, []);
 
+  const handleSlicesGet = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await firebaseSlices.getAllSlices(projectId);
-      if (isMounted()) {
-        setSlices(response.slices);
-        setTotalSlicesAmounts(response?.totalSliceAmount);
-      }
+
+      // Retrieve slices from local storage
+      const storedSlices = localStorage.getItem('slices');
+      const existingSlices = storedSlices ? JSON.parse(storedSlices) : [];
+
+      // Filter slices based on the provided projectId
+      const slicesForProject = existingSlices.filter(
+        (slice: slice) => slice.project_id === projectId
+      );
+      const totalAmounts = calculateTotalSlicesAmounts(slicesForProject);
+      // Log or handle the slices as needed
+      setSlices(slicesForProject);
+      setTotalSlicesAmounts(totalAmounts);
+      console.log('Slices for project with ID ' + projectId + ':', slicesForProject);
     } catch (error) {
       console.error('Error fetching slices:', error);
     } finally {

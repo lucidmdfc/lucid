@@ -22,7 +22,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import { useDispatch } from 'src/store';
 import { thunks } from 'src/thunks/calendar';
-import type { CalendarEvent } from 'src/types/calendar';
+import type { CalendarEvent } from 'src/types/template-types/calendar';
 
 interface Values {
   allDay: boolean;

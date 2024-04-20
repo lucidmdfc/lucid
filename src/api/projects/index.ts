@@ -3,7 +3,12 @@ import { applySort } from 'src/utils/apply-sort';
 import { deepCopy } from 'src/utils/deep-copy';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, query, where, getDocs, QuerySnapshot } from 'firebase/firestore';
-import { Customer, CustomerEmail, CustomerInvoice, CustomerLog } from 'src/types/customer';
+import {
+  Customer,
+  CustomerEmail,
+  CustomerInvoice,
+  CustomerLog,
+} from 'src/types/template-types/customer';
 import { firebaseConfig } from 'src/config';
 import { firebaseApp } from 'src/libs/firebase';
 import { Project } from 'src/types/project';

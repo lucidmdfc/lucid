@@ -1,20 +1,20 @@
-import { useState, type FC, ChangeEvent } from 'react';
+import { type FC } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { Customer } from 'src/types/customer';
 import { DatePicker } from '@mui/x-date-pickers';
+import { salary } from 'src/types/salary';
 
 interface SalaryEditProps {
   onCancel?: () => void;
   onSave?: () => void;
-  member: Customer;
+  salary: salary;
 }
 
 const SalaryEdit: FC<SalaryEditProps> = (props) => {
-  const { onCancel, onSave, member } = props;
+  const { onCancel, onSave, salary } = props;
 
   return (
     <Stack spacing={6}>
@@ -25,13 +25,13 @@ const SalaryEdit: FC<SalaryEditProps> = (props) => {
             fullWidth
             label="Nom du salarié"
             name="number"
-            value={member.name}
+            value={salary.salaryName}
           />
           <TextField
             fullWidth
             label="Fonction"
             name="fonction"
-            value={member.state}
+            value={salary.salaryFunction}
           />
 
           <TextField
@@ -39,11 +39,11 @@ const SalaryEdit: FC<SalaryEditProps> = (props) => {
             label="Salaire Brut"
             name="amount"
             type="number"
-            value={member.totalSpent}
+            value={salary.grossSalary}
           />
           <DatePicker
             label="Date de recrutement"
-            // value={value} // Cast to DateValue
+            value={new Date(salary.recruitmentDate)} // Cast to DateValue
             // onChange={(newValue) => setValue(newValue)}
             format="dd/MM/yyyy"
           />
@@ -79,5 +79,5 @@ SalaryEdit.propTypes = {
   onCancel: PropTypes.func,
   onSave: PropTypes.func,
   // @ts-ignore
-  member: PropTypes.object,
+  salary: PropTypes.object,
 };

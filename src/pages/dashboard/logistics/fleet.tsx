@@ -12,7 +12,7 @@ import { LogisticsFleetDrawer } from 'src/sections/dashboard/logistics/logistics
 import { LogisticsFleetList } from 'src/sections/dashboard/logistics/logistics-fleet-list';
 import { LogisticsFleetMap } from 'src/sections/dashboard/logistics/logistics-fleet-map';
 import { LogisticsFleetToolbar } from 'src/sections/dashboard/logistics/logistics-fleet-toolbar';
-import type { Vehicle } from 'src/types/logistics';
+import type { Vehicle } from 'src/types/template-types/logistics';
 
 const useVehicles = (): Vehicle[] => {
   return [

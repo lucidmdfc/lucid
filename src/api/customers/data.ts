@@ -1,6 +1,11 @@
 import { subDays, subHours, subMinutes, subSeconds } from 'date-fns';
 
-import type { Customer, CustomerEmail, CustomerInvoice, CustomerLog } from 'src/types/customer';
+import type {
+  Customer,
+  CustomerEmail,
+  CustomerInvoice,
+  CustomerLog,
+} from 'src/types/template-types/customer';
 
 const now = new Date();
 

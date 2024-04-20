@@ -1,0 +1,140 @@
+export enum ProviderStatus {
+  Canceled = 'canceled',
+  Paid = 'paid',
+  Pending = 'pending',
+}
+export interface provider {
+  id: string;
+  projectId: number | null;
+  nom: string;
+  ice: string;
+  depositedDate: Date | null;
+  dueDate: Date | null;
+  amount: number | null;
+  status: ProviderStatus;
+  method: string;
+  commentaire: string;
+}
+
+export const dummyProviders: provider[] = [
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: 1,
+    nom: 'Provider 1',
+    ice: 'ICE123456789',
+    depositedDate: new Date('2022-01-01'),
+    dueDate: new Date('2022-01-10'),
+    amount: 1000,
+    status: ProviderStatus.Canceled,
+    method: 'Bank Transfer',
+    commentaire: 'Lorem ipsum dolor sit amet.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: 2,
+    nom: 'Provider 2',
+    ice: 'ICE987654321',
+    depositedDate: new Date('2022-02-01'),
+    dueDate: new Date('2022-02-10'),
+    amount: 1500,
+    status: ProviderStatus.Canceled,
+    method: 'Credit Card',
+    commentaire: 'Consectetur adipiscing elit.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: 3,
+    nom: 'Provider 3',
+    ice: 'ICE456789123',
+    depositedDate: new Date('2022-03-01'),
+    dueDate: new Date('2022-03-10'),
+    amount: 1200,
+    status: ProviderStatus.Canceled,
+    method: 'PayPal',
+    commentaire: 'Sed do eiusmod tempor incididunt.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: 4,
+    nom: 'Provider 4',
+    ice: 'ICE789123456',
+    depositedDate: new Date('2022-04-01'),
+    dueDate: new Date('2022-04-10'),
+    amount: 1800,
+    status: ProviderStatus.Paid,
+    method: 'Cash',
+    commentaire: 'Ut labore et dolore magna aliqua.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: 5,
+    nom: 'Provider 5',
+    ice: 'ICE321654987',
+    depositedDate: new Date('2022-05-01'),
+    dueDate: new Date('2022-05-10'),
+    amount: 1300,
+    status: ProviderStatus.Pending,
+    method: 'Bank Transfer',
+    commentaire: 'Duis aute irure dolor in reprehenderit.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: null,
+    nom: 'Provider 6',
+    ice: 'ICE654987321',
+    depositedDate: null,
+    dueDate: null,
+    amount: null,
+    status: ProviderStatus.Pending,
+    method: 'Credit Card',
+    commentaire: 'Excepteur sint occaecat cupidatat non proident.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: null,
+    nom: 'Provider 7',
+    ice: 'ICE987321654',
+    depositedDate: null,
+    dueDate: null,
+    amount: null,
+    status: ProviderStatus.Paid,
+    method: 'PayPal',
+    commentaire: 'Sunt in culpa qui officia deserunt mollit anim id est laborum.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: null,
+    nom: 'Provider 8',
+    ice: 'ICE321987654',
+    depositedDate: null,
+    dueDate: null,
+    amount: null,
+    status: ProviderStatus.Pending,
+    method: 'Cash',
+    commentaire: 'Nisi ut aliquip ex ea commodo consequat.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: null,
+    nom: 'Provider 9',
+    ice: 'ICE987654321',
+    depositedDate: null,
+    dueDate: null,
+    amount: null,
+    status: ProviderStatus.Paid,
+    method: 'Bank Transfer',
+    commentaire: 'Duis aute irure dolor in reprehenderit.',
+  },
+  {
+    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
+    projectId: null,
+    nom: 'Provider 10',
+    ice: 'ICE654321987',
+    depositedDate: null,
+    dueDate: null,
+    amount: null,
+    status: ProviderStatus.Pending,
+    method: 'Credit Card',
+    commentaire: 'Sunt in culpa qui officia deserunt mollit anim id est laborum.',
+  },
+];

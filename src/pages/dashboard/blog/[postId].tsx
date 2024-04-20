@@ -25,7 +25,7 @@ import { PostComment } from 'src/sections/dashboard/blog/post-comment';
 import { PostCommentAdd } from 'src/sections/dashboard/blog/post-comment-add';
 import { PostNewsletter } from 'src/sections/dashboard/blog/post-newsletter';
 import { PostContent } from 'src/sections/dashboard/blog/post-content';
-import type { Post } from 'src/types/blog';
+import type { Post } from 'src/types/template-types/blog';
 
 interface Comment {
   id: string;

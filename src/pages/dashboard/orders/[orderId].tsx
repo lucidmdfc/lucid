@@ -23,7 +23,7 @@ import { paths } from 'src/paths';
 import { OrderItems } from 'src/sections/dashboard/order/order-items';
 import { OrderLogs } from 'src/sections/dashboard/order/order-logs';
 import { OrderSummary } from 'src/sections/dashboard/order/order-summary';
-import type { Order } from 'src/types/order';
+import type { Order } from 'src/types/template-types/order';
 
 const useOrder = (): Order | null => {
   const isMounted = useMounted();

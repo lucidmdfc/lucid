@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { paths } from 'src/paths';
 import { useDispatch, useSelector } from 'src/store';
 import { thunks } from 'src/thunks/mail';
-import { Email } from 'src/types/mail';
+import { Email } from 'src/types/template-types/mail';
 
 import { MailThreadAttachments } from './mail-thread-attachments';
 import { MailThreadMessage } from './mail-thread-message';

@@ -1,4 +1,4 @@
-import type { Item } from 'src/types/file-manager';
+import type { Item } from 'src/types/template-types/file-manager';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { applySort } from 'src/utils/apply-sort';
 import { deepCopy } from 'src/utils/deep-copy';

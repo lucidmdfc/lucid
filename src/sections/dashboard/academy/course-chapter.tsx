@@ -14,7 +14,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 
-import type { CourseChapter as CourseChapterType } from 'src/types/academy';
+import type { CourseChapter as CourseChapterType } from 'src/types/template-types/academy';
 
 import { CourseLesson } from './course-lesson';
 

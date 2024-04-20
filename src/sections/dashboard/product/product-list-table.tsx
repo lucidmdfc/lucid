@@ -30,7 +30,7 @@ import Typography from '@mui/material/Typography';
 
 import { Scrollbar } from 'src/components/scrollbar';
 import { SeverityPill } from 'src/components/severity-pill';
-import type { Product } from 'src/types/product';
+import { Product } from 'src/types/template-types/product';
 
 interface CategoryOption {
   label: string;

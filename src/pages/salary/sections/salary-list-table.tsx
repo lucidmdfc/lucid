@@ -10,12 +10,13 @@ import Typography from '@mui/material/Typography';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
 import { IconButton, SvgIcon, TableHead } from '@mui/material';
-import { Customer } from 'src/types/customer';
+import { Customer } from 'src/types/template-types/customer';
 import { format } from 'date-fns';
+import { salary } from 'src/types/salary';
 
 interface SalaryListTableProps {
   count?: number;
-  items?: Customer[];
+  salaries?: salary[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onSelect?: (orderId: string) => void;
@@ -26,7 +27,7 @@ interface SalaryListTableProps {
 const SalaryListTable: FC<SalaryListTableProps> = (props) => {
   const {
     count = 0,
-    items = [],
+    salaries = [],
     onPageChange = () => {},
     onRowsPerPageChange,
     onSelect,
@@ -47,32 +48,32 @@ const SalaryListTable: FC<SalaryListTableProps> = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((member) => {
-            const totalAmount = numeral(member.totalSpent).format(`0,0.00`);
-            const date = member.updatedAt && format(member.updatedAt, 'dd/MM/yyyy');
+          {salaries.map((salary) => {
+            const totalAmount = numeral(salary.grossSalary).format(`0,0.00`);
+            const date = salary.recruitmentDate && format(salary.recruitmentDate, 'dd/MM/yyyy');
 
             return (
               <TableRow
                 hover
-                key={member.id}
+                key={salary.id}
               >
                 <TableCell>
-                  <Typography variant="subtitle2">{member.name}</Typography>
+                  <Typography variant="subtitle2">{salary.salaryName}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="subtitle2">{member.state}</Typography>
+                  <Typography variant="subtitle2">{salary.salaryFunction}</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">{date}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">{totalAmount}</Typography>
+                  <Typography variant="body2">MAD {totalAmount}</Typography>
                 </TableCell>
 
                 <TableCell>
                   <IconButton
                     color="info"
-                    onClick={() => onSelect?.(member.id)}
+                    onClick={() => onSelect?.(salary.id)}
                   >
                     <SvgIcon>
                       <ArrowRightIcon />
@@ -101,7 +102,7 @@ const SalaryListTable: FC<SalaryListTableProps> = (props) => {
 export default SalaryListTable;
 SalaryListTable.propTypes = {
   count: PropTypes.number,
-  items: PropTypes.array,
+  salaries: PropTypes.array,
   onPageChange: PropTypes.func,
   onRowsPerPageChange: PropTypes.func,
   onSelect: PropTypes.func,

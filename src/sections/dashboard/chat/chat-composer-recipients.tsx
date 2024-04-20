@@ -20,7 +20,7 @@ import Typography from '@mui/material/Typography';
 
 import { chatApi } from 'src/api/chat';
 import { Scrollbar } from 'src/components/scrollbar';
-import type { Contact } from 'src/types/chat';
+import type { Contact } from 'src/types/template-types/chat';
 
 interface ChatComposerRecipientsProps {
   onRecipientAdd?: (contact: Contact) => void;

@@ -13,11 +13,11 @@ import {
 } from 'firebase/auth';
 
 import { firebaseApp } from 'src/libs/firebase';
-import type { User } from 'src/types/user';
 import { Issuer } from 'src/utils/auth';
 
 import type { State } from './auth-context';
 import { AuthContext, initialState } from './auth-context';
+import { User } from 'src/types/template-types/user';
 
 const auth = getAuth(firebaseApp);
 

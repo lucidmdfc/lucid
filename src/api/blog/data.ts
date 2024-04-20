@@ -1,6 +1,6 @@
 import { subDays, subHours, subMinutes, subSeconds } from 'date-fns';
 
-import type { Post } from 'src/types/blog';
+import type { Post } from 'src/types/template-types/blog';
 
 const now = new Date();
 

@@ -17,7 +17,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 
-import type { OrderLog } from 'src/types/order';
+import type { OrderLog } from 'src/types/template-types/order';
 
 interface OrderLogsProps {
   logs: OrderLog[];

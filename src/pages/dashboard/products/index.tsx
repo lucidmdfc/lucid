@@ -22,7 +22,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { ProductListSearch } from 'src/sections/dashboard/product/product-list-search';
 import { ProductListTable } from 'src/sections/dashboard/product/product-list-table';
-import type { Product } from 'src/types/product';
+import { Product } from 'src/types/template-types/product';
 
 interface Filters {
   name?: string;

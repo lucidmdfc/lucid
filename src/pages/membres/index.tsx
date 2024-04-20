@@ -15,11 +15,10 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
-import { Member, membersData } from 'src/types/members';
+import { Member, membersData } from 'src/types/member';
 import MemberDrawer from './sections/member-drawer';
 import MemberListSearch from './sections/member-list-search';
 import MemberListTable from './sections/member-list-table';
-import FirebaseMembers from 'src/firebaseServices/membres';
 import MemberListContainer from './sections/member-list-container';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
@@ -105,8 +104,6 @@ const useMembersStore = (searchState: MemberSearchState) => {
   });
 
   const handleMembersGet = useCallback(async () => {
-    const firebaseMembers = new FirebaseMembers();
-
     try {
       const response = membersData;
       console.log(response);

@@ -13,30 +13,40 @@ import { Box, Stack } from '@mui/system';
 import toast from 'react-hot-toast';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 
-type Motif = {
+interface Option {
   text: string;
-  value: number;
-};
+  value: string;
+}
 
-const motifs: Motif[] = [
-  { text: 'Notes de frais', value: 1 },
-  { text: 'Utilities', value: 2 },
-  { text: 'Achats & Prestataires', value: 3 },
+const projects: Option[] = [
+  { text: 'project_1', value: 'project_1' },
+  { text: 'project_2', value: 'project_2' },
+  { text: 'project_3', value: 'project_3' },
+  { text: 'project_4', value: 'project_4' },
+  { text: 'project_5', value: 'project_5' },
 ];
 interface CashList {
   date: string;
   amount: string;
   id: string;
+  projectName: string;
 }
 
 interface CashListInRowProps extends CashList {
   onDelete: (id: number) => void;
 }
 
-const CashListInRow: React.FC<CashListInRowProps> = ({ id, date, amount, onDelete }) => {
+const CashListInRow: React.FC<CashListInRowProps> = ({
+  id,
+  date,
+  amount,
+  onDelete,
+  projectName,
+}) => {
   const [editMode, setEditMode] = useState(false);
   const [editedDate, setEditedDate] = useState(date);
   const [editedAmount, setEditedAmount] = useState(amount);
+  const [editedProjectName, setEditedProjectName] = useState(projectName);
 
   const handleEditClick = () => {
     setEditMode(true);
@@ -63,6 +73,28 @@ const CashListInRow: React.FC<CashListInRowProps> = ({ id, date, amount, onDelet
     <TableRow hover>
       {editMode ? (
         <>
+          <TableCell>
+            <TextField
+              fullWidth
+              label="Nom projet"
+              name="projectId"
+              value={editedProjectName}
+              onChange={(e) => setEditedProjectName(e.target.value)}
+              select
+              size="small"
+            >
+              <MenuItem value="">--</MenuItem>
+              {projects.map((project) => (
+                <MenuItem
+                  value={project.value}
+                  key={project.value}
+                >
+                  {project.text}
+                </MenuItem>
+              ))}
+              <MenuItem value={0}>autre</MenuItem>
+            </TextField>
+          </TableCell>
           <TableCell>
             <TextField
               size="small"
@@ -108,8 +140,9 @@ const CashListInRow: React.FC<CashListInRowProps> = ({ id, date, amount, onDelet
         </>
       ) : (
         <>
+          <TableCell>{projectName}</TableCell>
           <TableCell>{date}</TableCell>
-          <TableCell>{amount}</TableCell>
+          <TableCell>MAD {amount}</TableCell>
           <TableCell align="right">
             <IconButton
               color="error"

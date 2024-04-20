@@ -1,4 +1,4 @@
-import type { Company } from 'src/types/job';
+import type { Company } from 'src/types/template-types/job';
 import { deepCopy } from 'src/utils/deep-copy';
 
 import { companies, company } from './data';

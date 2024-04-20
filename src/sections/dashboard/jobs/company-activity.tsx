@@ -14,7 +14,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 
-import type { Activity } from 'src/types/job';
+import type { Activity } from 'src/types/template-types/job';
 import { getInitials } from 'src/utils/get-initials';
 
 const renderContent = (activity: Activity): JSX.Element | null => {

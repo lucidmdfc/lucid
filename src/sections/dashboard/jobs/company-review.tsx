@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceStrict } from 'date-fns';
-import type { Review } from 'src/types/job';
+import type { Review } from 'src/types/template-types/job';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';

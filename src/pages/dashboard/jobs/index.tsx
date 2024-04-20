@@ -20,7 +20,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { CompanyCard } from 'src/sections/dashboard/jobs/company-card';
 import { JobListSearch } from 'src/sections/dashboard/jobs/job-list-search';
-import type { Company } from 'src/types/job';
+import type { Company } from 'src/types/template-types/job';
 
 const useCompanies = (): Company[] => {
   const isMounted = useMounted();

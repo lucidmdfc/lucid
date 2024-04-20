@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { Email, Label } from 'src/types/mail';
+import type { Email, Label } from 'src/types/template-types/mail';
 import { objFromArray } from 'src/utils/obj-from-array';
 
 interface MailState {

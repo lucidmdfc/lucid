@@ -8,11 +8,10 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import { SeverityPill } from 'src/components/severity-pill';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import { Member } from 'src/types/members';
+import { Member } from 'src/types/member';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
-import FirebaseMembers from 'src/firebaseServices/membres';
 
 type PaymentMethod = {
   text: string;
@@ -44,7 +43,6 @@ const validationSchema = yup.object({
   rc_cin: yup.string().required('CIN/Registre de Commerce est requis'),
   status: yup.string().required('Statut est requis'),
 });
-const firebaseNewMember = new FirebaseMembers();
 
 const NewMemberForm = () => {
   const router = useRouter();
@@ -70,7 +68,7 @@ const NewMemberForm = () => {
       }
       try {
         // Handle form submission
-        await firebaseNewMember.createMember(values as Member);
+        console.log(values as Member);
         toast.success('Membre créé avec succès !');
         router.replace(paths.dashboard.membres.index);
         resetForm();

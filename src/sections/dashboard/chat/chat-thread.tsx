@@ -13,7 +13,7 @@ import { useRouter } from 'src/hooks/use-router';
 import { paths } from 'src/paths';
 import { useDispatch, useSelector } from 'src/store';
 import { thunks } from 'src/thunks/chat';
-import type { Participant, Thread } from 'src/types/chat';
+import type { Participant, Thread } from 'src/types/template-types/chat';
 
 import { ChatMessageAdd } from './chat-message-add';
 import { ChatMessages } from './chat-messages';

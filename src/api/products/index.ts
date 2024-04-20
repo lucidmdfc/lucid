@@ -1,7 +1,7 @@
-import type { Product } from 'src/types/product';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { deepCopy } from 'src/utils/deep-copy';
 import { products } from './data';
+import { Product } from 'src/types/template-types/product';
 
 type GetProductsRequest = {
   filters?: {

@@ -7,7 +7,7 @@ import TableBody from '@mui/material/TableBody';
 import TablePagination from '@mui/material/TablePagination';
 
 import { Scrollbar } from 'src/components/scrollbar';
-import type { Item } from 'src/types/file-manager';
+import type { Item } from 'src/types/template-types/file-manager';
 
 import { ItemListCard } from './item-list-card';
 import { ItemListRow } from './item-list-row';

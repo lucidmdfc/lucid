@@ -1,7 +1,6 @@
 import { useState, type FC } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import numeral from 'numeral';
 import Edit02Icon from '@untitled-ui/icons-react/build/esm/Edit02';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -17,41 +16,72 @@ import type { Theme } from '@mui/material/styles/createTheme';
 
 import { PropertyList } from 'src/components/property-list';
 import { PropertyListItem } from 'src/components/property-list-item';
-import type { SeverityPillColor } from 'src/components/severity-pill';
-import { SeverityPill } from 'src/components/severity-pill';
 import { Scrollbar } from 'src/components/scrollbar';
-import { Customer } from 'src/types/customer';
-import PaymentHistoryTableRow from './PaymentHistoryTableRow';
-import DeleteConfirmationModal from '../components/delete-confirmation';
+import DeleteConfirmationModal from '../components/delete-modal-confirmation';
 import toast from 'react-hot-toast';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import { salary } from 'src/types/salary';
+import { payment } from 'src/types/payment';
+import PaymentHistoryTableRow from './payment-history-table-row';
 
 interface SalaryDetailsProps {
   onApprove?: () => void;
   onEdit?: () => void;
   onReject?: () => void;
-  member: Customer;
+  salary: salary;
 }
-interface PaymentHistory {
-  date: string;
-  amount: string;
-  id: number;
-}
-const dummyData: PaymentHistory[] = [
-  { id: 1, date: '12/05/2023', amount: 'MAD 300.00' },
-  { id: 2, date: '15/06/2023', amount: 'MAD 500.00' },
-  { id: 3, date: '20/07/2023', amount: 'MAD 700.00' },
-  // Add more dummy data as needed
+
+const dummyPayments: payment[] = [
+  {
+    id: '1',
+    salary: 5000,
+    amount: 1000,
+    date: new Date('2022-01-01'),
+    createdDate: new Date('2022-01-01'),
+    updatedDate: new Date('2022-01-01'),
+  },
+  {
+    id: '2',
+    salary: 6000,
+    amount: 1200,
+    date: new Date('2022-01-02'),
+    createdDate: new Date('2022-01-02'),
+    updatedDate: new Date('2022-01-02'),
+  },
+  {
+    id: '3',
+    salary: 5500,
+    amount: 1100,
+    date: new Date('2022-01-03'),
+    createdDate: new Date('2022-01-03'),
+    updatedDate: new Date('2022-01-03'),
+  },
+  {
+    id: '4',
+    salary: 5800,
+    amount: 1160,
+    date: new Date('2022-01-04'),
+    createdDate: new Date('2022-01-04'),
+    updatedDate: new Date('2022-01-04'),
+  },
+  {
+    id: '5',
+    salary: 5200,
+    amount: 1040,
+    date: new Date('2022-01-05'),
+    createdDate: new Date('2022-01-05'),
+    updatedDate: new Date('2022-01-05'),
+  },
 ];
 
 const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
-  const { onApprove, onEdit, onReject, member } = props;
+  const { onApprove, onEdit, onReject, salary } = props;
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
-  const date = member.updatedAt && format(member.updatedAt, 'dd/MM/yyyy');
+  const date = salary.recruitmentDate && format(salary.recruitmentDate, 'dd/MM/yyyy');
 
   const align = lgUp ? 'horizontal' : 'vertical';
 
-  const handleDeletePayment = (paymentId: number) => {
+  const handleDeletePayment = (paymentId: string) => {
     // Handle the deletion logic here (e.g., make an API call)
     // For now, let's just log the paymentId
     console.log(`Deleting payment with ID: ${paymentId}`);
@@ -61,9 +91,9 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
     setDeleteModalOpen(true);
   };
 
-  const handleDeleteConfirmation = async (memberId: string | undefined) => {
+  const handleDeleteConfirmation = async (salaryId: string | undefined) => {
     try {
-      console.log('salarié avec id ', memberId, 'est supprimer');
+      console.log('salarié avec id ', salaryId, 'est supprimer');
 
       // await firebaseSlice.deleteSlice(projectId, sliceId, onRefresh);
       toast.success('Le salarié a été supprimé avec succès!');
@@ -71,7 +101,7 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
         onReject();
       }
     } catch (error) {
-      console.error('Error deleting member: ', error);
+      console.error('Error deleting salary: ', error);
       toast.error('Échec de la suppression du salarié. Veuillez réessayer.');
     }
     setDeleteModalOpen(false);
@@ -86,7 +116,7 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
         onConfirm={handleDeleteConfirmation}
         onCancel={handleDeleteCancel}
         message="Êtes vous sûr de vouloir supprimer ce salarié(e)? Cette action sera irréversible."
-        memberId={member?.id}
+        salaryId={salary?.id}
       />
       <Stack spacing={3}>
         <Stack
@@ -134,14 +164,14 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
             disableGutters
             divider
             label="Nom du salarié"
-            value={member.name}
+            value={salary.salaryName}
           />
           <PropertyListItem
             align={align}
             disableGutters
             divider
             label="Fonction"
-            value={member.state}
+            value={salary.salaryFunction}
           />
           <PropertyListItem
             align={align}
@@ -156,7 +186,7 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
             disableGutters
             divider
             label="Salaire Brut"
-            value={'MAD ' + member.totalSpent + '.00'}
+            value={'MAD ' + salary.grossSalary + '.00'}
           />
         </PropertyList>
       </Stack>
@@ -172,10 +202,10 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {dummyData.map((payment) => (
+              {dummyPayments.map((payment) => (
                 <PaymentHistoryTableRow
                   key={payment.id}
-                  {...payment}
+                  payment={payment}
                   onDelete={() => handleDeletePayment(payment.id)}
                 />
               ))}

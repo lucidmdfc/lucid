@@ -3,11 +3,11 @@ import { useCallback, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 
 import { authApi } from 'src/api/auth';
-import type { User } from 'src/types/user';
 import { Issuer } from 'src/utils/auth';
 
 import type { State } from './auth-context';
 import { AuthContext, initialState } from './auth-context';
+import { User } from 'src/types/template-types/user';
 
 const STORAGE_KEY = 'accessToken';
 

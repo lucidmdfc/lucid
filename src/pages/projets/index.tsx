@@ -17,14 +17,13 @@ import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import type { Customer } from 'src/types/customer';
+import type { Customer } from 'src/types/template-types/customer';
 import { useSettings } from 'src/hooks/use-settings';
 import ProjectListSearch from './sections/Project-list-search';
 import ProjectListTable from './sections/project-list-table';
 import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
 import { Project } from 'src/types/project';
-import FirebaseProjects from 'src/firebaseServices/projets';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 
@@ -71,6 +70,7 @@ const useProjectsSearch = () => {
 
   const handlePageChange = useCallback(
     (event: MouseEvent<HTMLButtonElement> | null, page: number): void => {
+      console.log(page);
       setState((prevState) => ({
         ...prevState,
         page,
@@ -108,16 +108,15 @@ const useProjectsStore = (searchState: ProjectsSearchState) => {
   });
 
   const handleProjectsGet = useCallback(async () => {
-    const firebaseProjects = new FirebaseProjects();
-
     try {
-      const response = await firebaseProjects.getAllProjects(searchState);
-      console.log(response);
+      const storedProjects = localStorage.getItem('projects');
+      const parsedProjects = storedProjects ? JSON.parse(storedProjects) : [];
+      let count = parsedProjects.length;
 
       if (isMounted()) {
         setState({
-          projects: response.projects,
-          projectsCount: response.count,
+          projects: parsedProjects,
+          projectsCount: count,
         });
       }
     } catch (err) {

@@ -17,33 +17,45 @@ import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
-import type { Customer } from 'src/types/customer';
+import type { Customer } from 'src/types/template-types/customer';
 import { getInitials } from 'src/utils/get-initials';
 import { Breadcrumbs, Card } from '@mui/material';
 import { BreadcrumbsSeparator } from 'src/components/breadcrumbs-separator';
 import { Project } from 'src/types/project';
-import FirebaseProjects from 'src/firebaseServices/projets';
 import { useRouter } from 'next/router';
-import EditProject from '../components/edit-projet';
+import EditProject from '../components/edit-project';
 
 const useProject = (projectId: string): Project | null => {
   const isMounted = useMounted();
   const [project, setProject] = useState<Project | null>(null);
 
   const handleProjectGet = useCallback(async () => {
-    const firebaseProjects = new FirebaseProjects();
     try {
-      const response = await firebaseProjects.getProjectById(projectId);
-      if (isMounted()) {
-        setProject(response); // Update the project state with the fetched data
+      // Retrieve projects from local storage
+      const storedProjects = localStorage.getItem('projects');
+      const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
+
+      // Find the project with the specified ID
+      const project = existingProjects.find((proj: Project) => proj?.id === projectId);
+
+      // Handle the project accordingly
+      if (project) {
+        console.log('Project found:', project);
+        // Handle further actions with the project
+        setProject(project);
+      } else {
+        console.log('Project not found');
+        // Handle the case where project is not found
       }
     } catch (error) {
       console.error('Error fetching project:', error);
+      // Handle the error
     }
-  }, [projectId, isMounted]);
+  }, [projectId]);
+
   useEffect(() => {
     handleProjectGet();
-  }, [projectId, isMounted, handleProjectGet]);
+  }, [projectId, handleProjectGet]);
 
   return project;
 };

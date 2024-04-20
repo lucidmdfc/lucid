@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 
 import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
-import type { Company } from 'src/types/job';
+import type { Company } from 'src/types/template-types/job';
 import { getInitials } from 'src/utils/get-initials';
 
 import { CompanyJobs } from './company-jobs';

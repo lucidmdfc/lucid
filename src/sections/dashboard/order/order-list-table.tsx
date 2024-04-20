@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 
 import type { SeverityPillColor } from 'src/components/severity-pill';
 import { SeverityPill } from 'src/components/severity-pill';
-import type { Order, OrderStatus } from 'src/types/order';
+import type { Order, OrderStatus } from 'src/types/template-types/order';
 
 const statusMap: Record<OrderStatus, SeverityPillColor> = {
   complete: 'success',

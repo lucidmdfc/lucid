@@ -19,7 +19,7 @@ import { OrderDrawer } from 'src/sections/dashboard/order/order-drawer';
 import { OrderListContainer } from 'src/sections/dashboard/order/order-list-container';
 import { OrderListSearch } from 'src/sections/dashboard/order/order-list-search';
 import { OrderListTable } from 'src/sections/dashboard/order/order-list-table';
-import type { Order } from 'src/types/order';
+import type { Order } from 'src/types/template-types/order';
 
 interface Filters {
   query?: string;

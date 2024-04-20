@@ -1,4 +1,4 @@
-import type { Post } from 'src/types/blog';
+import type { Post } from 'src/types/template-types/blog';
 import { deepCopy } from 'src/utils/deep-copy';
 
 import { post, posts } from './data';

@@ -1,20 +1,6 @@
 import { useState, type FC, useCallback, ChangeEvent } from 'react';
 import numeral from 'numeral';
 import { format, subDays, subHours } from 'date-fns';
-import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
-import Edit02Icon from '@untitled-ui/icons-react/build/esm/Edit02';
-import SearchMdIcon from '@untitled-ui/icons-react/build/esm/SearchMd';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import Link from '@mui/material/Link';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Stack from '@mui/material/Stack';
-import SvgIcon from '@mui/material/SvgIcon';
 import Tab from '@mui/material/Tab';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -23,14 +9,15 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Tabs from '@mui/material/Tabs';
-import TextField from '@mui/material/TextField';
-import { Scrollbar } from 'src/components/scrollbar';
-import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import { current } from '@reduxjs/toolkit';
 import DeleteConfirmationModal from './delete-confirmation';
 import toast from 'react-hot-toast';
 import CashListRow from './cash-list-row';
 import CashListInRow from './cash-in-list-row';
+import { Box, Card, Divider } from '@mui/material';
+import { Scrollbar } from 'src/components/scrollbar';
+import { dummyCashInData } from 'src/types/cash-in';
+import CashListOutRow from './chash-out-list-row';
+import { dummyCashOutData } from 'src/types/cash-out';
 
 const now = new Date();
 
@@ -145,30 +132,6 @@ const tabs = [
   },
 ];
 
-interface Option {
-  label: string;
-  value: string;
-}
-
-const sortOptions: Option[] = [
-  {
-    label: 'Last update (newest)',
-    value: 'updatedAt|desc',
-  },
-  {
-    label: 'Last update (oldest)',
-    value: 'updatedAt|asc',
-  },
-  {
-    label: 'Total orders (highest)',
-    value: 'orders|desc',
-  },
-  {
-    label: 'Total orders (lowest)',
-    value: 'orders|asc',
-  },
-];
-
 const TableCash: FC = () => {
   const [currentTab, setCurrentTab] = useState<string>('in');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -231,20 +194,22 @@ const TableCash: FC = () => {
             <Table sx={{ minWidth: 700 }}>
               <TableHead>
                 <TableRow>
+                  <TableCell>Projet</TableCell>
                   <TableCell>Date</TableCell>
                   <TableCell>Montant</TableCell>
                   <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {customers.map((customer) => {
-                  const totalSpent = numeral(customer.totalSpent).format(`0,0.00`);
-                  const date = format(customer.updatedAt, 'dd MMM yyyy');
+                {dummyCashInData.map((cashIn) => {
+                  const totalSpent = numeral(cashIn.amount).format(`0,0.00`);
+                  const date = format(cashIn.startDate, 'dd/MM/yyyy');
                   return (
                     <CashListInRow
-                      key={customer.id}
-                      id={customer.id}
+                      key={cashIn.id}
+                      id={cashIn.id}
                       amount={totalSpent}
+                      projectName={cashIn.projectId}
                       date={date}
                       onDelete={() => handleDeleteClick()}
                     />
@@ -257,6 +222,7 @@ const TableCash: FC = () => {
             <Table sx={{ minWidth: 700 }}>
               <TableHead>
                 <TableRow>
+                  <TableCell>Projet</TableCell>
                   <TableCell>Date</TableCell>
                   <TableCell>Montant</TableCell>
                   <TableCell>Motif</TableCell>
@@ -264,16 +230,17 @@ const TableCash: FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {customers.map((customer) => {
-                  const totalSpent = numeral(customer.totalSpent).format(`0,0.00`);
-                  const date = format(customer.updatedAt, 'dd MMM yyyy');
+                {dummyCashOutData.map((cashOut) => {
+                  const totalSpent = numeral(cashOut.amount).format(`0,0.00`);
+                  const date = format(cashOut.startDate, 'dd/MM/yyyy');
                   return (
-                    <CashListRow
-                      key={customer.id}
-                      id={customer.id}
+                    <CashListOutRow
+                      key={cashOut.id}
+                      id={cashOut.id}
                       amount={totalSpent}
+                      projectName={cashOut.projectId}
+                      motif={cashOut.motif}
                       date={date}
-                      motif={customer.state}
                       onDelete={() => handleDeleteClick()}
                     />
                   );

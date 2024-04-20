@@ -1,6 +1,6 @@
 import { addDays, endOfDay, setHours, setMinutes, startOfDay, subDays } from 'date-fns';
 
-import type { CalendarEvent } from 'src/types/calendar';
+import type { CalendarEvent } from 'src/types/template-types/calendar';
 
 const now = new Date();
 

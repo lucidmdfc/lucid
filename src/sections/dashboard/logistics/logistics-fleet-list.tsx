@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 
-import type { Vehicle } from 'src/types/logistics';
+import type { Vehicle } from 'src/types/template-types/logistics';
 
 import { LogisticsFleetVehicle } from './logistics-fleet-vehicle';
 

@@ -19,7 +19,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
-import type { Comment } from 'src/types/social';
+import type { Comment } from 'src/types/template-types/social';
 
 import { SocialComment } from './social-comment';
 import { SocialCommentAdd } from './social-comment-add';

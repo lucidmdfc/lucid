@@ -28,13 +28,21 @@ interface CashList {
   amount: string;
   motif: string;
   id: string;
+  projectName: string;
 }
 
 interface CashListRowProps extends CashList {
   onDelete: (id: number) => void;
 }
 
-const CashListRow: React.FC<CashListRowProps> = ({ id, date, amount, onDelete, motif }) => {
+const CashListRow: React.FC<CashListRowProps> = ({
+  id,
+  date,
+  amount,
+  onDelete,
+  motif,
+  projectName,
+}) => {
   const [editMode, setEditMode] = useState(false);
   const [editedDate, setEditedDate] = useState(date);
   const [editedAmount, setEditedAmount] = useState(amount);
@@ -130,6 +138,7 @@ const CashListRow: React.FC<CashListRowProps> = ({ id, date, amount, onDelete, m
         </>
       ) : (
         <>
+          <TableCell>{projectName}</TableCell>
           <TableCell>{date}</TableCell>
           <TableCell>{amount}</TableCell>
           <TableCell>{motif}</TableCell>

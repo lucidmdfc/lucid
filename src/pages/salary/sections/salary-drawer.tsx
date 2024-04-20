@@ -11,19 +11,20 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import type { Theme } from '@mui/material/styles/createTheme';
 
-import { Customer } from 'src/types/customer';
+import { Customer } from 'src/types/template-types/customer';
 import SalaryDetails from './salary-details';
 import SalaryEdit from './salary-edit';
+import { salary } from 'src/types/salary';
 
 interface SalaryDrawerProps {
   container?: HTMLDivElement | null;
   open?: boolean;
   onClose?: () => void;
-  member?: Customer;
+  salary?: salary;
 }
 
 const SalaryDrawer: FC<SalaryDrawerProps> = (props) => {
-  const { container, onClose, open, member } = props;
+  const { container, onClose, open, salary } = props;
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
@@ -37,7 +38,7 @@ const SalaryDrawer: FC<SalaryDrawerProps> = (props) => {
 
   let content: JSX.Element | null = null;
 
-  if (member) {
+  if (salary) {
     content = (
       <div>
         <Stack
@@ -53,7 +54,7 @@ const SalaryDrawer: FC<SalaryDrawerProps> = (props) => {
             color="inherit"
             variant="h6"
           >
-            {member.name}
+            {salary.salaryName}
           </Typography>
           <IconButton
             color="inherit"
@@ -75,13 +76,13 @@ const SalaryDrawer: FC<SalaryDrawerProps> = (props) => {
               onApprove={onClose}
               onEdit={handleEditOpen}
               onReject={onClose}
-              member={member}
+              salary={salary}
             />
           ) : (
             <SalaryEdit
               onCancel={handleEditCancel}
               onSave={handleEditCancel}
-              member={member}
+              salary={salary}
             />
           )}
         </Box>

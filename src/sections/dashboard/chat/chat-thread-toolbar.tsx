@@ -22,7 +22,7 @@ import Typography from '@mui/material/Typography';
 
 import { useMockedUser } from 'src/hooks/use-mocked-user';
 import { usePopover } from 'src/hooks/use-popover';
-import type { Participant } from 'src/types/chat';
+import type { Participant } from 'src/types/template-types/chat';
 
 const getRecipients = (participants: Participant[], userId: string): Participant[] => {
   return participants.filter((participant) => participant.id !== userId);

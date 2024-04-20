@@ -69,7 +69,7 @@ export const paths = {
     salary: {
       index: '/salary',
       newSalary: '/salary/salary/create',
-      newPAyement: '/salary/payement/create',
+      newPAyement: '/salary/payment/create',
     },
     expenses: {
       index: '/expenses',
@@ -83,6 +83,7 @@ export const paths = {
       index: '/achats',
       search: '/achats/search',
       edit: '/achats/edit',
+      details: '/achats/:achatId/',
     },
     projets: {
       index: '/projets',

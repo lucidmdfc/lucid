@@ -15,7 +15,7 @@ import { styled } from '@mui/material/styles';
 
 import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
-import type { Company } from 'src/types/job';
+import type { Company } from 'src/types/template-types/job';
 
 import { CompanyJobs } from './company-jobs';
 import { CompanyMember } from './company-member';

@@ -16,7 +16,7 @@ import { AcademyDailyProgress } from 'src/sections/dashboard/academy/academy-dai
 import { AcademyFind } from 'src/sections/dashboard/academy/academy-find';
 import { CourseCard } from 'src/sections/dashboard/academy/course-card';
 import { CourseSearch } from 'src/sections/dashboard/academy/course-search';
-import type { Course } from 'src/types/academy';
+import type { Course } from 'src/types/template-types/academy';
 
 const useCourses = (): Course[] => {
   return [

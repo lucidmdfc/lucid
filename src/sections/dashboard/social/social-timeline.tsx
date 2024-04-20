@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Grid from '@mui/material/Unstable_Grid2';
 import Stack from '@mui/material/Stack';
 
-import type { Post, Profile } from 'src/types/social';
+import type { Post, Profile } from 'src/types/template-types/social';
 
 import { SocialPostAdd } from './social-post-add';
 import { SocialPostCard } from './social-post-card';

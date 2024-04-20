@@ -1,4 +1,4 @@
-import type { Email, Label } from 'src/types/mail';
+import type { Email, Label } from 'src/types/template-types/mail';
 import { deepCopy } from 'src/utils/deep-copy';
 
 import { emails, labels } from './data';

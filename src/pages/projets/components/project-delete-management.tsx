@@ -1,15 +1,10 @@
 import React, { FC, useState } from 'react';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import FirebaseProjects from 'src/firebaseServices/projets';
 import toast from 'react-hot-toast';
 import DeleteConfirmationModal from './delete-confirmation-modal';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
-import { CardActionArea, CardActions } from '@mui/material';
+import { CardActions } from '@mui/material';
 
 interface ProjectDeleteManageProps {
   projectId: string;
@@ -27,14 +22,36 @@ const ProjectDeleteManage: FC<ProjectDeleteManageProps> = ({ projectId, ...props
   };
   // Replace this with your actual delete function
   const handleDelete = async (projectId: string | undefined) => {
-    // Implement the delete logic here
     try {
-      const firebaseDeleteProject = new FirebaseProjects();
-      await firebaseDeleteProject.deleteProject(projectId ?? ' ');
+      if (!projectId) {
+        throw new Error('Project ID is undefined');
+      }
+
+      // Get projects from local storage
+      const projectsJson = localStorage.getItem('projects');
+      if (!projectsJson) {
+        throw new Error('No projects found in local storage');
+      }
+      const projects: { id: string; name: string }[] = JSON.parse(projectsJson);
+
+      // Find the project index
+      const projectIndex = projects.findIndex((project) => project.id === projectId);
+      if (projectIndex === -1) {
+        throw new Error('Project not found');
+      }
+
+      // Remove the project
+      projects.splice(projectIndex, 1);
+
+      // Update projects in local storage
+      localStorage.setItem('projects', JSON.stringify(projects));
+
+      // Notify user
+      console.log('deleted project: ' + projectId);
       toast.success('Le project a été supprimé avec succès!');
       router.replace(paths.dashboard.projets.index);
     } catch (error) {
-      console.error('Error deleting member: ', error);
+      console.error('Error deleting project: ', error);
       toast.error('Échec de la suppression du project. Veuillez réessayer.');
     }
   };

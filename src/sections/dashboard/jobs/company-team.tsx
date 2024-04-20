@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import type { Member } from 'src/types/job';
+import type { Member } from 'src/types/template-types/job';
 
 import { CompanyMember } from './company-member';
 

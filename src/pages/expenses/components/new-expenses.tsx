@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import * as Yup from 'yup';
+import { expense } from 'src/types/expense';
 
 const validationSchema = Yup.object().shape({
   projectId: Yup.string().required('Nom projet est requis'),
@@ -36,14 +37,6 @@ const salaries: Option[] = [
   { text: 'salary 5', value: 5 },
 ];
 
-interface FormData {
-  projectId: string;
-  salaryId: string;
-  startDate: Date | null;
-  endDate: Date | null;
-  amount: number | '';
-}
-
 const NewExpenses: FC = () => {
   const router = useRouter();
   const [isSwitchOn, setSwitchOn] = useState(false);
@@ -52,13 +45,16 @@ const NewExpenses: FC = () => {
     setSwitchOn(event.target.checked);
   };
 
-  const formik = useFormik<FormData>({
+  const formik = useFormik<expense>({
     initialValues: {
+      id: '',
       projectId: '',
       salaryId: '',
       amount: '',
       startDate: new Date(),
       endDate: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {

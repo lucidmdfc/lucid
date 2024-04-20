@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { Auth } from '@aws-amplify/auth';
 
 import { amplifyConfig } from 'src/config';
-import type { User } from 'src/types/user';
 import { Issuer } from 'src/utils/auth';
 
 import type { State } from './auth-context';
 import { AuthContext, initialState } from './auth-context';
+import { User } from 'src/types/template-types/user';
 
 Auth.configure({
   userPoolId: amplifyConfig.aws_user_pools_id,

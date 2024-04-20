@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { MenuItem } from '@mui/material';
-import { Member } from 'src/types/members';
+import { Member } from 'src/types/member';
 
 interface MemberEditProps {
   onCancel?: () => void;

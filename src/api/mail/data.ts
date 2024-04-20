@@ -1,4 +1,4 @@
-import type { Email, Label } from 'src/types/mail';
+import type { Email, Label } from 'src/types/template-types/mail';
 
 const now = new Date();
 

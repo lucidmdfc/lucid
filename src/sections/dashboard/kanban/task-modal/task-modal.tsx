@@ -31,7 +31,7 @@ import { useMockedUser } from 'src/hooks/use-mocked-user';
 import type { RootState } from 'src/store';
 import { useDispatch, useSelector } from 'src/store';
 import { thunks } from 'src/thunks/kanban';
-import type { Column, Member, Task } from 'src/types/kanban';
+import type { Column, Member, Task } from 'src/types/template-types/kanban';
 
 import { TaskChecklist } from './task-checklist';
 import { TaskComment } from './task-comment';

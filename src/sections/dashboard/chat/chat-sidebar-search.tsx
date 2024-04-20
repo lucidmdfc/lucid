@@ -15,7 +15,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
 import { Tip } from 'src/components/tip';
-import type { Contact } from 'src/types/chat';
+import type { Contact } from 'src/types/template-types/chat';
 
 interface ChatSidebarSearchProps {
   isFocused?: boolean;

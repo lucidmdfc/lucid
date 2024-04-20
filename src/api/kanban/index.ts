@@ -1,4 +1,11 @@
-import type { Board, CheckItem, Checklist, Column, Comment, Task } from 'src/types/kanban';
+import type {
+  Board,
+  CheckItem,
+  Checklist,
+  Column,
+  Comment,
+  Task,
+} from 'src/types/template-types/kanban';
 import { createResourceId } from 'src/utils/create-resource-id';
 import { deepCopy } from 'src/utils/deep-copy';
 

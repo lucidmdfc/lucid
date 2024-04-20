@@ -12,9 +12,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import type { Theme } from '@mui/material/styles/createTheme';
 import MemeberDetails from './member-details';
 import MemberEdit from '../components/member-edit';
-import { Member } from 'src/types/members';
+import { Member } from 'src/types/member';
 import toast from 'react-hot-toast';
-import FirebaseMembers from 'src/firebaseServices/membres';
 
 interface MemberDrawerProps {
   container?: HTMLDivElement | null;
@@ -37,9 +36,9 @@ const MemberDrawer: FC<MemberDrawerProps> = (props) => {
   }, []);
   const handleSaveEdit = useCallback(
     async (id: string, values: {}) => {
-      const firebaseUpdateMember = new FirebaseMembers();
       try {
-        await firebaseUpdateMember.updateMember(id, values, onUpdateMember);
+        console.log(id, values, onUpdateMember);
+
         toast.success('Membre modifié avec succès !');
         handleEditCancel();
         if (onClose) {

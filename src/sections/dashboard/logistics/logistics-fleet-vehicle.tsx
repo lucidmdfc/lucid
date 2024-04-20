@@ -18,7 +18,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem, { timelineItemClasses } from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 
-import type { Vehicle } from 'src/types/logistics';
+import type { Vehicle } from 'src/types/template-types/logistics';
 
 interface LogisticsFleetVehicleProps {
   onDeselect?: () => void;

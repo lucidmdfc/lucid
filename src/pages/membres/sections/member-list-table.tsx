@@ -8,15 +8,11 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { SeverityPill, type SeverityPillColor } from 'src/components/severity-pill';
 
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
 
 import { IconButton, SvgIcon, TableHead } from '@mui/material';
 
-import { Member, methods } from 'src/types/members';
-import toast from 'react-hot-toast';
-import FirebaseMembers from 'src/firebaseServices/membres';
-import DeleteConfirmationModal from '../components/delete-confirmation';
+import { Member, methods } from 'src/types/member';
 
 interface MemberListTableProps {
   count?: number;

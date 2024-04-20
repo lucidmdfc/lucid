@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import type { Theme } from '@mui/material/styles/createTheme';
 
-import { Customer } from 'src/types/customer';
+import { Customer } from 'src/types/template-types/customer';
 
 interface ExpenseDrawerProps {
   container?: HTMLDivElement | null;

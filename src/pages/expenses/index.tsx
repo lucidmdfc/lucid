@@ -17,7 +17,7 @@ import { Divider } from '@mui/material';
 import { OrderListContainer } from 'src/sections/dashboard/order/order-list-container';
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDialog } from 'src/hooks/use-dialog';
-import { Customer } from 'src/types/customer';
+import { Customer } from 'src/types/template-types/customer';
 import { useMounted } from 'src/hooks/use-mounted';
 import { customersApi } from 'src/api/customers';
 import ExpenseListSearch from './sections/expense-list-search';
@@ -30,38 +30,26 @@ interface Filters {
   query?: string;
   status?: string;
 }
-type SortDir = 'asc' | 'desc';
 
-interface MemberSearchState {
+interface ExpensesSearchState {
   filters: Filters;
   page: number;
   rowsPerPage: number;
-  sortBy?: string;
-  sortDir?: SortDir;
 }
-const useMembersSearch = () => {
-  const [state, setState] = useState<MemberSearchState>({
+const useExpensesSearch = () => {
+  const [state, setState] = useState<ExpensesSearchState>({
     filters: {
       query: undefined,
       status: undefined,
     },
     page: 0,
     rowsPerPage: 5,
-    sortBy: 'createdAt',
-    sortDir: 'desc',
   });
 
   const handleFiltersChange = useCallback((filters: Filters): void => {
     setState((prevState) => ({
       ...prevState,
       filters,
-    }));
-  }, []);
-
-  const handleSortChange = useCallback((sortDir: SortDir): void => {
-    setState((prevState) => ({
-      ...prevState,
-      sortDir,
     }));
   }, []);
 
@@ -84,19 +72,18 @@ const useMembersSearch = () => {
 
   return {
     handleFiltersChange,
-    handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
     state,
   };
 };
-interface MemberStoreState {
+interface ExpenseStoreState {
   members: Customer[];
   membersCount: number;
 }
-const useMembersStore = (searchState: MemberSearchState) => {
+const useMembersStore = (searchState: ExpensesSearchState) => {
   const isMounted = useMounted();
-  const [state, setState] = useState<MemberStoreState>({
+  const [state, setState] = useState<ExpenseStoreState>({
     members: [],
     membersCount: 0,
   });
@@ -140,10 +127,10 @@ const useCurrentOrder = (members: Customer[], memberId?: string): Customer | und
 
 const Page: NextPage = () => {
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const membersSearch = useMembersSearch();
-  const membersStore = useMembersStore(membersSearch.state);
+  const expensesSearch = useExpensesSearch();
+  const expensesStore = useMembersStore(expensesSearch.state);
   const dialog = useDialog<string>();
-  const currentOrder = useCurrentOrder(membersStore.members, dialog.data);
+  const currentOrder = useCurrentOrder(expensesStore.members, dialog.data);
 
   const handleSubmit = () => {
     // Handle form submission logic here
@@ -215,21 +202,16 @@ const Page: NextPage = () => {
           </Box>
 
           <Divider />
-          <ExpenseListSearch
-            onFiltersChange={membersSearch.handleFiltersChange}
-            onSortChange={membersSearch.handleSortChange}
-            sortBy={membersSearch.state.sortBy}
-            sortDir={membersSearch.state.sortDir}
-          />
+          <ExpenseListSearch onFiltersChange={expensesSearch.handleFiltersChange} />
           <Divider />
           <ExpenseListTable
-            count={membersStore.membersCount}
-            items={membersStore.members}
-            onPageChange={membersSearch.handlePageChange}
-            onRowsPerPageChange={membersSearch.handleRowsPerPageChange}
+            count={expensesStore.membersCount}
+            items={expensesStore.members}
+            onPageChange={expensesSearch.handlePageChange}
+            onRowsPerPageChange={expensesSearch.handleRowsPerPageChange}
             onSelect={handleOrderOpen}
-            page={membersSearch.state.page}
-            rowsPerPage={membersSearch.state.rowsPerPage}
+            page={expensesSearch.state.page}
+            rowsPerPage={expensesSearch.state.rowsPerPage}
           />
         </OrderListContainer>
         <ExpenseDrawer

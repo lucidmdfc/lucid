@@ -17,7 +17,7 @@ import type { Theme } from '@mui/material/styles/createTheme';
 
 import { useRouter } from 'src/hooks/use-router';
 import { paths } from 'src/paths';
-import type { Label, LabelType } from 'src/types/mail';
+import type { Label, LabelType } from 'src/types/template-types/mail';
 
 import { MailLabel } from './mail-label';
 

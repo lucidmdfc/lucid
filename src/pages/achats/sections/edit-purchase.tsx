@@ -20,6 +20,7 @@ import toast from 'react-hot-toast';
 import UpdateConfirmation from '../components/update-confirmation';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
+import { provider } from 'src/types/provider';
 
 type Option = {
   text: string;
@@ -33,17 +34,6 @@ const projects: Option[] = [
   { text: 'project id 4', value: 4 },
   { text: 'project id 5', value: 5 },
 ];
-interface FormValues {
-  projectId: number | null;
-  nom: string;
-  ice: string;
-  depositedDate: Date | null;
-  dueDate: Date | null;
-  amount: number | null;
-  status: string;
-  method: string;
-  commentaire: string;
-}
 
 const PurchaseUpdateForm: FC = (props) => {
   const router = useRouter();
@@ -73,7 +63,7 @@ const PurchaseUpdateForm: FC = (props) => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
-        console.log(values);
+        console.log(values as unknown as provider);
         toast.success('le prestataire créé avec succès !');
         setOpen(false);
         router.push(paths.dashboard.achats.search);

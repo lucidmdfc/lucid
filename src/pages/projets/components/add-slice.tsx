@@ -6,14 +6,13 @@ import TextField from '@mui/material/TextField';
 import Upload01Icon from '@untitled-ui/icons-react/build/esm/Upload01';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
-import FirebaseProjects from 'src/firebaseServices/projets';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { slice } from 'src/types/slice';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { paths } from 'src/paths';
-import FirebaseSlices from 'src/firebaseServices/tranches';
+import { Project } from 'src/types/project';
 
 interface NewInstallmentProps {
   onSubmit: (formData: NewInstallmentData) => void;
@@ -40,21 +39,28 @@ const validationSchema = yup.object({
 const NewInstallment: FC<NewInstallmentProps> = ({ onSubmit }) => {
   const [projects, setProjects] = useState<Option[]>([]);
 
-  const firebaseNewSlice = new FirebaseSlices();
   const router = useRouter();
-
-  const handleProjectsGet = async () => {
-    const firebaseProjects = new FirebaseProjects();
-
+  const handleProjectsGet = () => {
     try {
-      const response = await firebaseProjects.getProjectsIdAndName();
-      setProjects(response.map(({ id, project_name }) => ({ text: project_name, value: id })));
-    } catch (err) {
-      console.error(err);
+      // Retrieve projects from local storage
+      const storedProjects = localStorage.getItem('projects');
+      const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
+
+      // Map the existing projects to create an array of objects with 'text' and 'value' properties
+      const mappedProjects = existingProjects.map(({ id, project_name }: Project) => ({
+        text: project_name,
+        value: id,
+      }));
+
+      // Set the projects state with the mapped projects
+      setProjects(mappedProjects);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
     }
   };
 
   useEffect(() => {
+    // Call handleProjectsGet when the component mounts
     handleProjectsGet();
   }, []);
 
@@ -69,8 +75,23 @@ const NewInstallment: FC<NewInstallmentProps> = ({ onSubmit }) => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       const { project_id, ...sliceData } = values;
       try {
-        // Handle form submission
-        await firebaseNewSlice.createSlice(project_id, sliceData as unknown as slice);
+        // Generate a unique ID for the slice
+        const slice_id = Math.random().toString(36).substring(7);
+
+        // Construct the slice object including the generated ID
+        const slice = { id: slice_id, project_id, ...sliceData };
+
+        // Retrieve existing slices from local storage
+        const storedSlices = localStorage.getItem('slices');
+        const existingSlices = storedSlices ? JSON.parse(storedSlices) : [];
+
+        // Add the new slice to the array of existing slices
+        const updatedSlices = [...existingSlices, slice];
+
+        // Store the updated slices array in local storage
+        localStorage.setItem('slices', JSON.stringify(updatedSlices));
+
+        console.log(project_id, sliceData);
         toast.success('Tranche créé avec succès !');
         router.replace(paths.dashboard.projets.index);
         resetForm();

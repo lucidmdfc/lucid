@@ -9,9 +9,10 @@ import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
+import { payment } from 'src/types/payment';
 
 interface NewPaymentProps {
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (formData: payment) => void;
 }
 
 type Option = {
@@ -26,12 +27,6 @@ const salaries: Option[] = [
   { text: 'salary 4', value: 4 },
   { text: 'salary 5', value: 5 },
 ];
-
-interface FormData {
-  salary: number | null;
-  amount: number | '';
-  date: Date | null;
-}
 
 const NewPayment: FC<NewPaymentProps> = ({ onSubmit }) => {
   const router = useRouter();

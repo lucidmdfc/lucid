@@ -1,6 +1,6 @@
 import { subDays, subHours, subMinutes } from 'date-fns';
 
-import type { Item } from 'src/types/file-manager';
+import type { Item } from 'src/types/template-types/file-manager';
 
 const now = new Date();
 

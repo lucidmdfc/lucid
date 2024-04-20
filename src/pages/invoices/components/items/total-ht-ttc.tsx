@@ -1,30 +1,29 @@
-import { useState, type FC, useEffect } from 'react';
+import { useState, FC, useEffect } from 'react';
 import numeral from 'numeral';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
-import { Item, itemsApi } from '../../../../api/items/index';
 import { FormControlLabel, Stack, Switch } from '@mui/material';
+import { calculateTotals } from 'src/calculations/total-items-caluclate';
+import { Item } from 'src/types/item';
 
-interface itemsDetailsProps {
+interface ItemsDetailsProps {
   items: Item[];
 }
-const ItemsDetails: FC<itemsDetailsProps> = ({ items }) => {
+
+const ItemsDetails: FC<ItemsDetailsProps> = ({ items }) => {
   const [isTvaActive, setIsTvaActive] = useState(true); // Set the initial state based on your logic
   const [totalHt, setTotalHt] = useState('0.00');
   const [tva, setTva] = useState('0.00');
   const [totalWithVat, setTotalWithVat] = useState('0.00');
 
   useEffect(() => {
-    const ht = itemsApi.calculateTotalAmount(items);
-    const tvaPercentage = isTvaActive ? 0.2 : 0;
-    const calculatedTva = ht * tvaPercentage;
-    const total = ht + calculatedTva;
-
-    setTotalHt(numeral(ht).format('0,0.00'));
-    setTva(numeral(calculatedTva).format('0,0.00'));
-    setTotalWithVat(numeral(total).format('0,0.00'));
+    const { totalHt, tva, totalWithVat } = calculateTotals(items, isTvaActive);
+    setTotalHt(numeral(totalHt).format('0,0.00'));
+    setTva(numeral(tva).format('0,0.00'));
+    setTotalWithVat(numeral(totalWithVat).format('0,0.00'));
   }, [items, isTvaActive]);
+
   return (
     <List>
       <ListItem
@@ -88,4 +87,5 @@ const ItemsDetails: FC<itemsDetailsProps> = ({ items }) => {
     </List>
   );
 };
+
 export default ItemsDetails;

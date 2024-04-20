@@ -1,5 +1,5 @@
 import { subDays, subHours } from 'date-fns';
-import type { Order } from 'src/types/order';
+import type { Order } from 'src/types/template-types/order';
 
 const now = new Date();
 

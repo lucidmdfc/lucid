@@ -1,0 +1,70 @@
+import { deepCopy } from 'src/utils/deep-copy';
+import { applyPagination } from 'src/utils/apply-pagination';
+import { applySort } from 'src/utils/apply-sort';
+import { salary } from 'src/types/salary';
+import { dummySalaries } from './data';
+
+type GetSalariesRequest = {
+  filters?: {
+    query?: string;
+    status?: string;
+  };
+  page?: number;
+  rowsPerPage?: number;
+  sortBy?: string;
+  sortDir?: 'asc' | 'desc';
+};
+
+type GetSalariesResponse = Promise<{
+  data: salary[];
+  count: number;
+}>;
+
+type GetSalaryRequest = object;
+
+type GetOrderResponse = Promise<salary>;
+
+class SalariesApi {
+  getSalaries(request: GetSalariesRequest = {}): GetSalariesResponse {
+    const { filters, page, rowsPerPage, sortBy, sortDir } = request;
+
+    let data = deepCopy(dummySalaries) as salary[];
+    let count = data.length;
+    if (typeof filters !== 'undefined') {
+      data = data.filter((salary) => {
+        if (typeof filters.query !== 'undefined' && filters.query !== '') {
+          // Checks only the salary number, but can be extended to support other fields, such as customer
+          // name, email, etc.
+          const containsQuery = (salary.salaryName || '')
+            .toLowerCase()
+            .includes(filters.query.toLowerCase());
+
+          if (!containsQuery) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+      count = data.length;
+    }
+    if (typeof sortBy !== 'undefined' && typeof sortDir !== 'undefined') {
+      data = applySort(data, sortBy, sortDir);
+    }
+
+    if (typeof page !== 'undefined' && typeof rowsPerPage !== 'undefined') {
+      data = applyPagination(data, page, rowsPerPage);
+    }
+
+    return Promise.resolve({
+      data,
+      count,
+    });
+  }
+
+  //   getOrder(request?: GetSalaryRequest): GetOrderResponse {
+  //     return Promise.resolve(deepCopy(order));
+  //   }
+}
+
+export const slariesApi = new SalariesApi();

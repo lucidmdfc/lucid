@@ -22,21 +22,16 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { Scrollbar } from 'src/components/scrollbar';
 import type { InvoiceStatus } from 'src/types/invoice';
+import { dummyProviders, provider } from 'src/types/provider';
 
-const customers: string[] = [
-  'Blind Spots Inc.',
-  'Dispatcher Inc.',
-  'ACME SRL',
-  'Novelty I.S',
-  'Beauty Clinic SRL',
-  'Division Inc.',
-];
+const providerNames: string[] = dummyProviders.map((provider) => provider.nom);
 
 export interface Filters {
   query?: string;
   startDate?: Date;
   endDate?: Date;
-  customers?: string[];
+  providerNames?: string[];
+  dummyProviders?: string[];
   status?: InvoiceStatus;
 }
 
@@ -111,17 +106,19 @@ const PurchaseListSidebar: FC<PurchaseListSidebarProps> = (props) => {
 
   const handleCustomerToggle = useCallback(
     (event: ChangeEvent<HTMLInputElement>): void => {
-      let customers: string[];
+      let providerNames: string[];
 
       if (event.target.checked) {
-        customers = [...(filters.customers || []), event.target.value];
+        providerNames = [...(filters.providerNames || []), event.target.value];
       } else {
-        customers = (filters.customers || []).filter((customer) => customer !== event.target.value);
+        providerNames = (filters.providerNames || []).filter(
+          (provider) => provider !== event.target.value
+        );
       }
 
       onFiltersChange?.({
         ...filters,
-        customers: customers,
+        providerNames: providerNames,
       });
     },
     [filters, onFiltersChange]
@@ -223,8 +220,8 @@ const PurchaseListSidebar: FC<PurchaseListSidebarProps> = (props) => {
                   px: 1.5,
                 }}
               >
-                {customers.map((customer) => {
-                  const isChecked = filters.customers?.includes(customer);
+                {providerNames.map((provider) => {
+                  const isChecked = filters.dummyProviders?.includes(provider);
 
                   return (
                     <FormControlLabel
@@ -234,9 +231,9 @@ const PurchaseListSidebar: FC<PurchaseListSidebarProps> = (props) => {
                           onChange={handleCustomerToggle}
                         />
                       }
-                      key={customer}
-                      label={customer}
-                      value={customer}
+                      key={provider}
+                      label={provider}
+                      value={provider}
                     />
                   );
                 })}

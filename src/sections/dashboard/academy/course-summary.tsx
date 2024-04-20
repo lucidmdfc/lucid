@@ -13,7 +13,7 @@ import type { StepIconProps } from '@mui/material/StepIcon';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
-import type { Course } from 'src/types/academy';
+import type { Course } from 'src/types/template-types/academy';
 
 const StepIcon: FC<StepIconProps> = (props) => {
   const { active, completed, icon } = props;

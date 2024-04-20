@@ -10,13 +10,13 @@ import Typography from '@mui/material/Typography';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
 import { IconButton, SvgIcon, TableHead } from '@mui/material';
-import { Customer } from 'src/types/customer';
+import { Customer } from 'src/types/template-types/customer';
 import { format } from 'date-fns';
 import { SeverityPill } from 'src/components/severity-pill';
 import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
 import Edit02 from '@untitled-ui/icons-react/build/esm/Edit02';
-import DeleteConfirmationModal from '../components/delete-confirmation';
+import DeleteConfirmationModal from '../components/delete-modal-confirmation';
 import toast from 'react-hot-toast';
 
 interface ExpenseListTableProps {

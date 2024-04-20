@@ -6,39 +6,29 @@ import TextField from '@mui/material/TextField';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { labels } from 'src/api/mail/data';
 import { SeverityPill } from 'src/components/severity-pill';
-import CreateConfirmationModal from 'src/pages/utilities/components/create-utilities-confirmation';
+import CreateConfirmationModal from 'src/pages/utilities/components/create-modal-confirmation';
 import toast from 'react-hot-toast';
+import { utilities } from 'src/types/utilities';
 
 interface NewUtilitiesProps {
-  onSubmit: (formData: NewUtilitiesData[]) => void;
+  onSubmit: (formData: utilities[]) => void;
 }
 
-interface NewUtilitiesData {
-  category: string;
-  amount: string;
-  date: Date | null;
-}
-
-const initialFields: NewUtilitiesData[] = [
-  { category: 'rent', amount: '', date: null },
-  { category: 'electric', amount: '', date: null },
-  { category: 'communication', amount: '', date: null },
-  { category: 'entretien', amount: '', date: null },
+const initialFields: utilities[] = [
+  { category: 'rent', amount: '', date: new Date() },
+  { category: 'electric', amount: '', date: new Date() },
+  { category: 'communication', amount: '', date: new Date() },
+  { category: 'entretien', amount: '', date: new Date() },
 ];
 
 const NewUtilities: FC<NewUtilitiesProps> = ({ onSubmit }) => {
-  const [expenses, setExpenses] = useState<NewUtilitiesData[]>(initialFields);
+  const [expenses, setExpenses] = useState<utilities[]>(initialFields);
   const [successMessage, setSuccessMessage] = useState<string>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const handleModalCancel = () => {
     setModalOpen(false);
   };
-  const handleInputChange = (
-    category: string,
-    amount: string,
-    date: Date | null,
-    index: number
-  ) => {
+  const handleInputChange = (category: string, amount: string, date: Date, index: number) => {
     const updatedExpenses = [...expenses];
     updatedExpenses[index] = { category, amount, date };
     setExpenses(updatedExpenses);
@@ -126,9 +116,6 @@ const NewUtilities: FC<NewUtilitiesProps> = ({ onSubmit }) => {
                 <MobileDatePicker
                   label="Date"
                   value={expense.date}
-                  onChange={(newDate) =>
-                    handleInputChange(expense.category, expense.amount, newDate, index)
-                  }
                 />
               </Grid>
             </Grid>

@@ -1,4 +1,9 @@
-import type { Customer, CustomerEmail, CustomerInvoice, CustomerLog } from 'src/types/customer';
+import type {
+  Customer,
+  CustomerEmail,
+  CustomerInvoice,
+  CustomerLog,
+} from 'src/types/template-types/customer';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { applySort } from 'src/utils/apply-sort';
 import { deepCopy } from 'src/utils/deep-copy';

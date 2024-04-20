@@ -1,6 +1,6 @@
 import { createContext } from 'react';
+import { User } from 'src/types/template-types/user';
 
-import type { User } from 'src/types/user';
 import { Issuer } from 'src/utils/auth';
 
 export interface State {

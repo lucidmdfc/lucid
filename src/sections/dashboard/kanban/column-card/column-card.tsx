@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 
 import { useSelector } from 'src/store';
-import type { Column } from 'src/types/kanban';
+import type { Column } from 'src/types/template-types/kanban';
 
 import { TaskAdd } from '../task-add';
 import { TaskCard } from '../task-card';

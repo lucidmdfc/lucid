@@ -16,27 +16,36 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import type { File } from 'src/components/file-dropzone';
-import { FileDropzone } from 'src/components/file-dropzone';
-import { QuillEditor } from 'src/components/quill-editor';
 import { useRouter } from 'src/hooks/use-router';
 import { paths } from 'src/paths';
 import { Divider, OutlinedInput } from '@mui/material';
 import { DatePicker, DateTimePicker } from '@mui/x-date-pickers';
-import ItemsListTable from './items/items-list-table';
-import { Product } from 'src/types/product';
 import { useMounted } from 'src/hooks/use-mounted';
 import { productsApi } from 'src/api/products';
 import { Item, itemsApi } from 'src/api/items';
-import ItemsDetails from './items/Items-details';
-import CreateConfirmationModal from './create-invioce-confirmation';
+import ItemsListTable from './items/items-list-table';
+import ItemsDetails from './items/total-ht-ttc';
+import EditConfirmationModal from './edit-modal-confirmation';
 
-interface CustomerOption {
+interface ClientOption {
   label: string;
   id: string;
 }
-
-const customerOptions: CustomerOption[] = [
+interface StatusOption {
+  label: string;
+  id: string;
+}
+const statusOption: StatusOption[] = [
+  {
+    label: 'Payée',
+    id: '1',
+  },
+  {
+    label: 'Impayée',
+    id: '2',
+  },
+];
+const clients: ClientOption[] = [
   {
     label: 'John Doe',
     id: 'id123',
@@ -84,30 +93,6 @@ const billingOptions: BillingState[] = [
     id: 'id333',
   },
 ];
-
-interface Values {
-  barcode: string;
-  category: string;
-  description: string;
-  images: string[];
-  name: string;
-  newPrice: number;
-  oldPrice: number;
-  sku: string;
-  submit: null;
-}
-
-const initialValues: Values = {
-  barcode: '925487986526',
-  category: '',
-  description: '',
-  images: [],
-  name: '',
-  newPrice: 0,
-  oldPrice: 0,
-  sku: 'IYV-8745',
-  submit: null,
-};
 
 interface Filters {
   name?: string;
@@ -206,7 +191,7 @@ const useItemsStore = (searchState: itemsSearchState) => {
   };
 };
 
-const InvoiceCreateForm: FC = (props) => {
+const InvoiceUpdateForm: FC = (props) => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
   const [isSwitchOn, setSwitchOn] = useState(false);
@@ -225,17 +210,18 @@ const InvoiceCreateForm: FC = (props) => {
 
   const router = useRouter();
   const formik = useFormik({
-    initialValues,
+    initialValues: {
+      client: '',
+    },
     onSubmit: async (values, helpers): Promise<void> => {
       try {
         // NOTE: Make API request
-        toast.success('La facture a été créée avec succès.');
+        toast.success('La facture a été modifiée avec succès.');
         router.push(paths.dashboard.invoices.index);
       } catch (err) {
         console.error(err);
         toast.error('Something went wrong!');
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
       }
     },
@@ -243,12 +229,12 @@ const InvoiceCreateForm: FC = (props) => {
 
   return (
     <form {...props}>
-      <CreateConfirmationModal
+      <EditConfirmationModal
         isOpen={modalOpen}
         onConfirm={formik.handleSubmit}
         onCancel={handleModalCancel}
         message="
-        Êtes-vous sûr de vouloir soumettre ce formulaire pour créer la facture ? "
+        Êtes-vous sûr de vouloir soumettre ce formulaire pour modifier la facture ?"
       />
       <Stack spacing={4}>
         <Card>
@@ -263,21 +249,46 @@ const InvoiceCreateForm: FC = (props) => {
               >
                 <Stack spacing={3}>
                   <TextField
-                    error={!!(formik.touched.category && formik.errors.category)}
+                    error={!!(formik.touched.client && formik.errors.client)}
                     fullWidth
                     label="Choisir un client"
-                    name="category"
+                    name="client"
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
                     select
-                    value={formik.values.category}
+                    value={formik.values.client ? formik?.values?.client : 'id123'}
                   >
-                    {customerOptions.map((option) => (
+                    {clients.map((option) => (
                       <MenuItem
                         key={option.id} // Assuming you want to use the 'id' as the key
                         value={option.id}
                       >
                         {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Stack>
+              </Grid>
+              <Grid
+                xs={12}
+                md={5}
+              >
+                <Stack spacing={3}>
+                  <TextField
+                    fullWidth
+                    label="Status"
+                    name="category"
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    select
+                    value={'2'}
+                  >
+                    {statusOption.map((status) => (
+                      <MenuItem
+                        key={status.id}
+                        value={status.id}
+                      >
+                        {status.label}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -299,6 +310,7 @@ const InvoiceCreateForm: FC = (props) => {
               fullWidth
               multiline
               rows={2}
+              value="lorem Ips et dolor et dolor et"
             />
           </CardContent>
         </Card>
@@ -439,6 +451,7 @@ const InvoiceCreateForm: FC = (props) => {
               fullWidth
               multiline
               rows={6}
+              value="lorem Ips et dolor et dolor et al et lorem Ips et dolor et dolor et al et lorem Ips et"
             />
           </CardContent>
         </Card>
@@ -450,12 +463,8 @@ const InvoiceCreateForm: FC = (props) => {
           spacing={1}
         >
           <Button
-            onClick={(e) => {
-              e.preventDefault();
-              setModalOpen(true);
-            }}
+            onClick={() => setModalOpen(true)}
             variant="contained"
-            type="submit"
           >
             Enregistrer
           </Button>
@@ -464,5 +473,4 @@ const InvoiceCreateForm: FC = (props) => {
     </form>
   );
 };
-
-export default InvoiceCreateForm;
+export default InvoiceUpdateForm;

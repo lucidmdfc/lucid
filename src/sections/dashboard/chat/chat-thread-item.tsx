@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { useMockedUser } from 'src/hooks/use-mocked-user';
-import type { Message, Participant, Thread } from 'src/types/chat';
+import type { Message, Participant, Thread } from 'src/types/template-types/chat';
 import { customLocale } from 'src/utils/date-locale';
 
 const getLastMessage = (thread: Thread): Message | undefined => {

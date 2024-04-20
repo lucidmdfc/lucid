@@ -17,10 +17,6 @@ import NewExpenses from 'src/pages/expenses/components/new-expenses';
 
 const Page: NextPage = () => {
   usePageView();
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    console.log('Form submitted successfully');
-  };
   return (
     <>
       <Seo title="Déclarer nouveaux frais" />

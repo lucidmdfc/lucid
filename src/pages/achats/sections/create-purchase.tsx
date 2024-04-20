@@ -17,6 +17,7 @@ import FileUploader from '../components/file-uploader';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import CreateConfirmation from '../components/create-confirmation';
+import { provider } from 'src/types/provider';
 
 type Option = {
   text: string;
@@ -30,17 +31,6 @@ const projects: Option[] = [
   { text: 'project id 4', value: 4 },
   { text: 'project id 5', value: 5 },
 ];
-interface FormValues {
-  projectId: number | null;
-  nom: string;
-  ice: string;
-  depositedDate: Date | null;
-  dueDate: Date | null;
-  amount: number | null;
-  status: string;
-  method: string;
-  commentaire: string;
-}
 
 const PurchaseCreateForm: FC = () => {
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -69,7 +59,7 @@ const PurchaseCreateForm: FC = () => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
-        console.log(values);
+        console.log(values as provider);
         toast.success('le prestataire créé avec succès !');
         setOpen(false);
         resetForm();

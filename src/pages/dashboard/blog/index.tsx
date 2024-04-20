@@ -24,7 +24,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { PostNewsletter } from 'src/sections/dashboard/blog/post-newsletter';
 import { PostCard } from 'src/sections/dashboard/blog/post-card';
-import type { Post } from 'src/types/blog';
+import type { Post } from 'src/types/template-types/blog';
 
 const usePosts = (): Post[] => {
   const isMounted = useMounted();

@@ -1,15 +1,9 @@
-import React, { ChangeEvent, FC, useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import { Autocomplete, FormControlLabel, Grid, MenuItem, Switch } from '@mui/material';
+import { Grid, MenuItem, Box, TextField, Button } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
+import { Motif, cashOut } from 'src/types/cash-out';
 
-interface NewOutCashProps {
-  onSubmit: (formData: FormData) => void;
-}
 type Option = {
   text: string;
   value: number;
@@ -22,10 +16,6 @@ const projects: Option[] = [
   { text: 'project id 4', value: 4 },
   { text: 'project id 5', value: 5 },
 ];
-type Motif = {
-  text: string;
-  value: number;
-};
 
 const motifs: Motif[] = [
   { text: 'Notes de frais', value: 1 },
@@ -33,20 +23,16 @@ const motifs: Motif[] = [
   { text: 'Achats & Prestataires', value: 3 },
 ];
 
-interface FormData {
-  amount: number | '';
-  startDate: Date | null;
-  motif: Motif | null;
-}
-
-const NewOutCash: FC<NewOutCashProps> = ({ onSubmit }) => {
+const NewOutCash = () => {
   const formik = useFormik({
     initialValues: {
-      amount: null,
+      id: '',
+      projectId: '',
+      amount: 0,
       motif: '',
       startDate: new Date(),
     },
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
+    onSubmit: async (values: cashOut, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
         console.log(values);
@@ -68,6 +54,34 @@ const NewOutCash: FC<NewOutCashProps> = ({ onSubmit }) => {
           container
           spacing={1}
         >
+          <Grid
+            item
+            xs={12}
+            md={12}
+          >
+            <TextField
+              fullWidth
+              label="Nom projet"
+              name="projectId"
+              value={formik.values.projectId}
+              onChange={formik.handleChange}
+              select
+              size="small"
+              error={formik.touched.projectId && Boolean(formik.errors.projectId)}
+              helperText={formik.touched.projectId && formik.errors.projectId}
+            >
+              <MenuItem value="">--</MenuItem>
+              {projects.map((project) => (
+                <MenuItem
+                  value={project.value}
+                  key={project.value}
+                >
+                  {project.text}
+                </MenuItem>
+              ))}
+              <MenuItem value={0}>autre</MenuItem>
+            </TextField>
+          </Grid>
           <Grid
             item
             xs={12}

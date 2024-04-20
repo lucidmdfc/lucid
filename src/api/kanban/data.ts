@@ -1,6 +1,6 @@
 import { addDays, subDays } from 'date-fns';
 
-import type { Board } from 'src/types/kanban';
+import type { Board } from 'src/types/template-types/kanban';
 
 const now = new Date();
 

@@ -11,7 +11,7 @@ import {
   Stack,
 } from '@mui/material';
 import { toast } from 'react-hot-toast';
-import { Item } from 'src/types/items';
+import { Item } from 'src/types/item';
 
 interface CreateNewItemProps {
   setNewItem: (item: Item) => void;

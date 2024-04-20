@@ -18,7 +18,7 @@ import type { Theme } from '@mui/material/styles/createTheme';
 import { PropertyList } from 'src/components/property-list';
 import { PropertyListItem } from 'src/components/property-list-item';
 import { Scrollbar } from 'src/components/scrollbar';
-import { Customer } from 'src/types/customer';
+import { Customer } from 'src/types/template-types/customer';
 import ExpenseHistoryTableRow from './expense-history';
 import { SeverityPill } from 'src/components/severity-pill';
 

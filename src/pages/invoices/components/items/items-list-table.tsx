@@ -22,8 +22,8 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Scrollbar } from 'src/components/scrollbar';
 import { FormControlLabel, OutlinedInput, Switch } from '@mui/material';
-import { Item } from 'src/types/items';
-import CreateNewItem from './create-new-item';
+import { Item } from 'src/types/item';
+import CreateNewItem from './create-item';
 import * as Yup from 'yup';
 import { ErrorMessage, Field, Form, Formik, useFormik } from 'formik';
 

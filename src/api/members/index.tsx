@@ -17,7 +17,7 @@ import {
 } from 'firebase/firestore';
 import { firebaseConfig } from 'src/config';
 import { firebaseApp } from 'src/libs/firebase';
-import { Member } from 'src/types/members';
+import { Member } from 'src/types/member';
 
 type GetMembersRequest = {
   filters?: {

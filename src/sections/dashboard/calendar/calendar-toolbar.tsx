@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import type { Theme } from '@mui/material/styles/createTheme';
 
-import type { CalendarView } from 'src/types/calendar';
+import type { CalendarView } from 'src/types/template-types/calendar';
 
 interface ViewOption {
   label: string;

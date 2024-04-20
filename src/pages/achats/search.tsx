@@ -18,19 +18,16 @@ import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { InvoiceListContainer } from 'src/sections/dashboard/invoice/invoice-list-container';
-import { InvoiceListSidebar } from 'src/sections/dashboard/invoice/invoice-list-sidebar';
-import { InvoiceListSummary } from 'src/sections/dashboard/invoice/invoice-list-summary';
-import { InvoiceListTable } from 'src/sections/dashboard/invoice/invoice-list-table';
 import type { Invoice, InvoiceStatus } from 'src/types/invoice';
-import Link from 'next/link';
-import { paths } from 'src/paths';
-import { RouterLink } from 'src/components/router-link';
 import PurchaseListTable from './components/purchase-list-table';
 import PurchaseListSidebar from './components/purchase-list-sidebar';
 import PurchaseListSummary from './components/purchase-list-summary';
+import { useTranslation } from 'react-i18next';
+import { tokens } from 'src/locales/tokens';
+import { dummyProviders, provider } from 'src/types/provider';
 
 interface Filters {
-  customers?: string[];
+  providerNames?: string[];
   endDate?: Date;
   query?: string;
   startDate?: Date;
@@ -46,7 +43,7 @@ interface InvoicesSearchState {
 const useInvoicesSearch = () => {
   const [state, setState] = useState<InvoicesSearchState>({
     filters: {
-      customers: [],
+      providerNames: [],
       endDate: undefined,
       query: '',
       startDate: undefined,
@@ -89,7 +86,7 @@ const useInvoicesSearch = () => {
 };
 
 interface InvoicesStoreState {
-  invoices: Invoice[];
+  invoices: provider[];
   invoicesCount: number;
 }
 
@@ -102,7 +99,7 @@ const useInvoicesStore = (searchState: InvoicesSearchState) => {
 
   const handleInvoicesGet = useCallback(async () => {
     try {
-      const response = await invoicesApi.getInvoices(searchState);
+      const response = await fetchProviders(searchState);
 
       if (isMounted()) {
         setState({
@@ -114,7 +111,11 @@ const useInvoicesStore = (searchState: InvoicesSearchState) => {
       console.error(err);
     }
   }, [searchState, isMounted]);
-
+  const fetchProviders = async (searchState: any) => {
+    // Example implementation using dummy data
+    // Replace this with your actual API call or local storage retrieval
+    return { data: dummyProviders, count: dummyProviders.length };
+  };
   useEffect(
     () => {
       handleInvoicesGet();
@@ -131,12 +132,13 @@ const useInvoicesStore = (searchState: InvoicesSearchState) => {
 const Page: NextPage = () => {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
-  const invoicesSearch = useInvoicesSearch();
-  const invoicesStore = useInvoicesStore(invoicesSearch.state);
+  const providersSearch = useInvoicesSearch();
+  const providersStore = useInvoicesStore(providersSearch.state);
   const [group, setGroup] = useState<boolean>(true);
   const [openSidebar, setOpenSidebar] = useState<boolean>(lgUp);
 
   usePageView();
+  const { t } = useTranslation();
 
   const handleGroupChange = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
     setGroup(event.target.checked);
@@ -176,9 +178,9 @@ const Page: NextPage = () => {
         >
           <PurchaseListSidebar
             container={rootRef.current}
-            filters={invoicesSearch.state.filters}
+            filters={providersSearch.state.filters}
             group={group}
-            onFiltersChange={invoicesSearch.handleFiltersChange}
+            onFiltersChange={providersSearch.handleFiltersChange}
             onClose={handleFiltersClose}
             onGroupChange={handleGroupChange}
             open={openSidebar}
@@ -192,7 +194,7 @@ const Page: NextPage = () => {
                 spacing={3}
               >
                 <div>
-                  <Typography variant="h4">Achats</Typography>
+                  <Typography variant="h4">{t(tokens.nav.achats)}</Typography>
                 </div>
                 <Stack
                   alignItems="center"
@@ -215,13 +217,13 @@ const Page: NextPage = () => {
               </Stack>
               <PurchaseListSummary />
               <PurchaseListTable
-                count={invoicesStore.invoicesCount}
+                count={providersStore.invoicesCount}
                 group={group}
-                items={invoicesStore.invoices}
-                onPageChange={invoicesSearch.handlePageChange}
-                onRowsPerPageChange={invoicesSearch.handleRowsPerPageChange}
-                page={invoicesSearch.state.page}
-                rowsPerPage={invoicesSearch.state.rowsPerPage}
+                items={providersStore.invoices}
+                onPageChange={providersSearch.handlePageChange}
+                onRowsPerPageChange={providersSearch.handleRowsPerPageChange}
+                page={providersSearch.state.page}
+                rowsPerPage={providersSearch.state.rowsPerPage}
               />
             </Stack>
           </InvoiceListContainer>

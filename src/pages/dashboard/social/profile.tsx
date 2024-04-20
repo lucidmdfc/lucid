@@ -28,7 +28,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { SocialConnections } from 'src/sections/dashboard/social/social-connections';
 import { SocialTimeline } from 'src/sections/dashboard/social/social-timeline';
-import type { Connection, Post, Profile } from 'src/types/social';
+import type { Connection, Post, Profile } from 'src/types/template-types/social';
 
 const tabs = [
   { label: 'Timeline', value: 'timeline' },

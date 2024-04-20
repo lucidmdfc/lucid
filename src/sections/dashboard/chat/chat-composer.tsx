@@ -7,7 +7,7 @@ import { useRouter } from 'src/hooks/use-router';
 import { paths } from 'src/paths';
 import { useDispatch } from 'src/store';
 import { thunks } from 'src/thunks/chat';
-import type { Contact } from 'src/types/chat';
+import type { Contact } from 'src/types/template-types/chat';
 
 import { ChatComposerRecipients } from './chat-composer-recipients';
 import { ChatMessageAdd } from './chat-message-add';

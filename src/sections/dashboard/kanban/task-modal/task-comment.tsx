@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { useSelector } from 'src/store';
-import type { Comment, Member } from 'src/types/kanban';
+import type { Comment, Member } from 'src/types/template-types/kanban';
 
 const useAuthor = (authorId: string): Member | null => {
   return useSelector((state) => {

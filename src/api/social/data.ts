@@ -1,5 +1,5 @@
 import { subHours, subMinutes } from 'date-fns';
-import type { Connection, Post, Profile } from 'src/types/social';
+import type { Connection, Post, Profile } from 'src/types/template-types/social';
 
 const now = new Date();
 

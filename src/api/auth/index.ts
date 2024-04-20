@@ -1,9 +1,9 @@
-import type { User } from 'src/types/user';
 import { createResourceId } from 'src/utils/create-resource-id';
 import { decode, JWT_EXPIRES_IN, JWT_SECRET, sign } from 'src/utils/jwt';
 import { wait } from 'src/utils/wait';
 
 import { users } from './data';
+import { User } from 'src/types/template-types/user';
 
 const STORAGE_KEY = 'users';
 

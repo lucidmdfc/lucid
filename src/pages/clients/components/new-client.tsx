@@ -4,23 +4,17 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import toast from 'react-hot-toast';
+import { client } from 'src/types/client';
 
 interface NewClientFormProps {
-  onSubmit: (formData: NewClientFormData) => void;
-}
-
-interface NewClientFormData {
-  fullName: string;
-  ice: number;
-  address: string;
-  billingId: string;
+  onSubmit: (formData: client) => void;
 }
 
 const NewClientForm = () => {
   const [fullName, setFullName] = useState<string>('');
   const [ice, setICE] = useState<number | ''>('');
   const [address, setAddress] = useState<string>('');
-  const [billingId, setBillingId] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
 
   const handleFullNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFullName(event.target.value);
@@ -37,19 +31,23 @@ const NewClientForm = () => {
   };
 
   const handleBillingIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBillingId(event.target.value);
+    setPhoneNumber(event.target.value);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData: NewClientFormData = {
+    const formData: client = {
       fullName,
       ice: Number(ice), // Ensure ice is a number
       address,
-      billingId,
+      phoneNumber,
     };
     toast.success('Client créé avec succès !');
     console.log(formData);
+    setFullName('');
+    setICE('');
+    setAddress('');
+    setPhoneNumber('');
   };
 
   return (
@@ -82,11 +80,11 @@ const NewClientForm = () => {
             <TextField
               fullWidth
               label="Numéro de téléphone"
-              name="billingId"
+              name="phoneNumber"
               type="tel"
               required
               size="small"
-              value={billingId}
+              value={phoneNumber}
               onChange={handleBillingIdChange}
             />
           </Grid>

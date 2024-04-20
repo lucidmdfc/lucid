@@ -12,7 +12,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { SocialPostAdd } from 'src/sections/dashboard/social/social-post-add';
 import { SocialPostCard } from 'src/sections/dashboard/social/social-post-card';
-import type { Post } from 'src/types/social';
+import type { Post } from 'src/types/template-types/social';
 
 const usePosts = (): Post[] => {
   const isMounted = useMounted();

@@ -15,7 +15,7 @@ import ListItem from '@mui/material/ListItem';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
-import type { Label } from 'src/types/mail';
+import type { Label } from 'src/types/template-types/mail';
 
 const systemLabelIcons: Record<string, JSX.Element> = {
   all: <Mail01Icon />,

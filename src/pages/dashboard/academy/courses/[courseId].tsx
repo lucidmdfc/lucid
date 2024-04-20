@@ -15,7 +15,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { CourseSummary } from 'src/sections/dashboard/academy/course-summary';
 import { CourseChapter } from 'src/sections/dashboard/academy/course-chapter';
-import type { Course } from 'src/types/academy';
+import type { Course } from 'src/types/template-types/academy';
 
 const useCourse = (): Course => {
   return {

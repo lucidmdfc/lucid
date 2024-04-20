@@ -5,7 +5,6 @@ import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
 import { BreadcrumbsSeparator } from 'src/components/breadcrumbs-separator';
 import { RouterLink } from 'src/components/router-link';
 import { Seo } from 'src/components/seo';
@@ -13,7 +12,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { Card } from '@mui/material';
-import NewPayment from 'src/pages/salary/components/new-payement';
+import NewPayment from '../components/new-payement';
 
 const Page: NextPage = () => {
   usePageView();

@@ -1,4 +1,4 @@
-import { Item } from 'src/types/items';
+import { Item } from 'src/types/item';
 
 const now = new Date();
 

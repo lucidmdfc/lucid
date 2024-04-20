@@ -1,4 +1,4 @@
-import type { Contact, Message, Participant, Thread } from 'src/types/chat';
+import type { Contact, Message, Participant, Thread } from 'src/types/template-types/chat';
 import { createResourceId } from 'src/utils/create-resource-id';
 import { deepCopy } from 'src/utils/deep-copy';
 

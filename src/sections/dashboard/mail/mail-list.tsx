@@ -21,7 +21,7 @@ import Typography from '@mui/material/Typography';
 import { paths } from 'src/paths';
 import { useDispatch, useSelector } from 'src/store';
 import { thunks } from 'src/thunks/mail';
-import type { Email } from 'src/types/mail';
+import type { Email } from 'src/types/template-types/mail';
 
 import { MailItem } from './mail-item';
 

@@ -1,4 +1,4 @@
-import type { User } from 'src/types/user';
+import { User } from 'src/types/template-types/user';
 
 export const users: User[] = [
   {

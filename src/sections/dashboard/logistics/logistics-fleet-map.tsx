@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 
 import { mapboxConfig } from 'src/config';
-import type { Vehicle } from 'src/types/logistics';
+import type { Vehicle } from 'src/types/template-types/logistics';
 
 // Map default view state
 const VIEW_STATE: Pick<ViewState, 'latitude' | 'longitude' | 'zoom'> = {

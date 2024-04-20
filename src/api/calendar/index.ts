@@ -1,4 +1,4 @@
-import type { CalendarEvent } from 'src/types/calendar';
+import type { CalendarEvent } from 'src/types/template-types/calendar';
 import { createResourceId } from 'src/utils/create-resource-id';
 import { deepCopy } from 'src/utils/deep-copy';
 

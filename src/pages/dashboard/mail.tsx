@@ -16,7 +16,7 @@ import { MailList } from 'src/sections/dashboard/mail/mail-list';
 import { MailSidebar } from 'src/sections/dashboard/mail/mail-sidebar';
 import { useDispatch, useSelector } from 'src/store';
 import { thunks } from 'src/thunks/mail';
-import type { Label } from 'src/types/mail';
+import type { Label } from 'src/types/template-types/mail';
 
 const useLabels = (): Label[] => {
   const dispatch = useDispatch();
