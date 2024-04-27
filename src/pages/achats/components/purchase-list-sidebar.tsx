@@ -21,8 +21,9 @@ import type { Theme } from '@mui/material/styles/createTheme';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { Scrollbar } from 'src/components/scrollbar';
-import type { InvoiceStatus } from 'src/types/invoice';
-import { dummyProviders, provider } from 'src/types/provider';
+import { InvoiceStatus } from 'src/types/invoice';
+import { provider } from 'src/types/provider';
+import { dummyProviders } from 'src/api/providers/data';
 
 const providerNames: string[] = dummyProviders.map((provider) => provider.nom);
 
@@ -56,6 +57,8 @@ const PurchaseListSidebar: FC<PurchaseListSidebarProps> = (props) => {
     open,
     ...other
   } = props;
+  console.log(props);
+
   const queryRef = useRef<HTMLInputElement | null>(null);
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
@@ -128,7 +131,7 @@ const PurchaseListSidebar: FC<PurchaseListSidebarProps> = (props) => {
     (event: ChangeEvent<HTMLInputElement>): void => {
       onFiltersChange?.({
         ...filters,
-        status: event.target.checked ? 'paid' : undefined,
+        status: event.target.checked ? InvoiceStatus.Paid : undefined,
       });
     },
     [filters, onFiltersChange]

@@ -3,8 +3,9 @@ export interface expense {
   projectId: string;
   salaryId: string;
   startDate: Date;
-  endDate: Date | null;
-  amount: number | '';
+  endDate: Date;
+  amount: number;
   createdAt: Date;
   updatedAt: Date;
+  status: boolean;
 }

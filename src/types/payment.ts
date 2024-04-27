@@ -6,3 +6,6 @@ export interface payment {
   createdDate: Date;
   updatedDate: Date;
 }
+
+// ! change payment interface placement
+// ! Employees & Salaries

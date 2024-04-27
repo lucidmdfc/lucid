@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import numeral from 'numeral';
@@ -7,6 +7,7 @@ import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/render
 import { useTheme } from '@mui/material/styles';
 
 import type { Invoice } from 'src/types/invoice';
+import { calculateTotals } from 'src/calculations/total-items-calculate';
 
 const useStyles = () => {
   const theme = useTheme();
@@ -127,14 +128,14 @@ interface InvoicePdfDocumentProps {
 
 export const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
   const { invoice } = props;
+  const [isTvaActive, setIsTvaActive] = useState(true); // Set the initial state based on your logic
+
   const styles = useStyles();
 
   const items = invoice.items || [];
   const dueDate = invoice.dueDate && format(invoice.dueDate, 'dd MMM yyyy');
   const issueDate = invoice.issueDate && format(invoice.issueDate, 'dd MMM yyyy');
-  const subtotalAmount = numeral(invoice.subtotalAmount).format(`${invoice.currency}0,0.00`);
-  const taxAmount = numeral(invoice.taxAmount).format(`${invoice.currency}0,0.00`);
-  const totalAmount = numeral(invoice.totalAmount).format(`${invoice.currency}0,0.00`);
+  const { totalHt, tva, totalWithVat } = calculateTotals(items, isTvaActive);
 
   return (
     <Document>
@@ -151,7 +152,7 @@ export const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
             <Text style={styles.h6}>www.devias.io</Text>
           </View>
           <View>
-            <Text style={styles.subtitle2}>{invoice.number}</Text>
+            <Text style={styles.subtitle2}>{invoice.customer}</Text>
           </View>
         </View>
         <View style={styles.company}>
@@ -184,7 +185,7 @@ export const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
           </View>
           <View>
             <Text style={[styles.subtitle2, styles.gutterBottom]}>Number</Text>
-            <Text style={styles.body2}>{invoice.number}</Text>
+            <Text style={styles.body2}>{invoice.id}</Text>
           </View>
         </View>
         <View style={styles.billing}>
@@ -213,8 +214,8 @@ export const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
             </View>
           </View>
           {items.map((item, index) => {
-            const unitAmount = numeral(item.unitAmount).format(`${item.currency}0,0.00`);
-            const totalAmount = numeral(item.totalAmount).format(`${item.currency}0,0.00`);
+            const unitAmount = numeral(item.price).format(`0,0.00`);
+            const totalAmount = numeral(item.amount).format(`0,0.00`);
 
             return (
               <View
@@ -245,7 +246,7 @@ export const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
               <Text style={styles.body2}>Subtotal</Text>
             </View>
             <View style={styles.summaryValue}>
-              <Text style={[styles.body2, styles.alignRight]}>{subtotalAmount}</Text>
+              <Text style={[styles.body2, styles.alignRight]}>{totalHt}</Text>
             </View>
           </View>
           <View style={styles.summaryRow}>
@@ -254,7 +255,7 @@ export const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
               <Text style={styles.body2}>Taxes</Text>
             </View>
             <View style={styles.summaryValue}>
-              <Text style={[styles.body2, styles.alignRight]}>{taxAmount}</Text>
+              <Text style={[styles.body2, styles.alignRight]}>{tva}</Text>
             </View>
           </View>
           <View style={styles.summaryRow}>
@@ -263,7 +264,7 @@ export const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
               <Text style={styles.body2}>Total</Text>
             </View>
             <View style={styles.summaryValue}>
-              <Text style={[styles.body2, styles.alignRight]}>{totalAmount}</Text>
+              <Text style={[styles.body2, styles.alignRight]}>{totalWithVat}</Text>
             </View>
           </View>
         </View>

@@ -17,7 +17,6 @@ import FileUploader from '../components/file-uploader';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import CreateConfirmation from '../components/create-confirmation';
-import { provider } from 'src/types/provider';
 
 type Option = {
   text: string;
@@ -59,7 +58,7 @@ const PurchaseCreateForm: FC = () => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
-        console.log(values as provider);
+        console.log(values);
         toast.success('le prestataire créé avec succès !');
         setOpen(false);
         resetForm();

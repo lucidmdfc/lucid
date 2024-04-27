@@ -26,7 +26,6 @@ import { useRouter } from 'next/router';
 import EditProject from '../components/edit-project';
 
 const useProject = (projectId: string): Project | null => {
-  const isMounted = useMounted();
   const [project, setProject] = useState<Project | null>(null);
 
   const handleProjectGet = useCallback(async () => {

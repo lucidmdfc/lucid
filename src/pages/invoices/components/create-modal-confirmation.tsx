@@ -38,7 +38,6 @@ const CreateConfirmationModal: FC<CreateConfirmationModalProps> = ({
   onConfirm,
   onCancel,
   message,
-  id,
 }) => (
   <Dialog
     open={isOpen}

@@ -1,31 +1,16 @@
 import { deepCopy } from 'src/utils/deep-copy';
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  getDocs,
-  QuerySnapshot,
-  addDoc,
-  limit,
-  startAfter,
-  orderBy,
-  Query,
-  deleteDoc,
-  doc,
-} from 'firebase/firestore';
-import { firebaseConfig } from 'src/config';
-import { firebaseApp } from 'src/libs/firebase';
+import { applyPagination } from 'src/utils/apply-pagination';
+import { applySort } from 'src/utils/apply-sort';
 import { Member } from 'src/types/member';
+import { membersData } from './data';
 
 type GetMembersRequest = {
   filters?: {
     query?: string;
-    email?: string;
+    status?: string;
   };
-  page?: number | undefined;
-  rowsPerPage?: number | undefined;
+  page?: number;
+  rowsPerPage?: number;
   sortBy?: string;
   sortDir?: 'asc' | 'desc';
 };
@@ -33,99 +18,53 @@ type GetMembersRequest = {
 type GetMembersResponse = Promise<{
   data: Member[];
   count: number;
-  page: number; // Add this line
 }>;
 
 type GetMemberRequest = object;
 
 type GetMemberResponse = Promise<Member>;
 
-const firestore = getFirestore(firebaseApp);
+class MembersApi {
+  getMembers(request: GetMembersRequest = {}): GetMembersResponse {
+    const { filters, page, rowsPerPage, sortBy, sortDir } = request;
 
-const getAllMembers = async (request: GetMembersRequest = {}): GetMembersResponse => {
-  const { filters, page = 1, rowsPerPage, sortBy, sortDir } = request;
+    let data = deepCopy(membersData) as Member[];
+    let count = data.length;
 
-  try {
-    let memberQuery = query(collection(firestore, 'members')) as Query<Member>;
+    if (typeof filters !== 'undefined') {
+      data = data.filter((member) => {
+        if (typeof filters.query !== 'undefined' && filters.query !== '') {
+          // Checks only the member number, but can be extended to support other fields, such as customer
+          // name, email, etc.
+          const containsQuery = (member.full_name || '')
+            .toLowerCase()
+            .includes(filters.query.toLowerCase());
+          if (!containsQuery) {
+            return false;
+          }
+        }
 
-    if (filters) {
-      if (filters.query) {
-        const lowerCaseQuery = filters.query.toLowerCase();
-        memberQuery = query(
-          memberQuery,
-          where('full_name', '>=', lowerCaseQuery),
-          where('full_name', '<=', lowerCaseQuery + '\uf8ff')
-        );
-      }
+        return true;
+      });
+      count = data.length;
+    }
+    if (typeof sortBy !== 'undefined' && typeof sortDir !== 'undefined') {
+      data = applySort(data, sortBy, sortDir);
     }
 
-    // Sorting based on the chosen option (new or old)
-    if (sortBy && sortDir) {
-      memberQuery = query(memberQuery, orderBy(sortBy, sortDir));
+    if (typeof page !== 'undefined' && typeof rowsPerPage !== 'undefined') {
+      data = applyPagination(data, page, rowsPerPage);
     }
 
-    // Pagination
-    if (rowsPerPage && page) {
-      const startAtDocument = (page - 1) * rowsPerPage;
-      memberQuery = query(memberQuery, startAfter(startAtDocument), limit(rowsPerPage));
-    }
-
-    const snapshot: QuerySnapshot<Member> = await getDocs(memberQuery);
-
-    const data = snapshot.docs.map((doc) => {
-      const { id, ...otherData } = doc.data();
-      return { id: doc.id, ...otherData } as Member;
-    });
-
-    return {
+    return Promise.resolve({
       data,
-      count: snapshot.size,
-      page,
-    };
-  } catch (error) {
-    console.error('Error getting Members: ', error);
-    throw error;
+      count,
+    });
   }
-};
 
-const getMember = async (request?: GetMemberRequest): GetMemberResponse => {
-  try {
-    const doc = await getDocs(collection(firestore, 'members', 'id'));
-    if (doc.docs.length > 0) {
-      return deepCopy(doc.docs[0].data() as Member);
-    } else {
-      console.error('Member not found');
-      throw new Error('Member not found');
-    }
-  } catch (error) {
-    console.error('Error getting Member: ', error);
-    throw error;
-  }
-};
+  //   gSlice(request?: GetMemberRequest): GetProjectResponse {
+  //     return Promise.resolve(deepCopy(order));
+  //   }
+}
 
-const createMember = async (memberData: Member): Promise<void> => {
-  try {
-    const memberCollection = collection(firestore, 'members');
-    await addDoc(memberCollection, memberData);
-  } catch (error) {
-    console.error('Error creating Member: ', error);
-    throw error;
-  }
-};
-const deleteMember = async (memberId: string): Promise<void> => {
-  try {
-    const memberDocRef = doc(firestore, 'members', memberId);
-    await deleteDoc(memberDocRef);
-    await getAllMembers();
-  } catch (error) {
-    console.error('Error deleting Member: ', error);
-    throw error;
-  }
-};
-
-export const allMembersApi = {
-  getAllMembers,
-  getMember,
-  createMember,
-  deleteMember,
-};
+export const membersApi = new MembersApi();

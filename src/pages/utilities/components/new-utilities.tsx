@@ -9,6 +9,7 @@ import { SeverityPill } from 'src/components/severity-pill';
 import CreateConfirmationModal from 'src/pages/utilities/components/create-modal-confirmation';
 import toast from 'react-hot-toast';
 import { utilities } from 'src/types/utilities';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface NewUtilitiesProps {
   onSubmit: (formData: utilities[]) => void;
@@ -22,12 +23,11 @@ const initialFields: utilities[] = [
 ];
 
 const NewUtilities: FC<NewUtilitiesProps> = ({ onSubmit }) => {
+  const dialog = useDialog();
+
   const [expenses, setExpenses] = useState<utilities[]>(initialFields);
   const [successMessage, setSuccessMessage] = useState<string>('');
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const handleModalCancel = () => {
-    setModalOpen(false);
-  };
+
   const handleInputChange = (category: string, amount: string, date: Date, index: number) => {
     const updatedExpenses = [...expenses];
     updatedExpenses[index] = { category, amount, date };
@@ -43,7 +43,7 @@ const NewUtilities: FC<NewUtilitiesProps> = ({ onSubmit }) => {
     // Clear the form and show success message
     setExpenses(initialFields);
     toast.success('La dépense a été crée avec succés');
-    setModalOpen(false);
+    dialog.handleClose();
 
     // Clear the success message after a delay (e.g., 3 seconds)
     setTimeout(() => {
@@ -54,9 +54,9 @@ const NewUtilities: FC<NewUtilitiesProps> = ({ onSubmit }) => {
   return (
     <Box sx={{ p: 3 }}>
       <CreateConfirmationModal
-        isOpen={modalOpen}
+        isOpen={dialog.open}
         onConfirm={handleSubmit}
-        onCancel={handleModalCancel}
+        onCancel={dialog.handleClose}
         message="
         Êtes-vous sûr de vouloir soumettre ce formulaire pour créer une nouvelle dépense ? "
       />
@@ -124,7 +124,7 @@ const NewUtilities: FC<NewUtilitiesProps> = ({ onSubmit }) => {
         <Box sx={{ mt: 2 }}>
           <Button
             variant="contained"
-            onClick={() => setModalOpen(true)}
+            onClick={dialog.handleOpen}
           >
             Créer
           </Button>

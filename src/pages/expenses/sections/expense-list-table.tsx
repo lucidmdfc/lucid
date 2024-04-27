@@ -18,6 +18,7 @@ import { paths } from 'src/paths';
 import Edit02 from '@untitled-ui/icons-react/build/esm/Edit02';
 import DeleteConfirmationModal from '../components/delete-modal-confirmation';
 import toast from 'react-hot-toast';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface ExpenseListTableProps {
   count?: number;
@@ -30,21 +31,14 @@ interface ExpenseListTableProps {
 }
 
 const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const dialog = useDialog();
 
-  const handleDeleteClick = () => {
-    setDeleteModalOpen(true);
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
-  };
   // Replace this with your actual delete function
   const handleDelete = async (projectId: string | undefined) => {
     // Implement the delete logic here
     try {
       toast.success('Le frais a été supprimé avec succès!');
-      setDeleteModalOpen(false);
+      dialog.handleOpen();
     } catch (error) {
       console.error('Error deleting member: ', error);
       toast.error('Échec de la suppression du frais. Veuillez réessayer.');
@@ -106,20 +100,12 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
                 <TableCell>
                   <IconButton
                     color="error"
-                    onClick={() => handleDeleteClick()} // Replace handleDelete with your actual delete function
+                    onClick={dialog.handleOpen}
                   >
                     <SvgIcon>
                       <DeleteOutlineIcon />
                     </SvgIcon>
                   </IconButton>
-                  {/* <IconButton
-                    color="info"
-                    onClick={() => onSelect?.(member.id)}
-                  >
-                    <SvgIcon>
-                      < />
-                    </SvgIcon>
-                  </IconButton> */}
                   <IconButton
                     component={RouterLink}
                     href={paths.dashboard.expenses.edit}
@@ -146,9 +132,9 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
         labelRowsPerPage="Lignes par page"
       />
       <DeleteConfirmationModal
-        isOpen={isDeleteModalOpen}
+        isOpen={dialog.open}
         onConfirm={handleDelete}
-        onCancel={handleDeleteCancel}
+        onCancel={dialog.handleClose}
         message="Êtes vous sûr de vouloir supprimer le frais? Cette action sera irréversible."
       />
     </div>

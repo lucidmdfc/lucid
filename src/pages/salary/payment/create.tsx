@@ -13,6 +13,8 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { Card } from '@mui/material';
 import NewPayment from '../components/new-payement';
+import { useTranslation } from 'react-i18next';
+import { tokens } from 'src/locales/tokens';
 
 const Page: NextPage = () => {
   usePageView();
@@ -20,6 +22,8 @@ const Page: NextPage = () => {
     // Handle form submission logic here
     console.log('Form submitted successfully');
   };
+  const { t } = useTranslation();
+
   return (
     <>
       <Seo title="Dashboard: Product Create" />
@@ -41,7 +45,7 @@ const Page: NextPage = () => {
                   href={paths.dashboard.salary.index}
                   variant="subtitle2"
                 >
-                  Charges Salariales
+                  {t(tokens.nav.salary)}{' '}
                 </Link>
                 <Typography
                   color="text.secondary"

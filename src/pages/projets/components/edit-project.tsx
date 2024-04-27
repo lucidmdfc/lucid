@@ -13,6 +13,7 @@ import UpdateConfirmationModal from './update-confirmation-modal';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface EditProjectProps {
   project: Project;
@@ -27,13 +28,8 @@ const EditProject: FC<EditProjectProps> = (props) => {
   );
   const [beneficiaryInput, setBeneficiaryInput] = useState<string>('');
   const [beneficiaryList, setBeneficiaryList] = useState<string[]>(project.beneficiaries);
-  const [isUpdateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
-  const handleUpdateConfirmation = () => {
-    setUpdateModalOpen(true);
-  };
-  const handleUpdateCancel = () => {
-    setUpdateModalOpen(false);
-  };
+  const dialog = useDialog();
+
   const handleFinancialBackersInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFinancialBackersInput(event.target.value);
   };
@@ -102,14 +98,14 @@ const EditProject: FC<EditProjectProps> = (props) => {
 
           console.log(formValues.id, formValues);
           toast.success('Projet modifié avec succès !');
-          handleUpdateCancel();
+          dialog.handleClose();
           router.replace(paths.dashboard.projets.details.replace(':projetId', formValues.id));
         } else {
           // Handle the case where the project with the provided ID is not found
           toast.error('Projet non trouvé');
         }
       } catch (error) {
-        handleUpdateCancel();
+        dialog.handleClose();
         toast.error('Erreur lors de la modification du projet!');
         console.error('Erreur lors de la modification du projet!: ', error);
       }
@@ -127,9 +123,9 @@ const EditProject: FC<EditProjectProps> = (props) => {
   return (
     <>
       <UpdateConfirmationModal
-        isOpen={isUpdateModalOpen}
+        isOpen={dialog.open}
         onConfirm={handleSubmit}
-        onCancel={handleUpdateCancel}
+        onCancel={dialog.handleClose}
       />
 
       <form>
@@ -295,7 +291,7 @@ const EditProject: FC<EditProjectProps> = (props) => {
                     color="primary"
                     size="small"
                     variant="contained"
-                    onClick={handleUpdateConfirmation}
+                    onClick={dialog.handleOpen}
                   >
                     Sauvegarder
                   </Button>

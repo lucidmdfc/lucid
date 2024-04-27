@@ -20,11 +20,11 @@ import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
-import { InvoicePdfDialog } from 'src/sections/dashboard/invoice/invoice-pdf-dialog';
-import { InvoicePdfDocument } from 'src/sections/dashboard/invoice/invoice-pdf-document';
-import { InvoicePreview } from 'src/sections/dashboard/invoice/invoice-preview';
 import type { Invoice } from 'src/types/invoice';
 import { getInitials } from 'src/utils/get-initials';
+import { InvoicePdfDocument } from './components/invoice-pdf-document';
+import { InvoicePreview } from './components/invoice-preview';
+import { InvoicePdfDialog } from './components/invoice-pdf-dialog';
 
 const useInvoice = (): Invoice | null => {
   const isMounted = useMounted();
@@ -65,7 +65,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <Seo title="Dashboard: Invoice Details" />
+      <Seo title="Dashboard: Invoice details" />
       <Box
         component="main"
         sx={{
@@ -113,15 +113,15 @@ const Page: NextPage = () => {
                       width: 42,
                     }}
                   >
-                    {getInitials(invoice.customer.name)}
+                    {getInitials(invoice.customer)}
                   </Avatar>
                   <div>
-                    <Typography variant="h4">{invoice.number}</Typography>
+                    <Typography variant="h4">{invoice.id}</Typography>
                     <Typography
                       color="text.secondary"
                       variant="body2"
                     >
-                      {invoice.customer.name}
+                      {invoice.customer}
                     </Typography>
                   </div>
                 </Stack>

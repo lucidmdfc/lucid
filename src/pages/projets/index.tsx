@@ -26,6 +26,7 @@ import { RouterLink } from 'src/components/router-link';
 import { Project } from 'src/types/project';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
+import { projectsApi } from 'src/api/projects';
 
 interface Filters {
   query?: string;
@@ -109,14 +110,12 @@ const useProjectsStore = (searchState: ProjectsSearchState) => {
 
   const handleProjectsGet = useCallback(async () => {
     try {
-      const storedProjects = localStorage.getItem('projects');
-      const parsedProjects = storedProjects ? JSON.parse(storedProjects) : [];
-      let count = parsedProjects.length;
+      const response = await projectsApi.getProjects(searchState);
 
       if (isMounted()) {
         setState({
-          projects: parsedProjects,
-          projectsCount: count,
+          projects: response.data,
+          projectsCount: response.count,
         });
       }
     } catch (err) {

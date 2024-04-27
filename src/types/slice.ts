@@ -3,6 +3,6 @@ export interface slice {
   project_id: string;
   amount: number;
   received_date: any;
-  created_at?: Date | null;
-  updated_at?: Date | null;
+  created_at?: Date;
+  updated_at?: Date;
 }

@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import { slice } from 'src/types/slice';
 import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface SliceRowProps {
   slice: slice;
@@ -27,14 +28,14 @@ const validationSchema = yup.object({
   received_date: yup.date().required('date reçu est requis'),
 });
 
-const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) => {
-  const issueDate = new Date(slice.received_date);
-
+const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh }) => {
   const [editRowId, setEditRowId] = useState<string | null>(null);
   const [sliceId, setSliceId] = useState<string | null>(null);
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+
+  const issueDate = new Date(slice.received_date);
 
   const router = useRouter();
+  const dialog = useDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -126,7 +127,7 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
 
   const handleDeleteClick = (id: string) => {
     setSliceId(id);
-    setDeleteModalOpen(true);
+    dialog.handleOpen();
   };
 
   const handleDeleteConfirmation = async (sliceId: string) => {
@@ -158,12 +159,12 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
       console.error('Error deleting slice: ', error);
       toast.error('Échec de la suppression de la tranche. Veuillez réessayer.');
     }
-    setDeleteModalOpen(false);
+    dialog.handleClose();
   };
 
   const handleDeleteCancel = () => {
     setSliceId(null);
-    setDeleteModalOpen(false);
+    dialog.handleClose();
   };
 
   return (
@@ -227,9 +228,9 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh, onUpdate }) 
               <Trash02 />
             </IconButton>
             <DeleteSliceModal
-              isOpen={isDeleteModalOpen}
+              isOpen={dialog.open}
               onConfirm={handleDeleteConfirmation}
-              onCancel={handleDeleteCancel}
+              onCancel={dialog.handleClose}
               message="Êtes vous sûr de vouloir supprimer cette tranche? Cette action sera irréversible."
               id={sliceId || ''}
               projectId={projectId}

@@ -15,13 +15,14 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
-import { Member, membersData } from 'src/types/member';
+import { Member } from 'src/types/member';
 import MemberDrawer from './sections/member-drawer';
 import MemberListSearch from './sections/member-list-search';
 import MemberListTable from './sections/member-list-table';
 import MemberListContainer from './sections/member-list-container';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
+import { membersApi } from 'src/api/members';
 interface Filters {
   query?: string;
   status?: string;
@@ -105,12 +106,12 @@ const useMembersStore = (searchState: MemberSearchState) => {
 
   const handleMembersGet = useCallback(async () => {
     try {
-      const response = membersData;
+      const response = await membersApi.getMembers(searchState);
       console.log(response);
 
       if (isMounted()) {
         setState({
-          members: response.members,
+          members: response.data,
           membersCount: response.count,
         });
       }

@@ -27,6 +27,8 @@ const NewCash = () => {
       projectId: '',
       amount: 0,
       startDate: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     onSubmit: async (values: cashIn, { setSubmitting, resetForm }) => {
       try {

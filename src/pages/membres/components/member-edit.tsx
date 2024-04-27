@@ -63,7 +63,6 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
       if (formValues.status == 'unpaid') {
         formValues.payment_date = new Date(0);
         formValues.amount = 0;
-        formValues.payment_method = null;
       }
       if (onSave) {
         onSave(formValues.id, formValues);

@@ -12,7 +12,7 @@ import { Divider } from '@mui/material';
 import NewCash from 'src/pages/cash/components/new-cash';
 import CashStats from './components/cash-stats';
 import NewOutCash from 'src/pages/cash/components/new-out-cash';
-import TableCash from './components/cash-table';
+import TableCash from './sections/cash-table';
 import { useRef } from 'react';
 
 const Page: NextPage = () => {

@@ -17,7 +17,7 @@ import { useRouter } from 'next/router';
 const validationSchema = yup.object({
   project_name: yup.string().required('Nom projet est requis'),
 });
-const NewProject = () => {
+const NewProjectForm = () => {
   const [financialBackersInput, setFinancialBackersInput] = useState<string>('');
   const [financialBackersList, setFinancialBackersList] = useState<string[]>([]);
   const [beneficiaryInput, setBeneficiaryInput] = useState<string>('');
@@ -263,4 +263,4 @@ const NewProject = () => {
   );
 };
 
-export default NewProject;
+export default NewProjectForm;

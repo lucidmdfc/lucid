@@ -23,6 +23,7 @@ import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import { salary } from 'src/types/salary';
 import { payment } from 'src/types/payment';
 import PaymentHistoryTableRow from './payment-history-table-row';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface SalaryDetailsProps {
   onApprove?: () => void;
@@ -76,6 +77,7 @@ const dummyPayments: payment[] = [
 
 const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
   const { onApprove, onEdit, onReject, salary } = props;
+  const dialog = useDialog();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
   const date = salary.recruitmentDate && format(salary.recruitmentDate, 'dd/MM/yyyy');
 
@@ -85,10 +87,6 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
     // Handle the deletion logic here (e.g., make an API call)
     // For now, let's just log the paymentId
     console.log(`Deleting payment with ID: ${paymentId}`);
-  };
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-  const handleDeleteClick = () => {
-    setDeleteModalOpen(true);
   };
 
   const handleDeleteConfirmation = async (salaryId: string | undefined) => {
@@ -104,17 +102,15 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
       console.error('Error deleting salary: ', error);
       toast.error('Échec de la suppression du salarié. Veuillez réessayer.');
     }
-    setDeleteModalOpen(false);
+    dialog.handleClose();
   };
-  const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
-  };
+
   return (
     <Stack spacing={6}>
       <DeleteConfirmationModal
-        isOpen={isDeleteModalOpen}
+        isOpen={dialog.open}
         onConfirm={handleDeleteConfirmation}
-        onCancel={handleDeleteCancel}
+        onCancel={dialog.handleClose}
         message="Êtes vous sûr de vouloir supprimer ce salarié(e)? Cette action sera irréversible."
         salaryId={salary?.id}
       />
@@ -133,7 +129,7 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
             <Button
               color="error"
               variant="text"
-              onClick={handleDeleteClick}
+              onClick={dialog.handleOpen}
               size="small"
               startIcon={
                 <SvgIcon>

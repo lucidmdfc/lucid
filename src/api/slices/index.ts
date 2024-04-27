@@ -1,9 +1,9 @@
 import { deepCopy } from 'src/utils/deep-copy';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { applySort } from 'src/utils/apply-sort';
-import { Project } from 'src/types/project';
+import { slice } from 'src/types/slice';
 
-type GetProjectsRequest = {
+type GetSlicesRequest = {
   filters?: {
     query?: string;
     status?: string;
@@ -14,31 +14,31 @@ type GetProjectsRequest = {
   sortDir?: 'asc' | 'desc';
 };
 
-type GetProjectsResponse = Promise<{
-  data: Project[];
+type GetSlicesResponse = Promise<{
+  data: slice[];
   count: number;
 }>;
 
-type GetProjectRequest = object;
+type GetSliceRequest = object;
 
-type GetProjectResponse = Promise<Project>;
+type GetSliceResponse = Promise<slice>;
 
-class ProjectsApi {
-  getProjects(request: GetProjectsRequest = {}): GetProjectsResponse {
+class SlicesApi {
+  getSlices(request: GetSlicesRequest = {}): GetSlicesResponse {
     const { filters, page, rowsPerPage, sortBy, sortDir } = request;
 
-    const storedProjects = localStorage.getItem('projects');
-    const parsedProjects = storedProjects ? JSON.parse(storedProjects) : [];
+    const storedSlices = localStorage.getItem('slices');
+    const parsedSlices = storedSlices ? JSON.parse(storedSlices) : [];
 
-    let data = deepCopy(parsedProjects) as Project[];
+    let data = deepCopy(parsedSlices) as slice[];
     let count = data.length;
 
     if (typeof filters !== 'undefined') {
-      data = data.filter((project) => {
+      data = data.filter((slice) => {
         if (typeof filters.query !== 'undefined' && filters.query !== '') {
-          const containsQuery = (project.project_name || '')
-            .toLowerCase()
-            .includes(filters.query.toLowerCase());
+          // Checks only the slice number, but can be extended to support other fields, such as customer
+          // name, email, etc.
+          const containsQuery = slice.created_at || '';
 
           if (!containsQuery) {
             return false;
@@ -63,9 +63,9 @@ class ProjectsApi {
     });
   }
 
-  //   getOrder(request?: GetProjectRequest): GetProjectResponse {
+  //   gSlice(request?: GetSliceRequest): GetProjectResponse {
   //     return Promise.resolve(deepCopy(order));
   //   }
 }
 
-export const projectsApi = new ProjectsApi();
+export const slicesApi = new SlicesApi();

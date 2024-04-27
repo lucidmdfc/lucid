@@ -22,16 +22,7 @@ interface ExpenseDrawerProps {
 
 const ExpenseDrawer: FC<ExpenseDrawerProps> = (props) => {
   const { container, onClose, open, member } = props;
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
-
-  const handleEditOpen = useCallback(() => {
-    setIsEditing(true);
-  }, []);
-
-  const handleEditCancel = useCallback(() => {
-    setIsEditing(false);
-  }, []);
 
   let content: JSX.Element | null = null;
 

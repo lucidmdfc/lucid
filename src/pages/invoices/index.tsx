@@ -17,13 +17,15 @@ import { Seo } from 'src/components/seo';
 import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import { InvoiceListContainer } from 'src/sections/dashboard/invoice/invoice-list-container';
-import { InvoiceListSidebar } from 'src/sections/dashboard/invoice/invoice-list-sidebar';
-import { InvoiceListSummary } from 'src/sections/dashboard/invoice/invoice-list-summary';
-import { InvoiceListTable } from 'src/sections/dashboard/invoice/invoice-list-table';
 import type { Invoice, InvoiceStatus } from 'src/types/invoice';
 import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
+import { InvoiceListTable } from './components/invoice-list-table';
+import { InvoiceListSidebar } from './components/invoice-list-sidebar';
+import { InvoiceListSummary } from './components/invoice-list-summary';
+import { InvoiceListContainer } from './components/invoice-list-container';
+
+//  ! ADD DELETE FUNCTION
 
 interface Filters {
   customers?: string[];
@@ -148,7 +150,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <Seo title=" Factures" />
+      <Seo title="Factures" />
       <Divider />
       <Box
         component="main"

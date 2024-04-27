@@ -3,8 +3,7 @@ import { endOfDay, startOfDay } from 'date-fns';
 import type { Invoice } from 'src/types/invoice';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { deepCopy } from 'src/utils/deep-copy';
-
-import { invoice, invoices } from './data';
+import { dummyInvoices } from './data';
 
 type GetInvoicesRequest = {
   filters?: {
@@ -31,13 +30,13 @@ class InvoicesApi {
   getInvoices(request: GetInvoicesRequest = {}): GetInvoicesResponse {
     const { filters, page, rowsPerPage } = request;
 
-    let data = deepCopy(invoices) as Invoice[];
+    let data = deepCopy(dummyInvoices) as Invoice[];
     let count = data.length;
 
     if (typeof filters !== 'undefined') {
       data = data.filter((invoice) => {
         if (typeof filters.query !== 'undefined' && filters.query !== '') {
-          const matched = invoice.number.toLowerCase().includes(filters.query.toLowerCase());
+          const matched = invoice.customer.toLowerCase().includes(filters.query.toLowerCase());
 
           if (!matched) {
             return false;
@@ -69,7 +68,7 @@ class InvoicesApi {
         }
 
         if (typeof filters.customers !== 'undefined' && filters.customers.length > 0) {
-          const matched = filters.customers.includes(invoice.customer.name);
+          const matched = filters.customers.includes(invoice.customer);
 
           if (!matched) {
             return false;
@@ -98,7 +97,7 @@ class InvoicesApi {
   }
 
   getInvoice(request?: GetInvoiceRequest): GetInvoiceResponse {
-    return Promise.resolve(deepCopy(invoice));
+    return Promise.resolve(deepCopy(dummyInvoices));
   }
 }
 

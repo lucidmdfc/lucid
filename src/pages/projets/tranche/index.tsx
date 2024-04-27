@@ -12,10 +12,6 @@ import { Seo } from 'src/components/seo';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
-import { ProductCreateForm } from 'src/sections/dashboard/product/product-create-form';
-
-import NewProject from 'src/pages/projets/components/add-project';
-import { Previewer } from 'src/sections/components/previewer';
 import { Card } from '@mui/material';
 import NewInstallment from 'src/pages/projets/components/add-slice';
 

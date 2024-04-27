@@ -28,17 +28,6 @@ interface ExpenseDetailsProps {
   onReject?: () => void;
   member: Customer;
 }
-interface PaymentHistory {
-  date: string;
-  amount: string;
-  id: number;
-}
-const dummyData: PaymentHistory[] = [
-  { id: 1, date: '12/05/2023', amount: 'MAD 300.00' },
-  { id: 2, date: '15/06/2023', amount: 'MAD 500.00' },
-  { id: 3, date: '20/07/2023', amount: 'MAD 700.00' },
-  // Add more dummy data as needed
-];
 
 const ExpenseDetails: FC<ExpenseDetailsProps> = (props) => {
   const { onApprove, onEdit, onReject, member } = props;
@@ -47,11 +36,6 @@ const ExpenseDetails: FC<ExpenseDetailsProps> = (props) => {
 
   const align = lgUp ? 'horizontal' : 'vertical';
 
-  const handleDeletePayment = (paymentId: number) => {
-    // Handle the deletion logic here (e.g., make an API call)
-    // For now, let's just log the paymentId
-    console.log(`Deleting payment with ID: ${paymentId}`);
-  };
   return (
     <Stack spacing={6}>
       <Stack spacing={3}>
@@ -140,29 +124,6 @@ const ExpenseDetails: FC<ExpenseDetailsProps> = (props) => {
           </Button>
         </Stack>
       </Stack>
-      {/* <Stack spacing={3}>
-        <Typography variant="h6">Historique des virements</Typography>
-        <Scrollbar>
-          <Table sx={{ minWidth: 400 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Virement</TableCell>
-                <TableCell align="right">Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {dummyData.map((payment) => (
-                <ExpenseHistoryTableRow
-                  key={payment.id}
-                  {...payment}
-                  onDelete={() => handleDeletePayment(payment.id)}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        </Scrollbar>
-      </Stack> */}
     </Stack>
   );
 };

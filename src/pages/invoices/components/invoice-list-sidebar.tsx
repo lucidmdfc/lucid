@@ -22,20 +22,15 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { Scrollbar } from 'src/components/scrollbar';
 import type { InvoiceStatus } from 'src/types/invoice';
+import { dummyInvoices } from 'src/api/invoices/data';
 
-const customers: string[] = [
-  'Blind Spots Inc.',
-  'Dispatcher Inc.',
-  'ACME SRL',
-  'Novelty I.S',
-  'Beauty Clinic SRL',
-  'Division Inc.',
-];
+const dummyCustomers: string[] = dummyInvoices.map((customer) => customer.customer);
 
 export interface Filters {
   query?: string;
   startDate?: Date;
   endDate?: Date;
+  dummyCustomers?: string[];
   customers?: string[];
   status?: InvoiceStatus;
 }
@@ -61,6 +56,7 @@ export const InvoiceListSidebar: FC<InvoiceListSidebarProps> = (props) => {
     open,
     ...other
   } = props;
+
   const queryRef = useRef<HTMLInputElement | null>(null);
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
@@ -129,14 +125,16 @@ export const InvoiceListSidebar: FC<InvoiceListSidebarProps> = (props) => {
 
   const handleStatusChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>): void => {
+      const newStatus: InvoiceStatus | undefined = event.target.checked
+        ? ('paid' as InvoiceStatus)
+        : undefined;
       onFiltersChange?.({
         ...filters,
-        status: event.target.checked ? 'paid' : undefined,
+        status: newStatus,
       });
     },
     [filters, onFiltersChange]
   );
-
   const content = (
     <div>
       <Stack
@@ -223,7 +221,7 @@ export const InvoiceListSidebar: FC<InvoiceListSidebarProps> = (props) => {
                   px: 1.5,
                 }}
               >
-                {customers.map((customer) => {
+                {dummyCustomers.map((customer) => {
                   const isChecked = filters.customers?.includes(customer);
 
                   return (

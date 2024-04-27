@@ -12,9 +12,8 @@ import { Seo } from 'src/components/seo';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
-
-import NewProject from 'src/pages/projets/components/add-project';
 import { Card } from '@mui/material';
+import NewProjectForm from 'src/pages/projets/components/add-project';
 
 const Page: NextPage = () => {
   usePageView();
@@ -52,7 +51,7 @@ const Page: NextPage = () => {
             </Stack>
             <Container maxWidth="lg">
               <Card>
-                <NewProject></NewProject>
+                <NewProjectForm></NewProjectForm>
               </Card>
             </Container>{' '}
           </Stack>

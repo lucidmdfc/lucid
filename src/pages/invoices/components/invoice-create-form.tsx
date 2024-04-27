@@ -26,8 +26,14 @@ import { useMounted } from 'src/hooks/use-mounted';
 import ItemsDetails from './items/total-ht-ttc';
 import CreateConfirmationModal from './create-modal-confirmation';
 import { Item } from 'src/types/item';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface CustomerOption {
+  label: string;
+  id: string;
+}
+
+interface BillingState {
   label: string;
   id: string;
 }
@@ -58,10 +64,7 @@ const clients: CustomerOption[] = [
     id: 'id303',
   },
 ];
-interface BillingState {
-  label: string;
-  id: string;
-}
+
 const billingOptions: BillingState[] = [
   {
     label: 'Quotidien',
@@ -83,9 +86,6 @@ const billingOptions: BillingState[] = [
 
 interface Filters {
   name?: string;
-  category: string[];
-  status: string[];
-  inStock?: boolean;
 }
 
 interface itemsSearchState {
@@ -98,9 +98,6 @@ const useItemsSearch = () => {
   const [state, setState] = useState<itemsSearchState>({
     filters: {
       name: undefined,
-      category: [],
-      status: [],
-      inStock: undefined,
     },
     page: 0,
     rowsPerPage: 5,
@@ -185,12 +182,10 @@ const InvoiceCreateForm: FC = (props) => {
   const [isSwitchOn, setSwitchOn] = useState(false);
   const itemsSearch = useItemsSearch();
   const itemsStore = useItemsStore(itemsSearch.state);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [items, setItems] = useState<Item[]>([]); // Assuming you manage items state somehow
+  const [items, setItems] = useState<Item[]>([]);
 
-  const handleModalCancel = () => {
-    setModalOpen(false);
-  };
+  const dialog = useDialog();
+
   // Function to handle switch state changes
   const handleSwitchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSwitchOn(event.target.checked);
@@ -218,11 +213,11 @@ const InvoiceCreateForm: FC = (props) => {
   return (
     <form {...props}>
       <CreateConfirmationModal
-        isOpen={modalOpen}
+        isOpen={dialog.open}
         onConfirm={formik.handleSubmit}
-        onCancel={handleModalCancel}
+        onCancel={dialog.handleClose}
         message="
-        Êtes-vous sûr de vouloir soumettre ce formulaire pour créer la facture ? "
+        Êtes-vous sûr de vouloir soumettre ce formulaire pour créer la facture ?"
       />
       <Stack spacing={4}>
         <Card>
@@ -426,7 +421,7 @@ const InvoiceCreateForm: FC = (props) => {
           <Button
             onClick={(e) => {
               e.preventDefault();
-              setModalOpen(true);
+              dialog.handleOpen();
             }}
             variant="contained"
             type="submit"

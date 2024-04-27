@@ -22,12 +22,13 @@ import { SeverityPill } from 'src/components/severity-pill';
 import { Scrollbar } from 'src/components/scrollbar';
 import type { Order, OrderStatus } from 'src/types/template-types/order';
 import { Customer } from 'src/types/template-types/customer';
-import { Member, methods } from 'src/types/member';
+import { Member } from 'src/types/member';
 import { date } from 'yup';
 import Trash02 from '@untitled-ui/icons-react/build/esm/Trash02';
 import { Divider } from '@mui/material';
 import toast from 'react-hot-toast';
 import DeleteConfirmationModal from '../components/delete-confirmation';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface MemeberDetailsProps {
   onApprove?: () => void;
@@ -35,20 +36,15 @@ interface MemeberDetailsProps {
   onReject?: () => void;
   member: Member;
 }
-const getPaymentMethodText = (value: number | null | undefined): string => {
-  const method = methods.find((m) => m.value == value);
-  return method ? method.text : '--';
-};
+
 const MemeberDetails: FC<MemeberDetailsProps> = (props) => {
   const { onApprove, onEdit, onReject, member } = props;
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-  const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
-  };
+  const dialog = useDialog();
+
   const handleDelete = async () => {
     try {
       toast.success('Le membre a été supprimé avec succès!');
-      setDeleteModalOpen(false);
+      dialog.handleOpen();
       if (onApprove !== undefined) {
         onApprove();
       }
@@ -67,9 +63,9 @@ const MemeberDetails: FC<MemeberDetailsProps> = (props) => {
   return (
     <Stack spacing={6}>
       <DeleteConfirmationModal
-        isOpen={isDeleteModalOpen}
+        isOpen={dialog.open}
         onConfirm={handleDelete}
-        onCancel={handleDeleteCancel}
+        onCancel={dialog.handleClose}
         message="Êtes vous sûr de vouloir supprimer ce membre  ? Cette action sera irréversible."
         id={member.id}
       />
@@ -128,7 +124,7 @@ const MemeberDetails: FC<MemeberDetailsProps> = (props) => {
               disableGutters
               divider
               label="Moyen de paiement"
-              value={getPaymentMethodText(member.payment_method)}
+              value={member.payment_method}
             ></PropertyListItem>
             <PropertyListItem
               align={align}
@@ -159,7 +155,7 @@ const MemeberDetails: FC<MemeberDetailsProps> = (props) => {
         <Button
           color="error"
           variant="text"
-          onClick={() => setDeleteModalOpen(true)}
+          onClick={dialog.handleOpen}
           size="small"
           startIcon={
             <SvgIcon>

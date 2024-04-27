@@ -14,21 +14,17 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
 import { Logo } from 'src/components/logo';
-import type { Invoice } from 'src/types/invoice';
+import { provider } from 'src/types/provider';
 
-interface InvoicePreviewProps {
-  invoice: Invoice;
+interface ProviderPreviewProps {
+  provider: provider;
 }
 
-export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
-  const { invoice, ...other } = props;
+export const InvoicePreview: FC<ProviderPreviewProps> = (props) => {
+  const { provider, ...other } = props;
 
-  const items = invoice.items || [];
-  const dueDate = invoice.dueDate && format(invoice.dueDate, 'dd MMM yyyy');
-  const issueDate = invoice.issueDate && format(invoice.issueDate, 'dd MMM yyyy');
-  const subtotalAmount = numeral(invoice.subtotalAmount).format(`${invoice.currency}0,0.00`);
-  const taxAmount = numeral(invoice.taxAmount).format(`${invoice.currency}0,0.00`);
-  const totalAmount = numeral(invoice.totalAmount).format(`${invoice.currency}0,0.00`);
+  const dueDate = provider.dueDate && format(provider.dueDate, 'dd MMM yyyy');
+  const depositedDate = provider.depositedDate && format(provider.depositedDate, 'dd MMM yyyy');
 
   return (
     <Card
@@ -58,7 +54,7 @@ export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
             align="right"
             variant="subtitle2"
           >
-            {invoice.number}
+            {provider.ice}
           </Typography>
         </div>
       </Stack>
@@ -132,7 +128,7 @@ export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
             >
               Date of issue
             </Typography>
-            <Typography variant="body2">{issueDate}</Typography>
+            <Typography variant="body2">{depositedDate}</Typography>
           </Grid>
           <Grid
             xs={12}
@@ -144,7 +140,7 @@ export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
             >
               Number
             </Typography>
-            <Typography variant="body2">{invoice.number}</Typography>
+            <Typography variant="body2">{provider.id}</Typography>
           </Grid>
         </Grid>
       </Box>
@@ -156,13 +152,10 @@ export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
           Billed to
         </Typography>
         <Typography variant="body2">
-          {invoice.customer.name}
+          {provider.nom}
           <br />
-          {invoice.customer.company}
+          {provider.ice}
           <br />
-          {invoice.customer.taxId}
-          <br />
-          {invoice.customer.address}
         </Typography>
       </Box>
       <Table sx={{ mt: 4 }}>
@@ -176,20 +169,6 @@ export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item, index) => {
-            const unitAmount = numeral(item.unitAmount).format(`${item.currency}0,0.00`);
-            const totalAmount = numeral(item.totalAmount).format(`${item.currency}0,0.00`);
-
-            return (
-              <TableRow key={item.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
-                <TableCell>{unitAmount}</TableCell>
-                <TableCell align="right">{totalAmount}</TableCell>
-              </TableRow>
-            );
-          })}
           <TableRow>
             <TableCell
               colSpan={3}
@@ -202,37 +181,7 @@ export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
               align="right"
               sx={{ borderBottom: 'none' }}
             >
-              <Typography variant="subtitle2">{subtotalAmount}</Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              colSpan={3}
-              sx={{ borderBottom: 'none' }}
-            />
-            <TableCell sx={{ borderBottom: 'none' }}>
-              <Typography variant="subtitle1">Taxes</Typography>
-            </TableCell>
-            <TableCell
-              align="right"
-              sx={{ borderBottom: 'none' }}
-            >
-              <Typography variant="subtitle2">{taxAmount}</Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              colSpan={3}
-              sx={{ borderBottom: 'none' }}
-            />
-            <TableCell sx={{ borderBottom: 'none' }}>
-              <Typography variant="subtitle1">Total</Typography>
-            </TableCell>
-            <TableCell
-              align="right"
-              sx={{ borderBottom: 'none' }}
-            >
-              <Typography variant="subtitle2">{totalAmount}</Typography>
+              <Typography variant="subtitle2">{provider.amount}</Typography>
             </TableCell>
           </TableRow>
         </TableBody>
@@ -258,5 +207,5 @@ export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
 
 InvoicePreview.propTypes = {
   // @ts-ignore
-  invoice: PropTypes.object.isRequired,
+  provider: PropTypes.object.isRequired,
 };

@@ -1,32 +1,26 @@
-interface InvoiceCustomer {
-  address?: string;
-  company?: string;
-  email: string;
-  name: string;
-  taxId?: string;
+import { Item } from './item';
+
+export enum InvoiceStatus {
+  Canceled = 'canceled',
+  Paid = 'paid',
+  Pending = 'pending',
 }
 
-interface InvoiceItem {
-  id: string;
-  currency: string;
-  description: string;
-  quantity: number;
-  totalAmount: number;
-  unitAmount: number;
+export enum BillingCycle {
+  Quotidien = 'Quotidien',
+  Hebdomadaire = 'Hebdomadaire',
+  Mensuel = 'Mensuel',
+  Annuel = 'Annuel',
 }
-
-export type InvoiceStatus = 'canceled' | 'paid' | 'pending';
-
 export interface Invoice {
   id: string;
-  currency: string;
-  customer: InvoiceCustomer;
-  dueDate?: number;
-  issueDate?: number;
-  items?: InvoiceItem[];
-  number: string;
+  customer: string;
   status: InvoiceStatus;
-  subtotalAmount?: number;
-  taxAmount?: number;
-  totalAmount?: number;
+  designation: string;
+  dueDate?: Date;
+  issueDate?: Date;
+  endDate?: Date;
+  billingStatus?: BillingCycle;
+  items?: Item[];
+  note?: string;
 }

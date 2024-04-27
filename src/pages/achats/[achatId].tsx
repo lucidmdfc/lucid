@@ -12,7 +12,6 @@ import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
-import { invoicesApi } from 'src/api/invoices';
 import { RouterLink } from 'src/components/router-link';
 import { Seo } from 'src/components/seo';
 import { useDialog } from 'src/hooks/use-dialog';
@@ -20,23 +19,24 @@ import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
-import { InvoicePdfDialog } from 'src/sections/dashboard/invoice/invoice-pdf-dialog';
-import { InvoicePdfDocument } from 'src/sections/dashboard/invoice/invoice-pdf-document';
-import { InvoicePreview } from 'src/sections/dashboard/invoice/invoice-preview';
-import type { Invoice } from 'src/types/invoice';
 import { getInitials } from 'src/utils/get-initials';
 import { useRouter } from 'next/router';
+import { providersApi } from 'src/api/providers';
+import { provider } from 'src/types/provider';
+import { InvoicePdfDocument } from './components/invoice-pdf-document';
+import { InvoicePreview } from './components/invoice-preview';
+import { InvoicePdfDialog } from './components/invoice-pdf-dialog';
 
-const useInvoice = (): Invoice | null => {
+const useProvider = (): provider | null => {
   const isMounted = useMounted();
-  const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [provider, setProvider] = useState<provider | null>(null);
 
-  const handleInvoiceGet = useCallback(async () => {
+  const handleProviderGet = useCallback(async () => {
     try {
-      const response = await invoicesApi.getInvoice();
+      const response = await providersApi.getProvider();
 
       if (isMounted()) {
-        setInvoice(response);
+        setProvider(response);
       }
     } catch (err) {
       console.error(err);
@@ -45,27 +45,26 @@ const useInvoice = (): Invoice | null => {
 
   useEffect(
     () => {
-      handleInvoiceGet();
+      handleProviderGet();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  return invoice;
+  return provider;
 };
 
 const Page: NextPage = () => {
-  const invoice = useInvoice();
+  const provider = useProvider();
   const dialog = useDialog();
   const router = useRouter();
   const { achatId } = router.query;
 
   usePageView();
 
-  if (!invoice) {
+  if (!provider) {
     return null;
   }
-
   return (
     <>
       <Seo title="Prestataire et fournisseurs: Prestataire détails" />
@@ -116,7 +115,7 @@ const Page: NextPage = () => {
                       width: 42,
                     }}
                   >
-                    {getInitials(invoice.customer.name)}
+                    {getInitials(provider.nom)}
                   </Avatar>
                   <div>
                     <Typography variant="h4">{achatId}</Typography>
@@ -124,7 +123,7 @@ const Page: NextPage = () => {
                       color="text.secondary"
                       variant="body2"
                     >
-                      {invoice.customer.name}
+                      {provider.nom}
                     </Typography>
                   </div>
                 </Stack>
@@ -140,8 +139,8 @@ const Page: NextPage = () => {
                     Preview
                   </Button>
                   <PDFDownloadLink
-                    document={<InvoicePdfDocument invoice={invoice} />}
-                    fileName="invoice"
+                    document={<InvoicePdfDocument provider={provider} />}
+                    fileName="provider"
                     style={{ textDecoration: 'none' }}
                   >
                     <Button
@@ -154,12 +153,12 @@ const Page: NextPage = () => {
                 </Stack>
               </Stack>
             </Stack>
-            <InvoicePreview invoice={invoice} />
+            <InvoicePreview provider={provider} />
           </Stack>
         </Container>
       </Box>
       <InvoicePdfDialog
-        invoice={invoice}
+        provider={provider}
         onClose={dialog.handleClose}
         open={dialog.open}
       />

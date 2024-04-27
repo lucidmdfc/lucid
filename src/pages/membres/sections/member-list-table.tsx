@@ -12,7 +12,7 @@ import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
 
 import { IconButton, SvgIcon, TableHead } from '@mui/material';
 
-import { Member, methods } from 'src/types/member';
+import { Member } from 'src/types/member';
 
 interface MemberListTableProps {
   count?: number;
@@ -40,10 +40,6 @@ const MemberListTable: FC<MemberListTableProps> = (props) => {
   } = props;
 
   // Function to get payment method text based on value
-  const getPaymentMethodText = (value: number | null): string => {
-    const method = methods.find((m) => m.value == value);
-    return method ? method.text : '--';
-  };
 
   return (
     <div>
@@ -75,9 +71,7 @@ const MemberListTable: FC<MemberListTableProps> = (props) => {
                   <Typography variant="body2">{member.rc_cin}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">
-                    {getPaymentMethodText(member.payment_method ?? null)}
-                  </Typography>
+                  <Typography variant="body2">{member.payment_method ?? '--'}</Typography>
                 </TableCell>
                 <TableCell>
                   <SeverityPill color={member?.status == 'paid' ? 'success' : 'error'}>

@@ -1,4 +1,4 @@
-import type { ChangeEvent, FC, MouseEvent } from 'react';
+import { useState, type ChangeEvent, type FC, type MouseEvent } from 'react';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
@@ -23,6 +23,7 @@ import { SeverityPill } from 'src/components/severity-pill';
 import { paths } from 'src/paths';
 import type { Invoice, InvoiceStatus } from 'src/types/invoice';
 import { getInitials } from 'src/utils/get-initials';
+import { calculateTotals } from 'src/calculations/total-items-calculate';
 
 type GroupedInvoices = {
   [key in InvoiceStatus]: Invoice[];
@@ -61,10 +62,11 @@ const InvoiceRow: FC<InvoiceRowProps> = (props) => {
 
   const statusColor = statusColorsMap[invoice.status];
 
-  const totalAmount = numeral(invoice.totalAmount).format('0,0.00');
-  const issueDate = invoice.issueDate && format(invoice.issueDate, 'dd/MM/yyyy');
+  const [isTvaActive, setIsTvaActive] = useState(true); // Set the initial state based on your logic
+  const { totalWithVat } = calculateTotals(invoice?.items ?? [], isTvaActive);
+  const issueDate = invoice.issueDate && format(invoice?.issueDate, 'dd/MM/yyyy');
   const dueDate = invoice.dueDate && format(invoice.dueDate, 'dd/MM/yyyy');
-
+  // return;
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -83,35 +85,24 @@ const InvoiceRow: FC<InvoiceRowProps> = (props) => {
             whiteSpace: 'nowrap',
           }}
         >
-          <Avatar
-            sx={{
-              height: 42,
-              width: 42,
-            }}
-          >
-            {getInitials(invoice.customer.name)}
-          </Avatar>
           <div>
             <Typography
               color="text.primary"
               variant="subtitle2"
             >
-              {invoice.number}
+              {invoice.customer}
             </Typography>
             <Typography
               color="text.secondary"
               variant="body2"
             >
-              {invoice.customer.name}
+              {invoice.id}
             </Typography>
           </div>
         </Stack>
       </TableCell>
       <TableCell>
-        <Typography variant="subtitle2">
-          {invoice.currency}
-          {totalAmount}
-        </Typography>
+        <Typography variant="subtitle2">MAD {totalWithVat}</Typography>
       </TableCell>
       <TableCell>
         <Typography variant="subtitle2">Emise le</Typography>

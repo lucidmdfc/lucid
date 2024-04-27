@@ -5,6 +5,7 @@ import DeleteConfirmationModal from './delete-confirmation-modal';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
 import { CardActions } from '@mui/material';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface ProjectDeleteManageProps {
   projectId: string;
@@ -12,14 +13,8 @@ interface ProjectDeleteManageProps {
 
 const ProjectDeleteManage: FC<ProjectDeleteManageProps> = ({ projectId, ...props }) => {
   const router = useRouter();
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-  const handleDeleteClick = () => {
-    setDeleteModalOpen(true);
-  };
+  const dialog = useDialog();
 
-  const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
-  };
   // Replace this with your actual delete function
   const handleDelete = async (projectId: string | undefined) => {
     try {
@@ -64,14 +59,14 @@ const ProjectDeleteManage: FC<ProjectDeleteManageProps> = ({ projectId, ...props
       <Button
         color="error"
         variant="outlined"
-        onClick={() => handleDeleteClick()} // Replace handleDelete with your actual delete function
+        onClick={() => dialog.handleOpen()}
       >
         Supprimer le projet
       </Button>
       <DeleteConfirmationModal
-        isOpen={isDeleteModalOpen}
+        isOpen={dialog.open}
         onConfirm={handleDelete}
-        onCancel={handleDeleteCancel}
+        onCancel={dialog.handleClose}
         message="Êtes vous sûr de vouloir supprimer le projet? Cette action sera irréversible."
         id={projectId}
       />

@@ -26,6 +26,7 @@ import { Item, itemsApi } from 'src/api/items';
 import ItemsListTable from './items/items-list-table';
 import ItemsDetails from './items/total-ht-ttc';
 import EditConfirmationModal from './edit-modal-confirmation';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface ClientOption {
   label: string;
@@ -197,12 +198,10 @@ const InvoiceUpdateForm: FC = (props) => {
   const [isSwitchOn, setSwitchOn] = useState(false);
   const itemsSearch = useItemsSearch();
   const itemsStore = useItemsStore(itemsSearch.state);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [items, setItems] = useState<Item[]>([]); // Assuming you manage items state somehow
+  const [items, setItems] = useState<Item[]>([]);
 
-  const handleModalCancel = () => {
-    setModalOpen(false);
-  };
+  const dialog = useDialog();
+
   // Function to handle switch state changes
   const handleSwitchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSwitchOn(event.target.checked);
@@ -230,9 +229,9 @@ const InvoiceUpdateForm: FC = (props) => {
   return (
     <form {...props}>
       <EditConfirmationModal
-        isOpen={modalOpen}
+        isOpen={dialog.open}
         onConfirm={formik.handleSubmit}
-        onCancel={handleModalCancel}
+        onCancel={dialog.handleClose}
         message="
         Êtes-vous sûr de vouloir soumettre ce formulaire pour modifier la facture ?"
       />
@@ -463,7 +462,7 @@ const InvoiceUpdateForm: FC = (props) => {
           spacing={1}
         >
           <Button
-            onClick={() => setModalOpen(true)}
+            onClick={dialog.handleOpen}
             variant="contained"
           >
             Enregistrer

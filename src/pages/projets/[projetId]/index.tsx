@@ -31,6 +31,8 @@ import { Project } from 'src/types/project';
 import { useRouter } from 'next/router';
 import { slice } from 'src/types/slice';
 import Plus from '@untitled-ui/icons-react/build/esm/Plus';
+import { slicesApi } from 'src/api/slices';
+import { calculateTotalAmount } from 'src/calculations/total-slices-calculate';
 
 const tabs = [
   { label: 'Détails', value: 'details' },
@@ -85,28 +87,18 @@ const useSlices = (projectId: string) => {
   const [totalSlicesAmounts, setTotalSlicesAmounts] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const calculateTotalSlicesAmounts = useCallback((slices: slice[]) => {
-    let total = 0;
-    slices.forEach((slice) => {
-      total += slice.amount;
-    });
-    return total;
-  }, []);
-
   const handleSlicesGet = useCallback(async () => {
     try {
       setLoading(true);
 
       // Retrieve slices from local storage
-      const storedSlices = localStorage.getItem('slices');
-      const existingSlices = storedSlices ? JSON.parse(storedSlices) : [];
-
+      const response = await slicesApi.getSlices();
       // Filter slices based on the provided projectId
-      const slicesForProject = existingSlices.filter(
+      const slicesForProject = response.data.filter(
         (slice: slice) => slice.project_id === projectId
       );
-      const totalAmounts = calculateTotalSlicesAmounts(slicesForProject);
-      // Log or handle the slices as needed
+      const totalAmounts = calculateTotalAmount(slicesForProject);
+
       setSlices(slicesForProject);
       setTotalSlicesAmounts(totalAmounts);
       console.log('Slices for project with ID ' + projectId + ':', slicesForProject);
