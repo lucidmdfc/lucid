@@ -46,128 +46,55 @@ export const paths = {
       modern: '/auth-demo/verify-code/modern',
     },
   },
-  dashboard: {
-    index: '/',
-    academy: {
-      index: '/dashboard/academy',
-      courseDetails: '/dashboard/academy/courses/:courseId',
-    },
-    account: '/dashboard/account',
-    analytics: '/dashboard/analytics',
-    blank: '/dashboard/blank',
-    blog: {
-      index: '/dashboard/blog',
-      postDetails: '/dashboard/blog/:postId',
-      postCreate: '/dashboard/blog/create',
-    },
-    calendar: '/dashboard/calendar',
-    chat: '/dashboard/chat',
-    crypto: '/dashboard/crypto',
-    revenus: {
-      index: '/revenus',
-    },
-    salary: {
-      index: '/salary',
-      newSalary: '/salary/salary/create',
-      newPAyement: '/salary/payment/create',
-    },
-    expenses: {
-      index: '/expenses',
-      edit: '/expenses/edit',
-      create: '/expenses/create',
-    },
-    utilities: {
-      index: '/utilities',
-    },
-    achats: {
-      index: '/achats',
-      search: '/achats/search',
-      edit: '/achats/edit',
-      details: '/achats/:achatId/',
-    },
-    projets: {
-      index: '/projets',
-      create: '/projets/create',
-      details: '/projets/:projetId/',
-      edit: '/projets/:projetId/edit',
-      tranche: '/projets/tranche',
-    },
-    invoices: {
-      index: '/invoices',
-      create: '/invoices/create',
-      edit: '/invoices/edit',
-      details: '/invoices/:invoiceId',
-    },
-    clients: {
-      index: '/clients',
-      create: '/clients/create',
-      edit: '/clients/edit',
-      details: '/clients/:invoiceId',
-    },
-    membres: {
-      index: '/membres',
-      create: '/membres/create',
-    },
-    cash: {
-      index: '/cash',
-    },
-    // ////////////////////////
-    ecommerce: '/dashboard/ecommerce',
-    fileManager: '/dashboard/file-manager',
-    // invoices: {
-    //   index: '/dashboard/invoices',
-    //   details: '/dashboard/invoices/:orderId',
-    // },
-    jobs: {
-      index: '/dashboard/jobs',
-      create: '/dashboard/jobs/create',
-      companies: {
-        details: '/dashboard/jobs/companies/:companyId',
-      },
-    },
-    kanban: '/dashboard/kanban',
-    logistics: {
-      index: '/dashboard/logistics',
-      fleet: '/dashboard/logistics/fleet',
-    },
-    mail: '/dashboard/mail',
-    orders: {
-      index: '/dashboard/orders',
-      details: '/dashboard/orders/:orderId',
-    },
-    products: {
-      index: '/dashboard/products',
-      create: '/dashboard/products/create',
-    },
-    social: {
-      index: '/dashboard/social',
-      profile: '/dashboard/social/profile',
-      feed: '/dashboard/social/feed',
-    },
+  revenus: {
+    index: '/revenus',
   },
-  project: {
+  salary: {
+    index: '/salary',
+    newSalary: '/salary/salary/create',
+    newPAyement: '/salary/payment/create',
+  },
+  expenses: {
+    index: '/expenses',
+    edit: '/expenses/edit',
+    create: '/expenses/create',
+  },
+  utilities: {
+    index: '/utilities',
+  },
+  suppliers: {
+    index: '/suppliers',
+    search: '/suppliers/search',
+    edit: '/suppliers/edit',
+    details: '/suppliers/:achatId/',
+  },
+  projets: {
     index: '/projets',
+    create: '/projets/create',
+    details: '/projets/:projetId/',
+    edit: '/projets/:projetId/edit',
+    tranche: '/projets/tranche',
   },
-  components: {
-    index: '/components',
-    dataDisplay: {
-      detailLists: '/components/data-display/detail-lists',
-      tables: '/components/data-display/tables',
-      quickStats: '/components/data-display/quick-stats',
-    },
-    lists: {
-      groupedLists: '/components/lists/grouped-lists',
-      gridLists: '/components/lists/grid-lists',
-    },
-    forms: '/components/forms',
-    modals: '/components/modals',
-    charts: '/components/charts',
-    buttons: '/components/buttons',
-    typography: '/components/typography',
-    colors: '/components/colors',
-    inputs: '/components/inputs',
+  invoices: {
+    index: '/invoices',
+    create: '/invoices/create',
+    edit: '/invoices/edit',
+    details: '/invoices/:invoiceId',
   },
-  docs: 'https://material-kit-pro-react-docs.devias.io',
+  clients: {
+    index: '/clients',
+    create: '/clients/create',
+    edit: '/clients/edit',
+    details: '/clients/:invoiceId',
+  },
+  membres: {
+    index: '/membres',
+    create: '/membres/create',
+  },
+  cash: {
+    index: '/cash',
+  },
+  fileManager: '/file-manager',
   notAuthorized: '/401',
   notFound: '/404',
   serverError: '/500',

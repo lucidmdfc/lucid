@@ -7,12 +7,10 @@ import TableCell from '@mui/material/TableCell';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
 import { IconButton, SvgIcon, TableHead } from '@mui/material';
-import { Customer } from 'src/types/template-types/customer';
 import { format } from 'date-fns';
-import { salary } from 'src/types/salary';
+import { salary } from 'src/types/employees_salaries';
 
 interface SalaryListTableProps {
   count?: number;

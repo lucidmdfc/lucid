@@ -12,7 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box, Stack } from '@mui/system';
 import toast from 'react-hot-toast';
 import { DatePicker } from '@mui/x-date-pickers';
-import { payment } from 'src/types/payment';
+import { payment } from 'src/types/employees_salaries';
 
 interface PaymentHistoryTableRowProps {
   onDelete: (id: string) => void;

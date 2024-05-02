@@ -1,4 +1,3 @@
-import React, { FC, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -8,31 +7,22 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
+import { salary } from 'src/types/employees_salaries';
 
-interface NewSalaryProps {
-  onSubmit: (formData: FormData) => void;
-}
-
-interface FormData {
-  salaryName: string;
-  fonction: string;
-  startDate: Date | null;
-  salary: number | '';
-}
-
-const NewSalary: FC<NewSalaryProps> = () => {
+const NewSalary = () => {
   const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
+      id: '',
       salaryName: '',
-      fonction: '',
-      startDate: new Date(),
-      salary: '',
-      created_at: new Date(),
+      salaryFunction: '',
+      recruitmentDate: new Date(),
+      grossSalary: Number(),
+      createdDate: new Date(),
     },
     // validationSchema: validationSchema,
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
+    onSubmit: async (values: salary, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
         toast.success('Nouveau salarié(e) créé avec succès !');
@@ -76,10 +66,10 @@ const NewSalary: FC<NewSalaryProps> = () => {
             <TextField
               fullWidth
               label="Fonction"
-              name="fonction"
+              name="salaryFunction"
               required
               size="small"
-              value={formik.values.fonction}
+              value={formik.values.salaryFunction}
               onChange={formik.handleChange}
             />
           </Grid>
@@ -98,11 +88,11 @@ const NewSalary: FC<NewSalaryProps> = () => {
               <TextField
                 fullWidth
                 label="Salaire Brut"
-                name="salary"
+                name="grossSalary"
                 type="number"
                 required
                 size="small"
-                value={formik.values.salary}
+                value={formik.values.grossSalary}
                 onChange={formik.handleChange}
               />
             </Grid>
@@ -113,14 +103,15 @@ const NewSalary: FC<NewSalaryProps> = () => {
             >
               <MobileDatePicker
                 label="Date de recrutement"
-                onChange={(newDate) => formik.setFieldValue('startDate', newDate)}
-                value={formik.values.startDate}
+                onChange={(newDate) => formik.setFieldValue('recruitmentDate', newDate)}
+                value={formik.values.recruitmentDate}
               />
             </Grid>
           </Grid>
         </Grid>
         <Box sx={{ mt: 2 }}>
           <Button
+            disabled={formik.isSubmitting}
             type="submit"
             variant="contained"
           >

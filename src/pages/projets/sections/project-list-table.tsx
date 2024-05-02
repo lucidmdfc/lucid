@@ -78,7 +78,7 @@ const ProjectListTable: FC<ProjectListTableProps> = (props) => {
                         <Link
                           color="inherit"
                           component={RouterLink}
-                          href={paths.dashboard.projets.details}
+                          href={paths.projets.details}
                           variant="subtitle2"
                         >
                           {project.project_name}
@@ -135,7 +135,7 @@ const ProjectListTable: FC<ProjectListTableProps> = (props) => {
                   <TableCell align="right">
                     <Link
                       component={RouterLink}
-                      href={paths.dashboard.projets.details.replace(':projetId', project?.id)}
+                      href={paths.projets.details.replace(':projetId', project?.id)}
                     >
                       <IconButton color="info">
                         <SvgIcon>

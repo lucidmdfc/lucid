@@ -21,22 +21,18 @@ import { paths } from 'src/paths';
 import { Divider, OutlinedInput } from '@mui/material';
 import { DatePicker, DateTimePicker } from '@mui/x-date-pickers';
 import { useMounted } from 'src/hooks/use-mounted';
-import { productsApi } from 'src/api/products';
 import { Item, itemsApi } from 'src/api/items';
 import ItemsListTable from './items/items-list-table';
 import ItemsDetails from './items/total-ht-ttc';
 import EditConfirmationModal from './edit-modal-confirmation';
 import { useDialog } from 'src/hooks/use-dialog';
+import { BillingCycle } from 'src/types/invoice';
 
-interface ClientOption {
+interface Option {
   label: string;
   id: string;
 }
-interface StatusOption {
-  label: string;
-  id: string;
-}
-const statusOption: StatusOption[] = [
+const statusOption: Option[] = [
   {
     label: 'Payée',
     id: '1',
@@ -46,7 +42,7 @@ const statusOption: StatusOption[] = [
     id: '2',
   },
 ];
-const clients: ClientOption[] = [
+const clients: Option[] = [
   {
     label: 'John Doe',
     id: 'id123',
@@ -72,60 +68,36 @@ const clients: ClientOption[] = [
     id: 'id303',
   },
 ];
-interface BillingState {
-  label: string;
-  id: string;
-}
-const billingOptions: BillingState[] = [
+
+const billingOptions: { label: string; id: string }[] = [
   {
-    label: 'Quotidien',
-    id: 'id000',
+    label: BillingCycle.Quotidien,
+    id: BillingCycle.Quotidien,
   },
   {
-    label: 'Hebdomadaire',
-    id: 'id11',
+    label: BillingCycle.Hebdomadaire,
+    id: BillingCycle.Hebdomadaire,
   },
   {
-    label: 'Mensuel',
-    id: 'id222',
+    label: BillingCycle.Mensuel,
+    id: BillingCycle.Mensuel,
   },
   {
-    label: 'Annuel',
-    id: 'id333',
+    label: BillingCycle.Annuel,
+    id: BillingCycle.Annuel,
   },
 ];
 
-interface Filters {
-  name?: string;
-  category: string[];
-  status: string[];
-  inStock?: boolean;
-}
-
 interface itemsSearchState {
-  filters: Filters;
   page: number;
   rowsPerPage: number;
 }
 
 const useItemsSearch = () => {
   const [state, setState] = useState<itemsSearchState>({
-    filters: {
-      name: undefined,
-      category: [],
-      status: [],
-      inStock: undefined,
-    },
     page: 0,
     rowsPerPage: 5,
   });
-
-  const handleFiltersChange = useCallback((filters: Filters): void => {
-    setState((prevState) => ({
-      ...prevState,
-      filters,
-    }));
-  }, []);
 
   const handlePageChange = useCallback(
     (event: MouseEvent<HTMLButtonElement> | null, page: number): void => {
@@ -145,7 +117,6 @@ const useItemsSearch = () => {
   }, []);
 
   return {
-    handleFiltersChange,
     handlePageChange,
     handleRowsPerPageChange,
     state,

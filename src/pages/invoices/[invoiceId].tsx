@@ -23,7 +23,7 @@ import { paths } from 'src/paths';
 import type { Invoice } from 'src/types/invoice';
 import { getInitials } from 'src/utils/get-initials';
 import { InvoicePdfDocument } from './components/invoice-pdf-document';
-import { InvoicePreview } from './components/invoice-preview';
+import { InvoicePreview } from './sections/invoice-preview';
 import { InvoicePdfDialog } from './components/invoice-pdf-dialog';
 
 const useInvoice = (): Invoice | null => {
@@ -83,7 +83,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.invoices.index}
+                  href={paths.invoices.index}
                   sx={{
                     alignItems: 'center',
                     display: 'inline-flex',

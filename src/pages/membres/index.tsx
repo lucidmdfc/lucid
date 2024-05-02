@@ -209,7 +209,7 @@ const Page: NextPage = () => {
                 </div>
                 <Button
                   component={RouterLink}
-                  href={paths.dashboard.membres.create}
+                  href={paths.membres.create}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />

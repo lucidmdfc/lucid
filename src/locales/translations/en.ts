@@ -22,7 +22,7 @@ export const en = {
   [tokens.nav.salary]: 'Salaires & Emoloyé(e)s',
   [tokens.nav.cash]: 'Gestion de Caisse',
   [tokens.nav.utilities]: 'Utilities',
-  [tokens.nav.achats]: 'Prestataire et fournisseurs',
+  [tokens.nav.suppliers]: 'Prestataire et fournisseurs',
   [tokens.nav.expenses]: 'Notes de frais',
   [tokens.nav.dashboard]: 'Dashboard',
   [tokens.nav.details]: 'Details',

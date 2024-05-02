@@ -33,14 +33,7 @@ const tabs = [
   },
 ];
 
-interface Filters {
-  endDate?: Date;
-  query?: string;
-  startDate?: Date;
-}
-
 interface CashSearchState {
-  filters: Filters;
   page: number;
   rowsPerPage: number;
   currentTab: string;
@@ -48,23 +41,10 @@ interface CashSearchState {
 
 const useCashSearch = () => {
   const [state, setState] = useState<CashSearchState>({
-    filters: {
-      endDate: undefined,
-      query: '',
-      startDate: undefined,
-    },
     page: 0,
     rowsPerPage: 5,
     currentTab: 'in',
   });
-
-  const handleFiltersChange = useCallback((filters: Filters): void => {
-    setState((prevState) => ({
-      ...prevState,
-      filters,
-      page: 0,
-    }));
-  }, []);
 
   const handlePageChange = useCallback(
     (event: MouseEvent<HTMLButtonElement> | null, page: number): void => {
@@ -91,7 +71,6 @@ const useCashSearch = () => {
   }, []);
 
   return {
-    handleFiltersChange,
     handlePageChange,
     handleRowsPerPageChange,
     handleTabsChange,

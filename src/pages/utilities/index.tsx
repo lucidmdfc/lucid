@@ -12,10 +12,6 @@ import { Previewer } from 'src/sections/components/previewer';
 import NewUtilities from './components/new-utilities';
 
 const Page: NextPage = () => {
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    console.log('Form submitted successfully');
-  };
   const settings = useSettings();
 
   usePageView();
@@ -27,22 +23,20 @@ const Page: NextPage = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          py: 1,
+          py: 8,
         }}
       >
         <Container maxWidth={settings.stretch ? false : 'xl'}>
           <Stack
             direction="row"
-            justifyContent="space-between"
+            justifyContent="start"
             spacing={4}
             sx={{
               flexGrow: 1,
               py: 1,
             }}
           >
-            <div>
-              <Typography variant="h4">Utilities</Typography>
-            </div>
+            <Typography variant="h4">Utilities</Typography>
           </Stack>
           <Grid
             container
@@ -57,7 +51,7 @@ const Page: NextPage = () => {
             >
               <Container maxWidth="lg">
                 <Previewer title="Nouvelles dépenses">
-                  <NewUtilities onSubmit={handleSubmit}></NewUtilities>
+                  <NewUtilities></NewUtilities>
                 </Previewer>
               </Container>
             </Grid>

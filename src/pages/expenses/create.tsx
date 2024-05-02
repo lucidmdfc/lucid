@@ -13,7 +13,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { Card } from '@mui/material';
-import NewExpenses from 'src/pages/expenses/components/new-expenses';
+import NewExpenseForm from 'src/pages/expenses/components/new-expense-form';
 
 const Page: NextPage = () => {
   usePageView();
@@ -24,7 +24,7 @@ const Page: NextPage = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          //   py: 8,
+          py: 8,
         }}
       >
         <Container maxWidth="lg">
@@ -35,7 +35,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.expenses.index}
+                  href={paths.expenses.index}
                   variant="subtitle2"
                 >
                   Notes de frais
@@ -50,7 +50,7 @@ const Page: NextPage = () => {
             </Stack>
             <Container maxWidth="lg">
               <Card>
-                <NewExpenses></NewExpenses>
+                <NewExpenseForm></NewExpenseForm>
               </Card>
             </Container>
           </Stack>

@@ -25,15 +25,11 @@ import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
-import { salary } from 'src/types/salary';
-import { applyPagination } from 'src/utils/apply-pagination';
-import { applySort } from 'src/utils/apply-sort';
-import { deepCopy } from 'src/utils/deep-copy';
 import { slariesApi } from 'src/api/salaries';
+import { salary } from 'src/types/employees_salaries';
 
 interface Filters {
   query?: string;
-  status?: string;
 }
 type SortDir = 'asc' | 'desc';
 
@@ -41,33 +37,21 @@ interface SalarySearchState {
   filters: Filters;
   page: number;
   rowsPerPage: number;
-  sortBy?: string;
-  sortDir?: SortDir;
 }
 
 const useSalariesSearch = () => {
   const [state, setState] = useState<SalarySearchState>({
     filters: {
       query: undefined,
-      status: undefined,
     },
     page: 0,
     rowsPerPage: 5,
-    sortBy: 'createdAt',
-    sortDir: 'desc',
   });
 
   const handleFiltersChange = useCallback((filters: Filters): void => {
     setState((prevState) => ({
       ...prevState,
       filters,
-    }));
-  }, []);
-
-  const handleSortChange = useCallback((sortDir: SortDir): void => {
-    setState((prevState) => ({
-      ...prevState,
-      sortDir,
     }));
   }, []);
 
@@ -90,7 +74,6 @@ const useSalariesSearch = () => {
 
   return {
     handleFiltersChange,
-    handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
     state,
@@ -201,7 +184,7 @@ const Page: NextPage = () => {
               >
                 <Button
                   component={RouterLink}
-                  href={paths.dashboard.salary.newPAyement}
+                  href={paths.salary.newPAyement}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />
@@ -213,7 +196,7 @@ const Page: NextPage = () => {
                 </Button>
                 <Button
                   component={RouterLink}
-                  href={paths.dashboard.salary.newSalary}
+                  href={paths.salary.newSalary}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />
@@ -228,11 +211,7 @@ const Page: NextPage = () => {
           </Box>
 
           <Divider />
-          <SalaryListSearch
-            onFiltersChange={salariesSearch.handleFiltersChange}
-            sortBy={salariesSearch.state.sortBy}
-            sortDir={salariesSearch.state.sortDir}
-          />
+          <SalaryListSearch onFiltersChange={salariesSearch.handleFiltersChange} />
           <Divider />
           <SalaryListTable
             count={salariesStore.salariesCount}

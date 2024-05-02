@@ -96,7 +96,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.projets.index}
+                  href={paths.projets.index}
                   variant="subtitle2"
                 >
                   Gestion projets
@@ -104,7 +104,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.projets.details.replace(':projetId', project?.id)}
+                  href={paths.projets.details.replace(':projetId', project?.id)}
                   variant="subtitle2"
                 >
                   Détails du projet

@@ -86,7 +86,7 @@ const DashboardStats: FC = () => {
             <Button
               color="inherit"
               component={RouterLink}
-              href={paths.dashboard.cash.index}
+              href={paths.cash.index}
               endIcon={
                 <SvgIcon>
                   <ArrowRightIcon />
@@ -148,7 +148,7 @@ const DashboardStats: FC = () => {
             <Button
               color="inherit"
               component={RouterLink}
-              href={paths.dashboard.salary.index}
+              href={paths.salary.index}
               endIcon={
                 <SvgIcon>
                   <ArrowRightIcon />
@@ -209,7 +209,7 @@ const DashboardStats: FC = () => {
             <Button
               color="inherit"
               component={RouterLink}
-              href={paths.dashboard.utilities.index}
+              href={paths.utilities.index}
               endIcon={
                 <SvgIcon>
                   <ArrowRightIcon />

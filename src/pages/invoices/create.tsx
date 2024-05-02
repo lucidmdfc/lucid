@@ -35,7 +35,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.invoices.index}
+                  href={paths.invoices.index}
                   variant="subtitle2"
                 >
                   Factures

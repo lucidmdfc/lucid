@@ -20,7 +20,7 @@ export const fr = {
   [tokens.nav.salary]: 'Charges salariales',
   [tokens.nav.cash]: 'Compte Caisse',
   [tokens.nav.utilities]: 'Utilities',
-  [tokens.nav.achats]: 'Achats & Prestataires',
+  [tokens.nav.suppliers]: 'suppliers & Prestataires',
   [tokens.nav.expenses]: 'Notes de frais',
   [tokens.nav.dashboard]: 'Dashboard',
   [tokens.nav.details]: 'Details',

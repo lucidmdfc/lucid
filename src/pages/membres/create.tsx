@@ -36,7 +36,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.membres.index}
+                  href={paths.membres.index}
                   variant="subtitle2"
                 >
                   Gestion membres

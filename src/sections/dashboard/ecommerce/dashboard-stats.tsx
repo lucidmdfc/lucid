@@ -94,7 +94,7 @@ export const DashboardStats: FC<DashboardStatsProps> = (props) => {
                 color="text.secondary"
                 variant="body2"
               >
-                Total Achats
+                Total suppliers
               </Typography>
               <Typography variant="h5">MAD {formattedCost}</Typography>
             </div>

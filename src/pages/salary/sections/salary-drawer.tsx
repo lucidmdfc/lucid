@@ -11,10 +11,9 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import type { Theme } from '@mui/material/styles/createTheme';
 
-import { Customer } from 'src/types/template-types/customer';
 import SalaryDetails from './salary-details';
 import SalaryEdit from './salary-edit';
-import { salary } from 'src/types/salary';
+import { salary } from 'src/types/employees_salaries';
 
 interface SalaryDrawerProps {
   container?: HTMLDivElement | null;

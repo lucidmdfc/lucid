@@ -24,6 +24,7 @@ import * as Yup from 'yup';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { paths } from 'src/paths';
+import { ExpenseDetails, expense, expenseDetails } from 'src/types/expense';
 
 const validationSchema = Yup.object().shape({
   projectId: Yup.string().required('Nom projet est requis'),
@@ -36,34 +37,6 @@ type Option = {
   value: number;
 };
 
-type Salaries = {
-  text: string;
-  value: number;
-};
-
-type ExpenseDetails = {
-  text: string;
-  value: string;
-};
-
-interface FormData {
-  projectId: string;
-  salaryId: string;
-  comment: string;
-  startDate: Date | null;
-  endDate: Date | null;
-  amount: number | '';
-  isValid: boolean;
-}
-
-const expenseDetails: ExpenseDetails[] = [
-  { text: 'Transport', value: 'transport' },
-  { text: 'Hébergement', value: 'hebergement' },
-  { text: 'Repas', value: 'repas' },
-  { text: 'Cadeaux & Représentations', value: 'gifts' },
-  { text: 'Documentation', value: 'documentation' },
-];
-
 const projects: Option[] = [
   { text: 'project id 1', value: 1 },
   { text: 'project id 2', value: 2 },
@@ -72,7 +45,7 @@ const projects: Option[] = [
   { text: 'project id 5', value: 5 },
 ];
 
-const salaries: Salaries[] = [
+const salaries: Option[] = [
   { text: 'salary 1', value: 1 },
   { text: 'salary 2', value: 2 },
   { text: 'salary 3', value: 3 },
@@ -90,18 +63,21 @@ const EditExpense: FC = () => {
 
   const uploadDialog = useDialog();
 
-  const formik = useFormik<FormData>({
+  const formik = useFormik<expense>({
     initialValues: {
+      id: '',
       projectId: '',
       salaryId: '',
-      amount: '',
+      amount: 0,
       comment: '',
       startDate: new Date(),
-      endDate: null,
-      isValid: false,
+      endDate: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: false,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
+    onSubmit: async (values: expense, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
         console.log(values);
@@ -328,10 +304,10 @@ const EditExpense: FC = () => {
                 <FormControlLabel
                   control={
                     <Switch
-                      name="isValid"
-                      checked={formik?.values.isValid}
+                      name="status"
+                      checked={formik?.values.status}
                       onChange={(e) => {
-                        formik?.setFieldValue('isValid', e.target.checked);
+                        formik?.setFieldValue('status', e.target.checked);
                       }}
                     />
                   }

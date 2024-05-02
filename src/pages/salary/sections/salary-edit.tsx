@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { DatePicker } from '@mui/x-date-pickers';
-import { salary } from 'src/types/salary';
+import { salary } from 'src/types/employees_salaries';
 
 interface SalaryEditProps {
   onCancel?: () => void;

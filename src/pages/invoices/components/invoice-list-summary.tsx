@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 import ClockIcon from '@untitled-ui/icons-react/build/esm/Clock';
 import ReceiptCheckIcon from '@untitled-ui/icons-react/build/esm/ReceiptCheck';
 import ReceiptIcon from '@untitled-ui/icons-react/build/esm/Receipt';
@@ -9,7 +8,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-export const InvoiceListSummary: FC = () => (
+export const InvoiceListSummary = () => (
   <div>
     <Grid
       container

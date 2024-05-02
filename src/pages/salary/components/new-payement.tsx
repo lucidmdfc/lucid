@@ -9,11 +9,7 @@ import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
-import { payment } from 'src/types/payment';
-
-interface NewPaymentProps {
-  onSubmit: (formData: payment) => void;
-}
+import { payment } from 'src/types/employees_salaries';
 
 type Option = {
   text: string;
@@ -28,17 +24,19 @@ const salaries: Option[] = [
   { text: 'salary 5', value: 5 },
 ];
 
-const NewPayment: FC<NewPaymentProps> = ({ onSubmit }) => {
+const NewPayment = () => {
   const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
-      amount: '',
+      id: '',
+      amount: Number(),
       salary: '',
       date: new Date(),
+      createdDate: new Date(),
     },
     // validationSchema: validationSchema,
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
+    onSubmit: async (values: payment, { setSubmitting, resetForm }) => {
       console.log(values);
 
       try {
@@ -78,7 +76,7 @@ const NewPayment: FC<NewPaymentProps> = ({ onSubmit }) => {
               select
               size="small"
             >
-              <MenuItem disabled> --</MenuItem>
+              <MenuItem disabled>--</MenuItem>
               {salaries?.map((salary) => (
                 <MenuItem
                   key={salary?.value}

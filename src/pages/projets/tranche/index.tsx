@@ -39,7 +39,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.projets.index}
+                  href={paths.projets.index}
                   variant="subtitle2"
                 >
                   Gestion projets

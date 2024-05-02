@@ -1,58 +1,38 @@
-import React, { FC, useState } from 'react';
+import React from 'react';
+import { Field, useFormik } from 'formik';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import toast from 'react-hot-toast';
 import { client } from 'src/types/client';
+import * as yup from 'yup';
 
-interface NewClientFormProps {
-  onSubmit: (formData: client) => void;
-}
-
+// Define formik configuration object
+const validationSchema = yup.object({
+  fullName: yup.string().max(255).required('Nom et prénom est requis'),
+  phoneNumber: yup.string().max(20).required('Numéro de téléphone est requis'),
+  ice: yup.number().required('ICE est requis'),
+  address: yup.string().max(255).required('Adresse est requis'),
+});
+// Form component that uses the formikEnhancer
 const NewClientForm = () => {
-  const [fullName, setFullName] = useState<string>('');
-  const [ice, setICE] = useState<number | ''>('');
-  const [address, setAddress] = useState<string>('');
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
-
-  const handleFullNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFullName(event.target.value);
-  };
-
-  const handleICEChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-    const newValue: number | '' = /^\d+$/.test(inputValue) ? Number(inputValue) : '';
-    setICE(newValue);
-  };
-
-  const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAddress(event.target.value);
-  };
-
-  const handleBillingIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(event.target.value);
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData: client = {
-      fullName,
-      ice: Number(ice), // Ensure ice is a number
-      address,
-      phoneNumber,
-    };
-    toast.success('Client créé avec succès !');
-    console.log(formData);
-    setFullName('');
-    setICE('');
-    setAddress('');
-    setPhoneNumber('');
-  };
-
+  const formik = useFormik({
+    initialValues: {
+      fullName: '',
+      ice: 0,
+      address: '',
+      phoneNumber: '',
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values: client) => {
+      toast.success('Client créé avec succès !');
+      console.log(values);
+    },
+  });
   return (
     <Box sx={{ p: 3 }}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <Grid
           container
           spacing={3}
@@ -66,10 +46,12 @@ const NewClientForm = () => {
               fullWidth
               label="Nom et prénom"
               name="fullName"
-              required
+              onChange={formik.handleChange}
+              value={formik.values.fullName}
+              onBlur={formik.handleBlur}
+              error={formik.touched.fullName && Boolean(formik.errors.fullName)}
+              helperText={formik.touched.fullName && formik.errors.fullName}
               size="small"
-              value={fullName}
-              onChange={handleFullNameChange}
             />
           </Grid>
           <Grid
@@ -82,10 +64,12 @@ const NewClientForm = () => {
               label="Numéro de téléphone"
               name="phoneNumber"
               type="tel"
-              required
+              onChange={formik.handleChange}
+              value={formik.values.phoneNumber}
+              onBlur={formik.handleBlur}
+              error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+              helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
               size="small"
-              value={phoneNumber}
-              onChange={handleBillingIdChange}
             />
           </Grid>
           <Grid
@@ -98,10 +82,12 @@ const NewClientForm = () => {
               label="ICE"
               name="ice"
               type="number"
-              required
+              onChange={formik.handleChange}
+              value={formik.values.ice}
+              onBlur={formik.handleBlur}
+              error={formik.touched.ice && Boolean(formik.errors.ice)}
+              helperText={formik.touched.ice && formik.errors.ice}
               size="small"
-              value={ice}
-              onChange={handleICEChange}
             />
           </Grid>
           <Grid
@@ -113,10 +99,12 @@ const NewClientForm = () => {
               fullWidth
               label="Adresse"
               name="address"
-              required
+              onChange={formik.handleChange}
+              value={formik.values.address}
+              onBlur={formik.handleBlur}
+              error={formik.touched.address && Boolean(formik.errors.address)}
+              helperText={formik.touched.address && formik.errors.phoneNumber}
               size="small"
-              value={address}
-              onChange={handleAddressChange}
             />
           </Grid>
         </Grid>
@@ -124,6 +112,7 @@ const NewClientForm = () => {
           <Button
             type="submit"
             variant="contained"
+            disabled={formik.isSubmitting}
           >
             Créer un client
           </Button>
@@ -133,4 +122,5 @@ const NewClientForm = () => {
   );
 };
 
+// Connect NewClientForm component with formikEnhancer
 export default NewClientForm;

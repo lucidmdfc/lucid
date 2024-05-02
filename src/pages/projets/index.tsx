@@ -1,9 +1,7 @@
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { NextPage } from 'next';
-import Download01Icon from '@untitled-ui/icons-react/build/esm/Download01';
 import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
-import Upload01Icon from '@untitled-ui/icons-react/build/esm/Upload01';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -17,7 +15,6 @@ import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import type { Customer } from 'src/types/template-types/customer';
 import { useSettings } from 'src/hooks/use-settings';
 import ProjectListSearch from './sections/Project-list-search';
 import ProjectListTable from './sections/project-list-table';
@@ -178,7 +175,7 @@ const Page: NextPage = () => {
               >
                 <Button
                   component={RouterLink}
-                  href={paths.dashboard.projets.create}
+                  href={paths.projets.create}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />
@@ -190,7 +187,7 @@ const Page: NextPage = () => {
                 </Button>
                 <Button
                   component={RouterLink}
-                  href={paths.dashboard.projets.tranche}
+                  href={paths.projets.tranche}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />

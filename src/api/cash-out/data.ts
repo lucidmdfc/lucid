@@ -4,7 +4,7 @@ import { Motif, cashOut } from 'src/types/cash-out';
 const motifs: Motif[] = [
   { text: 'Notes de frais', value: 1 },
   { text: 'Utilities', value: 2 },
-  { text: 'Achats & Prestataires', value: 3 },
+  { text: 'suppliers & Prestataires', value: 3 },
 ];
 
 // Function to generate random motif

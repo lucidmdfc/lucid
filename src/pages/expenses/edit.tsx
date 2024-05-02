@@ -17,13 +17,9 @@ import EditExpense from 'src/pages/expenses/components/edit-expense';
 
 const Page: NextPage = () => {
   usePageView();
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    console.log('Form submitted successfully');
-  };
   return (
     <>
-      <Seo title="Dashboard: Modifier facture" />
+      <Seo title="Modifier note de frais" />
       <Box
         component="main"
         sx={{
@@ -34,12 +30,12 @@ const Page: NextPage = () => {
         <Container maxWidth="xl">
           <Stack spacing={3}>
             <Stack spacing={1}>
-              <Typography variant="h4">Modifier </Typography>
+              <Typography variant="h4">Modifier</Typography>
               <Breadcrumbs separator={<BreadcrumbsSeparator />}>
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.expenses.index}
+                  href={paths.expenses.index}
                   variant="subtitle2"
                 >
                   Notes de frais{' '}

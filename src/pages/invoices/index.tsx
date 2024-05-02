@@ -17,22 +17,21 @@ import { Seo } from 'src/components/seo';
 import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import type { Invoice, InvoiceStatus } from 'src/types/invoice';
+import type { Invoice } from 'src/types/invoice';
 import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
-import { InvoiceListTable } from './components/invoice-list-table';
-import { InvoiceListSidebar } from './components/invoice-list-sidebar';
+import { InvoiceListTable } from './sections/invoice-list-table';
+import { InvoiceListSidebar } from './sections/invoice-list-sidebar';
 import { InvoiceListSummary } from './components/invoice-list-summary';
-import { InvoiceListContainer } from './components/invoice-list-container';
+import { InvoiceListContainer } from './sections/invoice-list-container';
 
 //  ! ADD DELETE FUNCTION
 
 interface Filters {
-  customers?: string[];
-  endDate?: Date;
+  clients?: string[];
   query?: string;
   startDate?: Date;
-  status?: InvoiceStatus;
+  endDate?: Date;
 }
 
 interface InvoicesSearchState {
@@ -44,7 +43,7 @@ interface InvoicesSearchState {
 const useInvoicesSearch = () => {
   const [state, setState] = useState<InvoicesSearchState>({
     filters: {
-      customers: [],
+      clients: [],
       endDate: undefined,
       query: '',
       startDate: undefined,
@@ -113,13 +112,9 @@ const useInvoicesStore = (searchState: InvoicesSearchState) => {
     }
   }, [searchState, isMounted]);
 
-  useEffect(
-    () => {
-      handleInvoicesGet();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchState]
-  );
+  useEffect(() => {
+    handleInvoicesGet();
+  }, [searchState]);
 
   return {
     ...state,
@@ -210,7 +205,7 @@ const Page: NextPage = () => {
                   </Button>
                   <Button
                     component={RouterLink}
-                    href={paths.dashboard.invoices.create}
+                    href={paths.invoices.create}
                     startIcon={
                       <SvgIcon>
                         <PlusIcon />

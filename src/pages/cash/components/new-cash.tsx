@@ -2,7 +2,7 @@ import React, { ChangeEvent, FC, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { FormControlLabel, Grid, MenuItem, Switch } from '@mui/material';
+import { Grid, MenuItem, Switch } from '@mui/material';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';

@@ -1,4 +1,4 @@
-import { salary } from 'src/types/salary';
+import { payment, salary } from 'src/types/employees_salaries';
 
 export const dummySalaries: salary[] = [];
 
@@ -14,3 +14,46 @@ for (let i = 1; i <= 20; i++) {
   };
   dummySalaries.push(salary);
 }
+
+export const dummyPayments: payment[] = [
+  {
+    id: '1',
+    salary: 5000,
+    amount: 1000,
+    date: new Date('2022-01-01'),
+    createdDate: new Date('2022-01-01'),
+    updatedDate: new Date('2022-01-01'),
+  },
+  {
+    id: '2',
+    salary: 6000,
+    amount: 1200,
+    date: new Date('2022-01-02'),
+    createdDate: new Date('2022-01-02'),
+    updatedDate: new Date('2022-01-02'),
+  },
+  {
+    id: '3',
+    salary: 5500,
+    amount: 1100,
+    date: new Date('2022-01-03'),
+    createdDate: new Date('2022-01-03'),
+    updatedDate: new Date('2022-01-03'),
+  },
+  {
+    id: '4',
+    salary: 5800,
+    amount: 1160,
+    date: new Date('2022-01-04'),
+    createdDate: new Date('2022-01-04'),
+    updatedDate: new Date('2022-01-04'),
+  },
+  {
+    id: '5',
+    salary: 5200,
+    amount: 1040,
+    date: new Date('2022-01-05'),
+    createdDate: new Date('2022-01-05'),
+    updatedDate: new Date('2022-01-05'),
+  },
+];

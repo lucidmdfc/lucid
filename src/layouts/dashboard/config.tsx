@@ -41,7 +41,7 @@ export const useSections = () => {
         items: [
           {
             title: t(tokens.nav.overview),
-            path: paths.dashboard.index,
+            path: paths.index,
             icon: (
               <SvgIcon fontSize="small">
                 <DashboardIcon />
@@ -54,7 +54,7 @@ export const useSections = () => {
         items: [
           {
             title: t(tokens.nav.revenus),
-            path: paths.dashboard.revenus.index,
+            path: paths.revenus.index,
             icon: (
               <SvgIcon fontSize="small">
                 <FileDownloadIcon />
@@ -64,21 +64,21 @@ export const useSections = () => {
             items: [
               {
                 title: t(tokens.nav.projects_management),
-                path: paths.dashboard.projets.index,
+                path: paths.projets.index,
               },
 
               {
                 title: t(tokens.nav.members_management),
-                path: paths.dashboard.membres.index,
+                path: paths.membres.index,
               },
 
               {
                 title: t(tokens.nav.clients_management),
-                path: paths.dashboard.clients.index,
+                path: paths.clients.index,
               },
               {
                 title: t(tokens.nav.invoices_management),
-                path: paths.dashboard.invoices.index,
+                path: paths.invoices.index,
               },
             ],
           },
@@ -96,7 +96,7 @@ export const useSections = () => {
             items: [
               {
                 title: t(tokens.nav.salary),
-                path: paths.dashboard.salary.index,
+                path: paths.salary.index,
                 icon: (
                   <SvgIcon fontSize="small">
                     <GroupIcon />
@@ -105,7 +105,7 @@ export const useSections = () => {
               },
               {
                 title: t(tokens.nav.utilities),
-                path: paths.dashboard.utilities.index,
+                path: paths.utilities.index,
                 icon: (
                   <SvgIcon fontSize="small">
                     <ConstructionIcon />
@@ -113,8 +113,8 @@ export const useSections = () => {
                 ),
               },
               {
-                title: t(tokens.nav.achats),
-                path: paths.dashboard.achats.index,
+                title: t(tokens.nav.suppliers),
+                path: paths.suppliers.index,
                 icon: (
                   <SvgIcon fontSize="small">
                     <LocalGroceryStoreIcon />
@@ -123,7 +123,7 @@ export const useSections = () => {
               },
               {
                 title: t(tokens.nav.expenses),
-                path: paths.dashboard.expenses.index,
+                path: paths.expenses.index,
                 icon: (
                   <SvgIcon fontSize="small">
                     <RequestQuoteIcon />
@@ -138,7 +138,7 @@ export const useSections = () => {
         items: [
           {
             title: t(tokens.nav.cash),
-            path: paths.dashboard.cash.index,
+            path: paths.cash.index,
             icon: (
               <SvgIcon fontSize="small">
                 <CalculateIcon />
@@ -151,7 +151,7 @@ export const useSections = () => {
         items: [
           {
             title: t(tokens.nav.fileManager),
-            path: paths.dashboard.fileManager,
+            path: paths.fileManager,
             icon: (
               <SvgIcon fontSize="small">
                 <FilePresentIcon />

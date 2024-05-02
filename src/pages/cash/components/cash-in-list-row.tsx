@@ -33,7 +33,7 @@ interface CashList {
 }
 
 interface CashListInRowProps extends CashList {
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 }
 
 const CashListInRow: React.FC<CashListInRowProps> = ({
@@ -65,8 +65,7 @@ const CashListInRow: React.FC<CashListInRowProps> = ({
 
   const handleDeleteClick = () => {
     // Handle deleting the record
-    toast.success('La tranch a été supprimé avec succès');
-    // onDelete(id);
+    onDelete(id);
   };
 
   return (

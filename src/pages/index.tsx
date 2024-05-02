@@ -1,26 +1,17 @@
 import type { NextPage } from 'next';
-import { addDays, formatDistanceToNowStrict, subDays, subHours, subMinutes } from 'date-fns';
-import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Stack from '@mui/material/Stack';
-import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
-
 import { Seo } from 'src/components/seo';
 import { usePageView } from 'src/hooks/use-page-view';
 import { useSettings } from 'src/hooks/use-settings';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import { EcommerceStats } from 'src/sections/dashboard/ecommerce/ecommerce-stats';
-import { EcommerceProducts } from 'src/sections/dashboard/ecommerce/ecommerce-products';
 import DashboardStats from 'src/sections/components/quick-stats/dashboard-quick-stats';
 import { useTranslation } from 'react-i18next';
 import AllExpenses from 'src/sections/components/tables/all-expenses-table';
 import UnpaidExpenses from 'src/sections/components/tables/unpaid-expenses-table';
-
-const now = new Date();
 
 const Page: NextPage = () => {
   const settings = useSettings();

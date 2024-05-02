@@ -1,8 +1,8 @@
 import { deepCopy } from 'src/utils/deep-copy';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { applySort } from 'src/utils/apply-sort';
-import { salary } from 'src/types/salary';
 import { dummySalaries } from './data';
+import { salary } from 'src/types/employees_salaries';
 
 type GetSalariesRequest = {
   filters?: {

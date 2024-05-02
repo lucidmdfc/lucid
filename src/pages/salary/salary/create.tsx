@@ -12,10 +12,7 @@ import { Seo } from 'src/components/seo';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
-import { ProductCreateForm } from 'src/sections/dashboard/product/product-create-form';
 
-import NewProject from 'src/pages/projets/components/add-project';
-import { Previewer } from 'src/sections/components/previewer';
 import { Card } from '@mui/material';
 import NewSalary from 'src/pages/salary/components/new-salary';
 import { useTranslation } from 'react-i18next';
@@ -23,20 +20,17 @@ import { tokens } from 'src/locales/tokens';
 
 const Page: NextPage = () => {
   usePageView();
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    console.log('Form submitted successfully');
-  };
+
   const { t } = useTranslation();
 
   return (
     <>
-      <Seo title="Dashboard: Product Create" />
+      <Seo title="Chatge & dépenses: Nouveau salarié(e)" />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          //   py: 8,
+          py: 8,
         }}
       >
         <Container maxWidth="lg">
@@ -47,7 +41,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.salary.index}
+                  href={paths.salary.index}
                   variant="subtitle2"
                 >
                   {t(tokens.nav.salary)}{' '}
@@ -62,7 +56,7 @@ const Page: NextPage = () => {
             </Stack>
             <Container maxWidth="lg">
               <Card>
-                <NewSalary onSubmit={handleSubmit}></NewSalary>
+                <NewSalary></NewSalary>
               </Card>
             </Container>
           </Stack>

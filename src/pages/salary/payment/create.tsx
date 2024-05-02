@@ -18,20 +18,16 @@ import { tokens } from 'src/locales/tokens';
 
 const Page: NextPage = () => {
   usePageView();
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    console.log('Form submitted successfully');
-  };
   const { t } = useTranslation();
 
   return (
     <>
-      <Seo title="Dashboard: Product Create" />
+      <Seo title="Chatge & dépenses: Nouveau virement" />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          //   py: 8,
+          py: 8,
         }}
       >
         <Container maxWidth="lg">
@@ -42,7 +38,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.salary.index}
+                  href={paths.salary.index}
                   variant="subtitle2"
                 >
                   {t(tokens.nav.salary)}{' '}
@@ -57,7 +53,7 @@ const Page: NextPage = () => {
             </Stack>
             <Container maxWidth="lg">
               <Card>
-                <NewPayment onSubmit={handleSubmit}></NewPayment>
+                <NewPayment></NewPayment>
               </Card>
             </Container>
           </Stack>

@@ -97,7 +97,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
       <Box sx={{ p: 1 }}>
         <ListItemButton
           component={RouterLink}
-          href={paths.dashboard.social.profile}
+          href={''}
           onClick={onClose}
           sx={{
             borderRadius: 1,
@@ -114,7 +114,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
         </ListItemButton>
         <ListItemButton
           component={RouterLink}
-          href={paths.dashboard.account}
+          href={''}
           onClick={onClose}
           sx={{
             borderRadius: 1,
@@ -131,7 +131,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
         </ListItemButton>
         <ListItemButton
           component={RouterLink}
-          href={paths.dashboard.index}
+          href={''}
           onClick={onClose}
           sx={{
             borderRadius: 1,

@@ -11,10 +11,6 @@ import toast from 'react-hot-toast';
 import { utilities } from 'src/types/utilities';
 import { useDialog } from 'src/hooks/use-dialog';
 
-interface NewUtilitiesProps {
-  onSubmit: (formData: utilities[]) => void;
-}
-
 const initialFields: utilities[] = [
   { category: 'rent', amount: '', date: new Date() },
   { category: 'electric', amount: '', date: new Date() },
@@ -22,7 +18,7 @@ const initialFields: utilities[] = [
   { category: 'entretien', amount: '', date: new Date() },
 ];
 
-const NewUtilities: FC<NewUtilitiesProps> = ({ onSubmit }) => {
+const NewUtilities = () => {
   const dialog = useDialog();
 
   const [expenses, setExpenses] = useState<utilities[]>(initialFields);
@@ -37,7 +33,6 @@ const NewUtilities: FC<NewUtilitiesProps> = ({ onSubmit }) => {
   const handleSubmit = () => {
     // Assuming validation is not needed for predefined fields
 
-    onSubmit(expenses);
     console.log(expenses);
 
     // Clear the form and show success message

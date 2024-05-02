@@ -61,7 +61,7 @@ export const tokens = {
     members_management: 'nav.members_management',
     salary: 'nav.salary',
     utilities: 'nav.utilities',
-    achats: 'nav.achats',
+    suppliers: 'nav.suppliers',
     expenses: 'nav.expenses',
     cash: 'nav.cash',
   },

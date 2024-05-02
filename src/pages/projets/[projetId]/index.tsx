@@ -162,7 +162,7 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.dashboard.projets.index}
+                  href={paths.projets.index}
                   sx={{
                     alignItems: 'center',
                     display: 'inline-flex',
@@ -201,7 +201,7 @@ const Page: NextPage = () => {
                   {' '}
                   <Button
                     component={RouterLink}
-                    href={paths.dashboard.projets.tranche}
+                    href={paths.projets.tranche}
                     startIcon={
                       <SvgIcon>
                         <Plus />
@@ -222,9 +222,8 @@ const Page: NextPage = () => {
                         </SvgIcon>
                       }
                       href={
-                        (project.id
-                          ? paths.dashboard.projets.edit.replace(':projetId', project.id)
-                          : '') || '#'
+                        (project.id ? paths.projets.edit.replace(':projetId', project.id) : '') ||
+                        '#'
                       }
                     >
                       Modifier le projet

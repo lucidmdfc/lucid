@@ -29,7 +29,7 @@ const projects: Option[] = [
 const motifs: Motif[] = [
   { text: 'Notes de frais', value: 1 },
   { text: 'Utilities', value: 2 },
-  { text: 'Achats & Prestataires', value: 3 },
+  { text: 'suppliers & Prestataires', value: 3 },
 ];
 interface CashList {
   date: string;

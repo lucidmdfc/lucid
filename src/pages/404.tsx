@@ -18,7 +18,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <Seo title="Error: Not Found" />
+      <Seo title="Erreur : Page non trouvée" />
       <Box
         component="main"
         sx={{
@@ -37,7 +37,7 @@ const Page: NextPage = () => {
             }}
           >
             <Box
-              alt="Not found"
+              alt="Non trouvé"
               component="img"
               src="/assets/errors/error-404.png"
               sx={{
@@ -51,15 +51,15 @@ const Page: NextPage = () => {
             align="center"
             variant={mdUp ? 'h1' : 'h4'}
           >
-            404: The page you are looking for isn’t here
+            404 : La page que vous recherchez n'est pas ici
           </Typography>
           <Typography
             align="center"
             color="text.secondary"
             sx={{ mt: 0.5 }}
           >
-            You either tried some shady route or you came here by mistake. Whichever it is, try
-            using the navigation.
+            Vous avez essayé une route douteuse ou vous êtes arrivé ici par erreur. Quoi qu'il en
+            soit, essayez d'utiliser la navigation.
           </Typography>
           <Box
             sx={{
@@ -72,7 +72,7 @@ const Page: NextPage = () => {
               component={RouterLink}
               href={paths.index}
             >
-              Back to Home
+              Retour à la page d'accueil
             </Button>
           </Box>
         </Container>

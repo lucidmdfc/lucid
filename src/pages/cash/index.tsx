@@ -48,8 +48,7 @@ const Page: NextPage = () => {
           container
           xs={12}
           md={12}
-          spacing={1}
-          pb={3}
+          spacing={2}
           maxWidth="xl"
         >
           <Grid
@@ -74,7 +73,7 @@ const Page: NextPage = () => {
           >
             <Container
               sx={{
-                paddingX: ' 0 !important',
+                paddingX: '0 !important',
               }}
             >
               <Previewer title="Nouvelle Sortie">
@@ -83,9 +82,7 @@ const Page: NextPage = () => {
             </Container>
           </Grid>
         </Grid>
-        <Divider />
         <TableCash />
-        <Divider />
       </Container>
     </Box>
   );

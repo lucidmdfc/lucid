@@ -11,9 +11,9 @@ export interface Member {
   email?: string;
   amount?: number | '';
   payment_method?: PaymentMethod;
-  payment_date?: any | null | number | '';
+  payment_date?: Date | null;
   rc_cin: string;
   status: string;
   created_at?: Date;
-  updated_at?: Date; // Corrected typo in property name
+  updated_at?: Date;
 }

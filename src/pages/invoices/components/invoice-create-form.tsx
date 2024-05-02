@@ -27,18 +27,14 @@ import ItemsDetails from './items/total-ht-ttc';
 import CreateConfirmationModal from './create-modal-confirmation';
 import { Item } from 'src/types/item';
 import { useDialog } from 'src/hooks/use-dialog';
+import { BillingCycle } from 'src/types/invoice';
 
-interface CustomerOption {
+interface option {
   label: string;
   id: string;
 }
 
-interface BillingState {
-  label: string;
-  id: string;
-}
-
-const clients: CustomerOption[] = [
+const clients: option[] = [
   {
     label: 'John Doe',
     id: 'id123',
@@ -65,50 +61,35 @@ const clients: CustomerOption[] = [
   },
 ];
 
-const billingOptions: BillingState[] = [
+const billingOptions: { label: string; id: string }[] = [
   {
-    label: 'Quotidien',
-    id: 'id000',
+    label: BillingCycle.Quotidien,
+    id: BillingCycle.Quotidien,
   },
   {
-    label: 'Hebdomadaire',
-    id: 'id11',
+    label: BillingCycle.Hebdomadaire,
+    id: BillingCycle.Hebdomadaire,
   },
   {
-    label: 'Mensuel',
-    id: 'id222',
+    label: BillingCycle.Mensuel,
+    id: BillingCycle.Mensuel,
   },
   {
-    label: 'Annuel',
-    id: 'id333',
+    label: BillingCycle.Annuel,
+    id: BillingCycle.Annuel,
   },
 ];
 
-interface Filters {
-  name?: string;
-}
-
 interface itemsSearchState {
-  filters: Filters;
   page: number;
   rowsPerPage: number;
 }
 
 const useItemsSearch = () => {
   const [state, setState] = useState<itemsSearchState>({
-    filters: {
-      name: undefined,
-    },
     page: 0,
     rowsPerPage: 5,
   });
-
-  const handleFiltersChange = useCallback((filters: Filters): void => {
-    setState((prevState) => ({
-      ...prevState,
-      filters,
-    }));
-  }, []);
 
   const handlePageChange = useCallback(
     (event: MouseEvent<HTMLButtonElement> | null, page: number): void => {
@@ -128,7 +109,6 @@ const useItemsSearch = () => {
   }, []);
 
   return {
-    handleFiltersChange,
     handlePageChange,
     handleRowsPerPageChange,
     state,

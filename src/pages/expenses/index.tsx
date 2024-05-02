@@ -1,34 +1,27 @@
 import type { NextPage } from 'next';
-import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
 import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Unstable_Grid2';
 import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
-
-import { Seo } from 'src/components/seo';
 import { usePageView } from 'src/hooks/use-page-view';
 import { useSettings } from 'src/hooks/use-settings';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import { Divider } from '@mui/material';
-import { OrderListContainer } from 'src/sections/dashboard/order/order-list-container';
+import { Card, Container, Divider } from '@mui/material';
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDialog } from 'src/hooks/use-dialog';
-import { Customer } from 'src/types/template-types/customer';
 import { useMounted } from 'src/hooks/use-mounted';
-import { customersApi } from 'src/api/customers';
 import ExpenseListSearch from './sections/expense-list-search';
-import ExpenseDrawer from './sections/expense-drawer';
 import ExpenseListTable from './sections/expense-list-table';
 import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
+import { expense } from 'src/types/expense';
+import { expensesApi } from 'src/api/expenses';
+import { Seo } from 'src/components/seo';
 
 interface Filters {
   query?: string;
-  status?: string;
 }
 
 interface ExpensesSearchState {
@@ -40,7 +33,6 @@ const useExpensesSearch = () => {
   const [state, setState] = useState<ExpensesSearchState>({
     filters: {
       query: undefined,
-      status: undefined,
     },
     page: 0,
     rowsPerPage: 5,
@@ -78,24 +70,24 @@ const useExpensesSearch = () => {
   };
 };
 interface ExpenseStoreState {
-  members: Customer[];
-  membersCount: number;
+  expenses: expense[];
+  expensesCount: number;
 }
-const useMembersStore = (searchState: ExpensesSearchState) => {
+const useExpensesStore = (searchState: ExpensesSearchState) => {
   const isMounted = useMounted();
   const [state, setState] = useState<ExpenseStoreState>({
-    members: [],
-    membersCount: 0,
+    expenses: [],
+    expensesCount: 0,
   });
 
   const handleOrdersGet = useCallback(async () => {
     try {
-      const response = await customersApi.getCustomers(searchState);
+      const response = await expensesApi.getExpenses(searchState);
 
       if (isMounted()) {
         setState({
-          members: response.data,
-          membersCount: response.count,
+          expenses: response.data,
+          expensesCount: response.count,
         });
       }
     } catch (err) {
@@ -115,27 +107,22 @@ const useMembersStore = (searchState: ExpensesSearchState) => {
     ...state,
   };
 };
-const useCurrentOrder = (members: Customer[], memberId?: string): Customer | undefined => {
-  return useMemo((): Customer | undefined => {
-    if (!memberId) {
+const useCurrentOrder = (expenses: expense[], expenseId?: string): expense | undefined => {
+  return useMemo((): expense | undefined => {
+    if (!expenseId) {
       return undefined;
     }
 
-    return members.find((member) => member.id === memberId);
-  }, [members, memberId]);
+    return expenses.find((expense) => expense.id === expenseId);
+  }, [expenses, expenseId]);
 };
 
 const Page: NextPage = () => {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const expensesSearch = useExpensesSearch();
-  const expensesStore = useMembersStore(expensesSearch.state);
+  const expensesStore = useExpensesStore(expensesSearch.state);
   const dialog = useDialog<string>();
-  const currentOrder = useCurrentOrder(expensesStore.members, dialog.data);
-
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    console.log('Form submitted successfully');
-  };
+  const currentOrder = useCurrentOrder(expensesStore.expenses, dialog.data);
   const settings = useSettings();
 
   usePageView();
@@ -153,75 +140,56 @@ const Page: NextPage = () => {
     [dialog]
   );
   return (
-    <Box
-      component="main"
-      ref={rootRef}
-      sx={{
-        display: 'flex',
-        flex: '1 1 auto',
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
+    <>
+      <Seo title="Charge & dépenses: Note de frais" />
+
       <Box
-        ref={rootRef}
+        component="main"
         sx={{
-          bottom: 0,
-          display: 'flex',
-          left: 0,
-          position: 'absolute',
-          right: 0,
-          top: 0,
+          flexGrow: 1,
+          py: 8,
         }}
       >
-        <OrderListContainer open={dialog.open}>
-          <Box sx={{ p: 1 }}>
-            <Stack
-              alignItems="flex-start"
-              direction="row"
-              justifyContent="space-between"
-              spacing={2}
-              sx={{ mx: 5 }}
+        <Container maxWidth={settings.stretch ? false : 'xl'}>
+          <Stack
+            alignItems="flex-start"
+            direction="row"
+            justifyContent="space-between"
+            spacing={4}
+            mb={3}
+          >
+            <div>
+              <Typography variant="h4">Notes de frais</Typography>
+            </div>
+            <Button
+              component={RouterLink}
+              href={paths.expenses.create}
+              startIcon={
+                <SvgIcon>
+                  <PlusIcon />
+                </SvgIcon>
+              }
+              variant="contained"
             >
-              <div>
-                <Typography variant="h4">Notes de frais</Typography>
-              </div>
-              <Button
-                component={RouterLink}
-                href={paths.dashboard.expenses.create}
-                startIcon={
-                  <SvgIcon>
-                    <PlusIcon />
-                  </SvgIcon>
-                }
-                variant="contained"
-              >
-                Déclarer
-              </Button>
-            </Stack>
-          </Box>
-
-          <Divider />
-          <ExpenseListSearch onFiltersChange={expensesSearch.handleFiltersChange} />
-          <Divider />
-          <ExpenseListTable
-            count={expensesStore.membersCount}
-            items={expensesStore.members}
-            onPageChange={expensesSearch.handlePageChange}
-            onRowsPerPageChange={expensesSearch.handleRowsPerPageChange}
-            onSelect={handleOrderOpen}
-            page={expensesSearch.state.page}
-            rowsPerPage={expensesSearch.state.rowsPerPage}
-          />
-        </OrderListContainer>
-        <ExpenseDrawer
-          container={rootRef.current}
-          onClose={dialog.handleClose}
-          open={dialog.open}
-          member={currentOrder}
-        />
+              Déclarer
+            </Button>
+          </Stack>
+          <Card>
+            <ExpenseListSearch onFiltersChange={expensesSearch.handleFiltersChange} />
+            <Divider />
+            <ExpenseListTable
+              count={expensesStore.expensesCount}
+              items={expensesStore.expenses}
+              onPageChange={expensesSearch.handlePageChange}
+              onRowsPerPageChange={expensesSearch.handleRowsPerPageChange}
+              onSelect={handleOrderOpen}
+              page={expensesSearch.state.page}
+              rowsPerPage={expensesSearch.state.rowsPerPage}
+            />
+          </Card>
+        </Container>
       </Box>
-    </Box>
+    </>
   );
 };
 

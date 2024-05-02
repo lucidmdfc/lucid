@@ -19,10 +19,11 @@ import Edit02 from '@untitled-ui/icons-react/build/esm/Edit02';
 import DeleteConfirmationModal from '../components/delete-modal-confirmation';
 import toast from 'react-hot-toast';
 import { useDialog } from 'src/hooks/use-dialog';
+import { expense } from 'src/types/expense';
 
 interface ExpenseListTableProps {
   count?: number;
-  items?: Customer[];
+  items?: expense[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onSelect?: (orderId: string) => void;
@@ -40,7 +41,7 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
       toast.success('Le frais a été supprimé avec succès!');
       dialog.handleOpen();
     } catch (error) {
-      console.error('Error deleting member: ', error);
+      console.error('Error deleting expense: ', error);
       toast.error('Échec de la suppression du frais. Veuillez réessayer.');
     }
   };
@@ -68,20 +69,20 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((member) => {
-            const totalAmount = numeral(member.totalSpent).format(`0,0.00`);
-            const date = member.updatedAt && format(member.updatedAt, 'dd/MM/yyyy');
+          {items.map((expense) => {
+            const totalAmount = numeral(expense.amount).format(`0,0.00`);
+            const date = expense.updatedAt && format(expense.updatedAt, 'dd/MM/yyyy');
 
             return (
               <TableRow
                 hover
-                key={member.id}
+                key={expense.id}
               >
                 <TableCell>
-                  <Typography variant="subtitle2">{member.name}</Typography>
+                  <Typography variant="subtitle2">{expense.projectId}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="subtitle2">{member.state}</Typography>
+                  <Typography variant="subtitle2">{expense.salaryId}</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">{date}</Typography>
@@ -91,8 +92,8 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">
-                    <SeverityPill color={1 < 2 ? 'error' : 'info'}>
-                      {1 < 2 ? ' En Attente' : 'Validé'}
+                    <SeverityPill color={expense.status ? 'info' : 'error'}>
+                      {expense.status ? 'Validé' : 'En Attente'}
                     </SeverityPill>
                   </Typography>
                 </TableCell>
@@ -108,7 +109,7 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
                   </IconButton>
                   <IconButton
                     component={RouterLink}
-                    href={paths.dashboard.expenses.edit}
+                    href={paths.expenses.edit}
                     color="warning"
                   >
                     <SvgIcon>
