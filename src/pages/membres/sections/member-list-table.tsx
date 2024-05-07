@@ -1,25 +1,21 @@
-import { useState, type ChangeEvent, type FC, type MouseEvent } from 'react';
+import { useCallback, useState, type ChangeEvent, type FC, type MouseEvent } from 'react';
 import PropTypes from 'prop-types';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import { SeverityPill, type SeverityPillColor } from 'src/components/severity-pill';
-
-import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
-
-import { IconButton, SvgIcon, TableHead } from '@mui/material';
-
 import { Member } from 'src/types/member';
+import { useDialog } from 'src/hooks/use-dialog';
+import MemberListTableRow from '../components/member-list-table-row';
+import { TableHead } from '@mui/material';
 
 interface MemberListTableProps {
   count?: number;
   members?: Member[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  onSelect?: (orderId: string) => void;
+  onSelect?: (memberId: string) => void;
   onDelete?: (memberId: string) => void;
   page?: number;
   rowsPerPage?: number;
@@ -40,7 +36,18 @@ const MemberListTable: FC<MemberListTableProps> = (props) => {
   } = props;
 
   // Function to get payment method text based on value
+  const dialog = useDialog();
+  const handleMemberDrawerOpen = useCallback(
+    (memberId: string): void => {
+      if (dialog.open && dialog.data === memberId) {
+        dialog.handleClose();
+        return;
+      }
 
+      dialog.handleOpen(memberId);
+    },
+    [dialog]
+  );
   return (
     <div>
       <Table>
@@ -57,38 +64,11 @@ const MemberListTable: FC<MemberListTableProps> = (props) => {
         <TableBody>
           {members.map((member, i) => {
             return (
-              <TableRow
-                hover
+              <MemberListTableRow
                 key={i}
-              >
-                <TableCell>
-                  <Typography variant="subtitle2">{member.full_name}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2">{member.email}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">{member.rc_cin}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">{member.payment_method ?? '--'}</Typography>
-                </TableCell>
-                <TableCell>
-                  <SeverityPill color={member?.status == 'paid' ? 'success' : 'error'}>
-                    {member?.status == 'paid' ? 'payée' : 'impayée'}
-                  </SeverityPill>
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    color="info"
-                    onClick={() => onSelect?.(member.id)}
-                  >
-                    <SvgIcon>
-                      <ArrowRightIcon />
-                    </SvgIcon>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
+                member={member}
+                onSelect={handleMemberDrawerOpen}
+              />
             );
           })}
         </TableBody>

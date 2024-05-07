@@ -130,14 +130,14 @@ const Page: NextPage = () => {
 
   usePageView();
 
-  const handleOrderOpen = useCallback(
-    (orderId: string): void => {
-      if (dialog.open && dialog.data === orderId) {
+  const handleMemberDrawerOpen = useCallback(
+    (memberId: string): void => {
+      if (dialog.open && dialog.data === memberId) {
         dialog.handleClose();
         return;
       }
 
-      dialog.handleOpen(orderId);
+      dialog.handleOpen(memberId);
     },
     [dialog]
   );
@@ -217,7 +217,7 @@ const Page: NextPage = () => {
             salaries={salariesStore.salaries}
             onPageChange={salariesSearch.handlePageChange}
             onRowsPerPageChange={salariesSearch.handleRowsPerPageChange}
-            onSelect={handleOrderOpen}
+            onSelect={handleMemberDrawerOpen}
             page={salariesSearch.state.page}
             rowsPerPage={salariesSearch.state.rowsPerPage}
           />

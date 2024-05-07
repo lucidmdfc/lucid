@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FC, type MouseEvent } from 'react';
+import { useCallback, useState, type ChangeEvent, type FC, type MouseEvent } from 'react';
 import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import Table from '@mui/material/Table';
@@ -10,14 +10,15 @@ import Typography from '@mui/material/Typography';
 import ArrowRightIcon from '@untitled-ui/icons-react/build/esm/ArrowRight';
 import { IconButton, SvgIcon, TableHead } from '@mui/material';
 import { format } from 'date-fns';
-import { salary } from 'src/types/employees_salaries';
+import { employee } from 'src/types/employees_salaries';
+import { useDialog } from 'src/hooks/use-dialog';
 
 interface SalaryListTableProps {
   count?: number;
-  salaries?: salary[];
+  salaries?: employee[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  onSelect?: (orderId: string) => void;
+  onSelect?: (employeeId: string) => void;
   page?: number;
   rowsPerPage?: number;
 }
