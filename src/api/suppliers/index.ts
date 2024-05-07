@@ -2,8 +2,8 @@ import { endOfDay, startOfDay } from 'date-fns';
 
 import { applyPagination } from 'src/utils/apply-pagination';
 import { deepCopy } from 'src/utils/deep-copy';
-import { dummyProvider, dummyProviders } from './data';
 import { Supplier } from 'src/types/supplier';
+import { dummySuppliers } from './data';
 
 type GetSuppliersRequest = {
   filters?: {
@@ -30,7 +30,7 @@ class SuppliersApi {
   getSuppliers(request: GetSuppliersRequest = {}): GetSuppliersResponse {
     const { filters, page, rowsPerPage } = request;
 
-    let data = deepCopy(dummyProviders) as Supplier[];
+    let data = deepCopy(dummySuppliers) as Supplier[];
     let count = data.length;
 
     if (typeof filters !== 'undefined') {
@@ -97,7 +97,7 @@ class SuppliersApi {
   }
 
   getSupplier(request?: GetSupplierRequest): GetSupplierResponse {
-    return Promise.resolve(deepCopy(dummyProvider));
+    return Promise.resolve(deepCopy(dummySuppliers));
   }
 }
 

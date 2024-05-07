@@ -1,4 +1,4 @@
-export interface salary {
+export interface employee {
   id: string;
   salaryName: string;
   salaryFunction: string;
@@ -10,7 +10,7 @@ export interface salary {
 
 export interface payment {
   id: string;
-  salary: string;
+  employee: string;
   amount: number;
   date: Date;
   createdDate: Date;

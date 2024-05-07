@@ -10,6 +10,10 @@ import type { SeverityPillColor } from 'src/components/severity-pill';
 
 import { paths } from 'src/paths';
 import { ProviderStatus, Supplier } from 'src/types/supplier';
+import Trash02 from '@untitled-ui/icons-react/build/esm/Trash02';
+import { useDialog } from 'src/hooks/use-dialog';
+import toast from 'react-hot-toast';
+import DeleteConfirmationModal from './delete-modal-confirmation';
 
 const statusColorsMap: Record<ProviderStatus, SeverityPillColor> = {
   canceled: 'error',
@@ -17,12 +21,13 @@ const statusColorsMap: Record<ProviderStatus, SeverityPillColor> = {
   pending: 'warning',
 };
 
-interface ProviderRowProps {
+interface SupplierRowProps {
   supplier: Supplier;
 }
 
-const ProviderRow: FC<ProviderRowProps> = (props) => {
+const SupplierRow: FC<SupplierRowProps> = (props) => {
   const { supplier, ...other } = props;
+  const dialog = useDialog();
 
   const statusColor = statusColorsMap[supplier.status];
 
@@ -30,11 +35,27 @@ const ProviderRow: FC<ProviderRowProps> = (props) => {
   const issueDate = supplier.depositedDate && format(supplier.depositedDate, 'dd/MM/yyyy');
   const dueDate = supplier.dueDate && format(supplier.dueDate, 'dd/MM/yyyy');
 
+  const handleDelete = async (supplierId: string | undefined) => {
+    try {
+      // Implement the delete logic here
+      toast.success('Le Prestataire a été supprimée avec succès!');
+      dialog.handleClose();
+    } catch (error) {
+      console.error('Error deleting cash: ', error);
+      toast.error('Échec de la suppression. Veuillez réessayer.');
+    }
+  };
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       {...other}
     >
+      <DeleteConfirmationModal
+        isOpen={dialog.open}
+        onConfirm={handleDelete}
+        onCancel={dialog.handleClose}
+        message="Êtes-vous sûr de vouloir supprimer? Cette action sera irréversible."
+      />{' '}
       <TableCell width="25%">
         <Stack
           alignItems="center"
@@ -102,13 +123,21 @@ const ProviderRow: FC<ProviderRowProps> = (props) => {
             <Edit />
           </SvgIcon>
         </IconButton>
+        <IconButton
+          color="error"
+          onClick={dialog.handleOpen}
+        >
+          <SvgIcon>
+            <Trash02 />
+          </SvgIcon>
+        </IconButton>
       </TableCell>
     </TableRow>
   );
 };
-export default ProviderRow;
+export default SupplierRow;
 
-ProviderRow.propTypes = {
+SupplierRow.propTypes = {
   // @ts-ignore
   supplier: PropTypes.object.isRequired,
 };

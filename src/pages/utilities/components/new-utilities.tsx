@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { MobileDatePicker } from '@mui/x-date-pickers';
-import { labels } from 'src/api/mail/data';
 import { SeverityPill } from 'src/components/severity-pill';
 import CreateConfirmationModal from 'src/pages/utilities/components/create-modal-confirmation';
 import toast from 'react-hot-toast';
@@ -22,7 +21,6 @@ const NewUtilities = () => {
   const dialog = useDialog();
 
   const [expenses, setExpenses] = useState<utilities[]>(initialFields);
-  const [successMessage, setSuccessMessage] = useState<string>('');
 
   const handleInputChange = (category: string, amount: string, date: Date, index: number) => {
     const updatedExpenses = [...expenses];
@@ -32,18 +30,12 @@ const NewUtilities = () => {
 
   const handleSubmit = () => {
     // Assuming validation is not needed for predefined fields
-
     console.log(expenses);
 
     // Clear the form and show success message
     setExpenses(initialFields);
     toast.success('La dépense a été crée avec succés');
     dialog.handleClose();
-
-    // Clear the success message after a delay (e.g., 3 seconds)
-    setTimeout(() => {
-      setSuccessMessage('');
-    }, 3000);
   };
 
   return (
@@ -53,7 +45,7 @@ const NewUtilities = () => {
         onConfirm={handleSubmit}
         onCancel={dialog.handleClose}
         message="
-        Êtes-vous sûr de vouloir soumettre ce formulaire pour créer une nouvelle dépense ? "
+        Êtes-vous sûr de vouloir soumettre ce formulaire pour créer une nouvelle dépense ?"
       />
       <form>
         <Grid
@@ -125,16 +117,6 @@ const NewUtilities = () => {
           </Button>
         </Box>
       </form>
-      {successMessage && (
-        <SeverityPill
-          sx={{
-            mt: 2,
-          }}
-          color="success"
-        >
-          {successMessage}
-        </SeverityPill>
-      )}
     </Box>
   );
 };

@@ -7,7 +7,7 @@ import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/render
 import { useTheme } from '@mui/material/styles';
 
 import type { Invoice } from 'src/types/invoice';
-import { calculateTotals } from 'src/calculations/total-items-calculate';
+import { calculateTotals } from 'src/pages/invoices/calculations/total-items-calculate';
 
 const useStyles = () => {
   const theme = useTheme();

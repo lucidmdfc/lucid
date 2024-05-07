@@ -14,11 +14,12 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { useSettings } from 'src/hooks/use-settings';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import FilterFunnel01Icon from '@untitled-ui/icons-react/build/esm/FilterFunnel01';
-import PurchaseCreateForm from './sections/create-purchase';
+import PurchaseCreateForm from './components/create-supplier-form';
 import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
+import SupplierCreateForm from './components/create-supplier-form';
 
 const Page: NextPage = () => {
   const { t } = useTranslation();
@@ -58,7 +59,7 @@ const Page: NextPage = () => {
               Rechercher{' '}
             </Button>
           </Stack>
-          <PurchaseCreateForm />
+          <SupplierCreateForm />
         </Stack>
       </Container>
     </Box>

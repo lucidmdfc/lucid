@@ -187,7 +187,7 @@ const InvoiceUpdateForm: FC = (props) => {
       try {
         // NOTE: Make API request
         toast.success('La facture a été modifiée avec succès.');
-        router.push(paths.dashboard.invoices.index);
+        router.push(paths.invoices.index);
       } catch (err) {
         console.error(err);
         toast.error('Something went wrong!');

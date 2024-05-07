@@ -3,7 +3,7 @@ import { IconButton, Stack, SvgIcon, TableCell, TableRow, Typography } from '@mu
 import ArrowRight from '@untitled-ui/icons-react/build/esm/ArrowRight';
 import { format } from 'date-fns';
 import { FC, useState } from 'react';
-import { calculateTotals } from 'src/calculations/total-items-calculate';
+import { calculateTotals } from 'src/pages/invoices/calculations/total-items-calculate';
 import { RouterLink } from 'src/components/router-link';
 import { SeverityPill, SeverityPillColor } from 'src/components/severity-pill';
 import { paths } from 'src/paths';

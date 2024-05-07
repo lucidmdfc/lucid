@@ -12,7 +12,7 @@ import { Seo } from 'src/components/seo';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
-import PurchaseUpdateForm from './sections/edit-purchase';
+import PurchaseUpdateForm from './components/edit-supplier-form';
 
 const Page: NextPage = () => {
   usePageView();

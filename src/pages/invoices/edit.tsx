@@ -13,7 +13,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 
-import InvoiceUpdateForm from './components/invoice-edit-form';
+import InvoiceUpdateForm from './components/edit-invoice-form';
 
 const Page: NextPage = () => {
   usePageView();

@@ -1,13 +1,13 @@
 import React, { FC, forwardRef } from 'react';
-import AlertTriangleIcon from '@untitled-ui/icons-react/build/esm/AlertTriangle';
+import EditIcon from '@mui/icons-material/Edit';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 import { Dialog, Slide } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
+import Check from '@mui/icons-material/Check';
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -24,21 +24,13 @@ const Transition = React.forwardRef(function Transition(
   );
 });
 
-interface DeleteConfirmationModalProps {
+interface UpdateConfirmationProps {
   isOpen: boolean;
-  onConfirm: (salaryId: string | undefined) => void;
+  onConfirm: () => void;
   onCancel: () => void;
-  message: string;
-  salaryId?: string;
 }
 
-const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
-  isOpen,
-  onConfirm,
-  onCancel,
-  message,
-  salaryId,
-}) => (
+const UpdateConfirmation: FC<UpdateConfirmationProps> = ({ isOpen, onConfirm, onCancel }) => (
   <Dialog
     open={isOpen}
     TransitionComponent={Transition}
@@ -49,42 +41,26 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
     <Stack
       direction="row"
       spacing={2}
-      sx={{
-        display: 'flex',
-        p: 3,
-      }}
+      sx={{ p: 3 }}
     >
-      <Avatar
-        sx={{
-          backgroundColor: 'error.lightest',
-          color: 'error.main',
-        }}
-      >
-        <SvgIcon>
-          <AlertTriangleIcon />
-        </SvgIcon>
+      <Avatar sx={{ backgroundColor: 'primary.lightest', color: 'primary.main' }}>
+        <Check />
       </Avatar>
       <div>
-        <Typography variant="h5">Confirmation de suppression</Typography>
+        <Typography variant="h5">Confirmation de Mise à Jour</Typography>
         <Typography
           color="text.secondary"
           sx={{ mt: 1 }}
           variant="body2"
         >
-          {message}
+          Êtes-vous sûr(e) de vouloir mettre à jour ce Prestataires ? Les modifications seront
+          enregistrées.{' '}
         </Typography>
       </div>
     </Stack>
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        pb: 3,
-        px: 3,
-      }}
-    >
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', pb: 3, px: 3 }}>
       <Button
-        color="inherit"
+        color="error"
         sx={{ mr: 2 }}
         onClick={onCancel}
       >
@@ -92,17 +68,18 @@ const DeleteConfirmationModal: FC<DeleteConfirmationModalProps> = ({
       </Button>
       <Button
         sx={{
-          backgroundColor: 'error.main',
+          backgroundColor: 'primary.main',
           '&:hover': {
-            backgroundColor: 'error.dark',
+            backgroundColor: 'primary.dark',
           },
+          color: 'white',
         }}
         variant="contained"
-        onClick={() => onConfirm(salaryId)}
+        onClick={onConfirm}
       >
-        Supprimer
+        confirmer{' '}
       </Button>
     </Box>
   </Dialog>
 );
-export default DeleteConfirmationModal;
+export default UpdateConfirmation;

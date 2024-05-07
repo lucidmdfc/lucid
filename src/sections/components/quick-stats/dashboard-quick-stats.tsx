@@ -148,7 +148,7 @@ const DashboardStats: FC = () => {
             <Button
               color="inherit"
               component={RouterLink}
-              href={paths.salary.index}
+              href={paths.employee.index}
               endIcon={
                 <SvgIcon>
                   <ArrowRightIcon />

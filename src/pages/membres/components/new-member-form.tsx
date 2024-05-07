@@ -68,7 +68,7 @@ const NewMemberForm = () => {
         // Handle form submission
         console.log(values);
         toast.success('Membre créé avec succès !');
-        router.replace(paths.dashboard.membres.index);
+        router.replace(paths.membres.index);
         resetForm();
       } catch (error) {
         toast.error('Erreur lors de la création du membre!');

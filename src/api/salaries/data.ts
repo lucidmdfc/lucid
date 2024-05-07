@@ -1,9 +1,9 @@
-import { payment, salary } from 'src/types/employees_salaries';
+import { payment, employee } from 'src/types/employees_salaries';
 
-export const dummySalaries: salary[] = [];
+export const dummySalaries: employee[] = [];
 
 for (let i = 1; i <= 20; i++) {
-  const salary: salary = {
+  const employee: employee = {
     id: i.toString(),
     salaryName: `Employee ${i}`,
     salaryFunction: `Position ${i}`,
@@ -12,13 +12,13 @@ for (let i = 1; i <= 20; i++) {
     createdDate: new Date(`2022-01-01`),
     updatedDate: new Date(),
   };
-  dummySalaries.push(salary);
+  dummySalaries.push(employee);
 }
 
 export const dummyPayments: payment[] = [
   {
     id: '1',
-    salary: 5000,
+    employee: 'John Doe',
     amount: 1000,
     date: new Date('2022-01-01'),
     createdDate: new Date('2022-01-01'),
@@ -26,7 +26,7 @@ export const dummyPayments: payment[] = [
   },
   {
     id: '2',
-    salary: 6000,
+    employee: 'Jane Smith',
     amount: 1200,
     date: new Date('2022-01-02'),
     createdDate: new Date('2022-01-02'),
@@ -34,7 +34,7 @@ export const dummyPayments: payment[] = [
   },
   {
     id: '3',
-    salary: 5500,
+    employee: 'Michael Johnson',
     amount: 1100,
     date: new Date('2022-01-03'),
     createdDate: new Date('2022-01-03'),
@@ -42,7 +42,7 @@ export const dummyPayments: payment[] = [
   },
   {
     id: '4',
-    salary: 5800,
+    employee: 'Emily Davis',
     amount: 1160,
     date: new Date('2022-01-04'),
     createdDate: new Date('2022-01-04'),
@@ -50,7 +50,7 @@ export const dummyPayments: payment[] = [
   },
   {
     id: '5',
-    salary: 5200,
+    employee: 'Daniel Wilson',
     amount: 1040,
     date: new Date('2022-01-05'),
     createdDate: new Date('2022-01-05'),

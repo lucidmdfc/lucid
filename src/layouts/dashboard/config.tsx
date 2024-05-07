@@ -95,8 +95,8 @@ export const useSections = () => {
             ),
             items: [
               {
-                title: t(tokens.nav.salary),
-                path: paths.salary.index,
+                title: t(tokens.nav.employee),
+                path: paths.employee.index,
                 icon: (
                   <SvgIcon fontSize="small">
                     <GroupIcon />

@@ -1,137 +1,34 @@
-import { ProviderStatus, Supplier } from 'src/types/supplier';
+import { Supplier, ProviderStatus, PaymentMethod } from 'src/types/supplier';
 
-export const dummyProviders: Supplier[] = [
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 1,
-    nom: 'Provider 1',
-    ice: 'ICE123456789',
-    depositedDate: new Date('2022-01-01'),
-    dueDate: new Date('2022-01-10'),
-    amount: 1000.5,
-    status: ProviderStatus.Canceled,
-    method: 'Bank Transfer',
-    commentaire: 'Lorem ipsum dolor sit amet.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 2,
-    nom: 'Provider 2',
-    ice: 'ICE987654321',
-    depositedDate: new Date('2022-02-01'),
-    dueDate: new Date('2022-02-10'),
-    amount: 1500,
-    status: ProviderStatus.Canceled,
-    method: 'Credit Card',
-    commentaire: 'Consectetur adipiscing elit.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 3,
-    nom: 'Provider 3',
-    ice: 'ICE456789123',
-    depositedDate: new Date('2022-03-01'),
-    dueDate: new Date('2022-03-10'),
-    amount: 1200,
-    status: ProviderStatus.Canceled,
-    method: 'PayPal',
-    commentaire: 'Sed do eiusmod tempor incididunt.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 4,
-    nom: 'Provider 4',
-    ice: 'ICE789123456',
-    depositedDate: new Date('2022-04-01'),
-    dueDate: new Date('2022-04-10'),
-    amount: 1800,
-    status: ProviderStatus.Paid,
-    method: 'Cash',
-    commentaire: 'Ut labore et dolore magna aliqua.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 5,
-    nom: 'Provider 5',
-    ice: 'ICE321654987',
-    depositedDate: new Date('2022-05-01'),
-    dueDate: new Date('2022-05-10'),
-    amount: 1300,
-    status: ProviderStatus.Pending,
-    method: 'Bank Transfer',
-    commentaire: 'Duis aute irure dolor in reprehenderit.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 6,
-    nom: 'Provider 6',
-    ice: 'ICE654987321',
-    depositedDate: new Date('2022-05-15'),
-    dueDate: new Date('2022-05-25'),
-    amount: 5220,
-    status: ProviderStatus.Pending,
-    method: 'Credit Card',
-    commentaire: 'Excepteur sint occaecat cupidatat non proident.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 7,
-    nom: 'Provider 7',
-    ice: 'ICE987321654',
-    depositedDate: new Date('2023-08-11'),
-    dueDate: new Date('2023-08-21'),
-    amount: 1500,
-    status: ProviderStatus.Paid,
-    method: 'PayPal',
-    commentaire: 'Sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 8,
-    nom: 'Provider 8',
-    ice: 'ICE321987654',
-    depositedDate: new Date('2022-12-11'),
-    dueDate: new Date('2022-12-21'),
-    amount: 3600,
-    status: ProviderStatus.Pending,
-    method: 'Cash',
-    commentaire: 'Nisi ut aliquip ex ea commodo consequat.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 9,
-    nom: 'Provider 9',
-    ice: 'ICE987654321',
-    depositedDate: new Date('2021-05-01'),
-    dueDate: new Date('2021-08-15'),
-    amount: 2500,
-    status: ProviderStatus.Paid,
-    method: 'Bank Transfer',
-    commentaire: 'Duis aute irure dolor in reprehenderit.',
-  },
-  {
-    id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-    projectId: 10,
-    nom: 'Provider 10',
-    ice: 'ICE654321987',
-    depositedDate: new Date('2021-10-12'),
-    dueDate: new Date('2021-10-22'),
-    amount: 4000,
-    status: ProviderStatus.Pending,
-    method: 'Credit Card',
-    commentaire: 'Sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  },
-];
-
-export const dummyProvider: Supplier = {
-  id: Math.random().toString(36).substring(7).toLocaleUpperCase(),
-  projectId: 10,
-  nom: 'Provider 10',
-  ice: 'ICE654321987',
-  depositedDate: new Date('2021-10-12'),
-  dueDate: new Date('2021-10-22'),
-  amount: 4000,
-  status: ProviderStatus.Pending,
-  method: 'Credit Card',
-  commentaire: 'Sunt in culpa qui officia deserunt mollit anim id est laborum.',
+// Create an object mapping string values to enum keys
+const PaymentMethodMap: { [key: string]: PaymentMethod } = {
+  Virement: PaymentMethod.Virement,
+  Carte: PaymentMethod.Carte,
+  Cheque: PaymentMethod.Cheque,
+  Espece: PaymentMethod.Espece,
 };
+
+const dummySuppliers: Supplier[] = [];
+
+for (let i = 1; i <= 10; i++) {
+  const methodIndex = i % 4;
+  const methodString = Object.keys(PaymentMethod)[methodIndex];
+  const method = PaymentMethodMap[methodString];
+
+  const provider: Supplier = {
+    id: `ID-${i}`,
+    projectId: i,
+    nom: `Supplier ${i}`,
+    ice: `ICE${Math.random().toString(36).substring(7).toLocaleUpperCase()}`,
+    depositedDate: new Date(`2022-${i < 10 ? '0' + i : i}-01`),
+    dueDate: new Date(`2022-${i < 10 ? '0' + i : i}-10`),
+    amount: i * 1000,
+    status: i % 2 === 0 ? ProviderStatus.Paid : ProviderStatus.Pending,
+    method: method,
+    commentaire: 'Lorem ipsum dolor sit amet.',
+  };
+
+  dummySuppliers.push(provider);
+}
+
+export { dummySuppliers };

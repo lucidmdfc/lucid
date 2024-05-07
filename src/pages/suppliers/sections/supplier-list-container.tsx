@@ -1,15 +1,17 @@
 import { styled } from '@mui/material/styles';
 
-const PurchaseListContainer = styled('div', {
+export const SupplierListContainer = styled('div', {
   shouldForwardProp: (prop) => prop !== 'open',
-})<{
-  open?: boolean;
-}>(({ theme, open }) => ({
+})<{ open?: boolean }>(({ theme, open }) => ({
   flexGrow: 1,
   overflow: 'auto',
+  paddingLeft: theme.spacing(3),
+  paddingRight: theme.spacing(3),
+  paddingTop: theme.spacing(8),
+  paddingBottom: theme.spacing(8),
   zIndex: 1,
   [theme.breakpoints.up('lg')]: {
-    marginRight: -500,
+    marginLeft: -380,
   },
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
@@ -17,7 +19,7 @@ const PurchaseListContainer = styled('div', {
   }),
   ...(open && {
     [theme.breakpoints.up('lg')]: {
-      marginRight: 0,
+      marginLeft: 0,
     },
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
@@ -25,4 +27,3 @@ const PurchaseListContainer = styled('div', {
     }),
   }),
 }));
-export default PurchaseListContainer;

@@ -11,15 +11,15 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import type { Theme } from '@mui/material/styles/createTheme';
 
-import SalaryDetails from './salary-details';
-import SalaryEdit from './salary-edit';
-import { salary } from 'src/types/employees_salaries';
+import EmployeeDetails from '../components/view-employee-details';
+import EmployeeEdit from '../components/edit-employee-form';
+import { employee } from 'src/types/employees_salaries';
 
 interface SalaryDrawerProps {
   container?: HTMLDivElement | null;
   open?: boolean;
   onClose?: () => void;
-  salary?: salary;
+  salary?: employee;
 }
 
 const SalaryDrawer: FC<SalaryDrawerProps> = (props) => {
@@ -71,14 +71,14 @@ const SalaryDrawer: FC<SalaryDrawerProps> = (props) => {
           }}
         >
           {!isEditing ? (
-            <SalaryDetails
+            <EmployeeDetails
               onApprove={onClose}
               onEdit={handleEditOpen}
               onReject={onClose}
               salary={salary}
             />
           ) : (
-            <SalaryEdit
+            <EmployeeEdit
               onCancel={handleEditCancel}
               onSave={handleEditCancel}
               salary={salary}

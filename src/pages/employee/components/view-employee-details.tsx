@@ -17,22 +17,22 @@ import type { Theme } from '@mui/material/styles/createTheme';
 import { PropertyList } from 'src/components/property-list';
 import { PropertyListItem } from 'src/components/property-list-item';
 import { Scrollbar } from 'src/components/scrollbar';
-import DeleteConfirmationModal from '../components/delete-modal-confirmation';
+import DeleteConfirmationModal from './delete-modal-confirmation';
 import toast from 'react-hot-toast';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import PaymentHistoryTableRow from './payment-history-table-row';
+import PaymentHistoryTableRow from '../sections/payment-history-table-row';
 import { useDialog } from 'src/hooks/use-dialog';
-import { payment, salary } from 'src/types/employees_salaries';
+import { payment, employee } from 'src/types/employees_salaries';
 import { dummyPayments } from 'src/api/salaries/data';
 
-interface SalaryDetailsProps {
+interface EmployeeDetailsProps {
   onApprove?: () => void;
   onEdit?: () => void;
   onReject?: () => void;
-  salary: salary;
+  salary: employee;
 }
 
-const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
+const EmployeeDetails: FC<EmployeeDetailsProps> = (props) => {
   const { onApprove, onEdit, onReject, salary } = props;
   const dialog = useDialog();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
@@ -46,9 +46,9 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
     console.log(`Deleting payment with ID: ${paymentId}`);
   };
 
-  const handleDeleteConfirmation = async (salaryId: string | undefined) => {
+  const handleDeleteConfirmation = async (id: string | undefined) => {
     try {
-      console.log('salarié avec id ', salaryId, 'est supprimer');
+      console.log('salarié avec id ', id, 'est supprimer');
 
       // await firebaseSlice.deleteSlice(projectId, sliceId, onRefresh);
       toast.success('Le salarié a été supprimé avec succès!');
@@ -69,7 +69,7 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
         onConfirm={handleDeleteConfirmation}
         onCancel={dialog.handleClose}
         message="Êtes vous sûr de vouloir supprimer ce salarié(e)? Cette action sera irréversible."
-        salaryId={salary?.id}
+        id={salary?.id}
       />
       <Stack spacing={3}>
         <Stack
@@ -169,8 +169,8 @@ const SalaryDetails: FC<SalaryDetailsProps> = (props) => {
     </Stack>
   );
 };
-export default SalaryDetails;
-SalaryDetails.propTypes = {
+export default EmployeeDetails;
+EmployeeDetails.propTypes = {
   onApprove: PropTypes.func,
   onEdit: PropTypes.func,
   onReject: PropTypes.func,

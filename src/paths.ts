@@ -49,10 +49,10 @@ export const paths = {
   revenus: {
     index: '/revenus',
   },
-  salary: {
-    index: '/salary',
-    newSalary: '/salary/salary/create',
-    newPAyement: '/salary/payment/create',
+  employee: {
+    index: '/employee',
+    newEmployee: '/employee/employee/create',
+    newPayment: '/employee/payment/create',
   },
   expenses: {
     index: '/expenses',

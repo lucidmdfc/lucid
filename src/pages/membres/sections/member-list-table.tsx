@@ -79,17 +79,6 @@ const MemberListTable: FC<MemberListTableProps> = (props) => {
                   </SeverityPill>
                 </TableCell>
                 <TableCell>
-                  {/* <IconButton
-                    color="error"
-                    onClick={() => {
-                      setDeleteModalOpen(true);
-                      // handleDelete(member.id);
-                    }}
-                  >
-                    <SvgIcon>
-                      <DeleteOutlineIcon />
-                    </SvgIcon>
-                  </IconButton> */}
                   <IconButton
                     color="info"
                     onClick={() => onSelect?.(member.id)}

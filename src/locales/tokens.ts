@@ -59,7 +59,7 @@ export const tokens = {
     clients_management: 'nav.clients_management',
     invoices_management: 'nav.invoices_management',
     members_management: 'nav.members_management',
-    salary: 'nav.salary',
+    employee: 'nav.employee',
     utilities: 'nav.utilities',
     suppliers: 'nav.suppliers',
     expenses: 'nav.expenses',

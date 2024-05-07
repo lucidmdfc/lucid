@@ -24,7 +24,7 @@ import type { Invoice } from 'src/types/invoice';
 import { getInitials } from 'src/utils/get-initials';
 import { InvoicePdfDocument } from './components/invoice-pdf-document';
 import { InvoicePreview } from './sections/invoice-preview';
-import { InvoicePdfDialog } from './components/invoice-pdf-dialog';
+import { InvoicePdfDialog } from './components/pdf-invoice-dialog';
 
 const useInvoice = (): Invoice | null => {
   const isMounted = useMounted();

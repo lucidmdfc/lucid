@@ -13,10 +13,10 @@ import { Autocomplete, Divider, OutlinedInput, SvgIcon } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useDialog } from 'src/hooks/use-dialog';
 import { number } from 'prop-types';
-import FileUploader from '../components/file-uploader';
+import FileUploader from './file-uploader';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
-import CreateConfirmation from '../components/create-modal-confirmation';
+import CreateConfirmation from './create-modal-confirmation';
 
 type Option = {
   text: string;
@@ -31,7 +31,7 @@ const projects: Option[] = [
   { text: 'project id 5', value: 5 },
 ];
 
-const PurchaseCreateForm: FC = () => {
+const SupplierCreateForm: FC = () => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const handleOpen = () => {
     // Add logic to Update the selected invoice
@@ -282,4 +282,4 @@ const PurchaseCreateForm: FC = () => {
     </form>
   );
 };
-export default PurchaseCreateForm;
+export default SupplierCreateForm;

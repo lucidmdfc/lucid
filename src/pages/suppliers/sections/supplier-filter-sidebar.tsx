@@ -22,9 +22,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { Scrollbar } from 'src/components/scrollbar';
 import { InvoiceStatus } from 'src/types/invoice';
-import { dummyProviders } from 'src/api/suppliers/data';
+import { dummySuppliers } from 'src/api/suppliers/data';
 
-const providerNames: string[] = dummyProviders.map((provider) => provider.nom);
+const providerNames: string[] = dummySuppliers.map((supplier) => supplier.nom);
 
 export interface Filters {
   query?: string;

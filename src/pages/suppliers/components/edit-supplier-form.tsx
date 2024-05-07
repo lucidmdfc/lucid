@@ -14,13 +14,12 @@ import Typography from '@mui/material/Typography';
 import { Divider, OutlinedInput, SvgIcon } from '@mui/material';
 import { DatePicker, DateTimePicker } from '@mui/x-date-pickers';
 import { useDialog } from 'src/hooks/use-dialog';
-import FileUploader from '../components/file-uploader';
+import FileUploader from './file-uploader';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
-import UpdateConfirmation from '../components/update-confirmation';
+import UpdateConfirmation from './edit-modal-confirmation';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
-import { provider } from 'src/types/supplier';
 
 type Option = {
   text: string;
@@ -57,16 +56,16 @@ const PurchaseUpdateForm: FC = (props) => {
       dueDate: new Date(),
       amount: 15000,
       status: 'paid',
-      method: 3,
+      method: '',
       commentaire: 'Un Commentaier',
     },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
-        console.log(values as unknown as provider);
+        console.log(values);
         toast.success('le prestataire créé avec succès !');
         setOpen(false);
-        router.push(paths.dashboard.suppliers.search);
+        router.push(paths.suppliers.search);
       } catch (error) {
         toast.error('Erreur lors de la création du prestataire!');
         console.error('Erreur lors de la création du prestataire!: ', error);

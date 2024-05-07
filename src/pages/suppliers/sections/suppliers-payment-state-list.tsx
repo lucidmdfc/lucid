@@ -9,15 +9,15 @@ import Typography from '@mui/material/Typography';
 
 import { Scrollbar } from 'src/components/scrollbar';
 import { ProviderStatus, Supplier } from 'src/types/supplier';
-import ProviderRow from './provider-row';
+import SupplierRow from '../components/supplier-row';
 
-export type GroupedProviders = {
+export type GroupedSuppliers = {
   canceled: Supplier[];
   paid: Supplier[];
   pending: Supplier[];
 };
 
-const groupProviders = (invoices: Supplier[]) => {
+const groupSuppliers = (invoices: Supplier[]) => {
   return invoices.reduce(
     (acc, invoice) => {
       const { status } = invoice;
@@ -65,16 +65,16 @@ const PaymentStateList: FC<PaymentStateListProps> = (props) => {
   let content: JSX.Element;
 
   if (group) {
-    const groupedProviders = groupProviders(items);
+    const groupedSuppliers = groupSuppliers(items);
 
-    const statuses = Object.keys(groupedProviders) as ProviderStatus[];
+    const statuses = Object.keys(groupedSuppliers) as ProviderStatus[];
 
     content = (
       <Stack spacing={6}>
         {statuses.map((status) => {
           const groupTitle = status.charAt(0).toUpperCase() + status.slice(1);
-          const count = groupedProviders[status].length;
-          const providers = groupedProviders[status];
+          const count = groupedSuppliers[status].length;
+          const providers = groupedSuppliers[status];
           const hasInvoices = providers.length > 0;
 
           return (
@@ -95,7 +95,7 @@ const PaymentStateList: FC<PaymentStateListProps> = (props) => {
                     <Table sx={{ minWidth: 600 }}>
                       <TableBody>
                         {providers.map((supplier, i) => (
-                          <ProviderRow
+                          <SupplierRow
                             key={i}
                             supplier={supplier}
                           />
@@ -116,7 +116,7 @@ const PaymentStateList: FC<PaymentStateListProps> = (props) => {
         <Table>
           <TableBody>
             {items.map((supplier) => (
-              <ProviderRow
+              <SupplierRow
                 key={supplier.id}
                 supplier={supplier}
               />

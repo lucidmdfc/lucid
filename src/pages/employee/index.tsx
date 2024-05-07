@@ -26,12 +26,11 @@ import { paths } from 'src/paths';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 import { slariesApi } from 'src/api/salaries';
-import { salary } from 'src/types/employees_salaries';
+import { employee } from 'src/types/employees_salaries';
 
 interface Filters {
   query?: string;
 }
-type SortDir = 'asc' | 'desc';
 
 interface SalarySearchState {
   filters: Filters;
@@ -80,7 +79,7 @@ const useSalariesSearch = () => {
   };
 };
 interface SalariesStoreState {
-  salaries: salary[];
+  salaries: employee[];
   salariesCount: number;
 }
 const useSalariesStore = (searchState: SalarySearchState) => {
@@ -175,7 +174,7 @@ const Page: NextPage = () => {
               sx={{ mx: 5 }}
             >
               <div>
-                <Typography variant="h4">{t(tokens.nav.salary)}</Typography>
+                <Typography variant="h4">{t(tokens.nav.employee)}</Typography>
               </div>
               <Stack
                 direction="row"
@@ -184,7 +183,7 @@ const Page: NextPage = () => {
               >
                 <Button
                   component={RouterLink}
-                  href={paths.salary.newPAyement}
+                  href={paths.employee.newPayment}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />
@@ -196,7 +195,7 @@ const Page: NextPage = () => {
                 </Button>
                 <Button
                   component={RouterLink}
-                  href={paths.salary.newSalary}
+                  href={paths.employee.newEmployee}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />

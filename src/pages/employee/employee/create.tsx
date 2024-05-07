@@ -14,9 +14,9 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 
 import { Card } from '@mui/material';
-import NewSalary from 'src/pages/salary/components/new-salary';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
+import NewEmployee from 'src/pages/employee/components/new-employee-form';
 
 const Page: NextPage = () => {
   usePageView();
@@ -41,10 +41,10 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.salary.index}
+                  href={paths.employee.index}
                   variant="subtitle2"
                 >
-                  {t(tokens.nav.salary)}{' '}
+                  {t(tokens.nav.employee)}{' '}
                 </Link>
                 <Typography
                   color="text.secondary"
@@ -56,7 +56,7 @@ const Page: NextPage = () => {
             </Stack>
             <Container maxWidth="lg">
               <Card>
-                <NewSalary></NewSalary>
+                <NewEmployee></NewEmployee>
               </Card>
             </Container>
           </Stack>

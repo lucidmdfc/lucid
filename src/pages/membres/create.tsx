@@ -13,7 +13,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { Card, CardHeader } from '@mui/material';
-import NewMemberForm from 'src/pages/membres/components/new-member';
+import NewMemberForm from 'src/pages/membres/components/new-member-form';
 
 const Page: NextPage = () => {
   usePageView();

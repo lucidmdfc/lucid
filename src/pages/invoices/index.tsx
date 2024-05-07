@@ -22,7 +22,7 @@ import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
 import { InvoiceListTable } from './sections/invoice-list-table';
 import { InvoiceListSidebar } from './sections/invoice-list-sidebar';
-import { InvoiceListSummary } from './components/invoice-list-summary';
+import { InvoiceListSummary } from './sections/invoice-list-summary';
 import { InvoiceListContainer } from './sections/invoice-list-container';
 
 //  ! ADD DELETE FUNCTION

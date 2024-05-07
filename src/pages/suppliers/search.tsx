@@ -16,14 +16,14 @@ import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import type { InvoiceStatus } from 'src/types/invoice';
-import PurchaseListTable from './components/suppliers-payment-state-list';
+import PurchaseListTable from './sections/suppliers-payment-state-list';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
-import PurchaseListContainer from './components/purchase-list-container';
+import { SupplierListContainer } from './sections/supplier-list-container';
 import { Supplier } from 'src/types/supplier';
 import { suppliersApi } from 'src/api/suppliers';
-import SupplierFilterSidebar from './components/supplier-filter-sidebar';
-import SupplierAmountSummary from './components/supplier-amount-summary';
+import SupplierFilterSidebar from './sections/supplier-filter-sidebar';
+import SupplierAmountSummary from './sections/supplier-amount-summary';
 
 interface Filters {
   providerNames?: string[];
@@ -169,7 +169,6 @@ const Page: NextPage = () => {
             position: 'absolute',
             right: 0,
             top: 0,
-            py: 4,
           }}
         >
           <SupplierFilterSidebar
@@ -181,7 +180,7 @@ const Page: NextPage = () => {
             onGroupChange={handleGroupChange}
             open={openSidebar}
           />
-          <PurchaseListContainer open={openSidebar}>
+          <SupplierListContainer open={openSidebar}>
             <Stack spacing={4}>
               <Stack
                 alignItems="flex-start"
@@ -225,7 +224,7 @@ const Page: NextPage = () => {
                 rowsPerPage={suppliersSearch.state.rowsPerPage}
               />
             </Stack>
-          </PurchaseListContainer>
+          </SupplierListContainer>
         </Box>
       </Box>
     </>

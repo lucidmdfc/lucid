@@ -12,7 +12,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { Card } from '@mui/material';
-import NewPayment from '../components/new-payement';
+import NewPayment from '../components/new-payment-form';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 
@@ -38,10 +38,10 @@ const Page: NextPage = () => {
                 <Link
                   color="text.primary"
                   component={RouterLink}
-                  href={paths.salary.index}
+                  href={paths.employee.index}
                   variant="subtitle2"
                 >
-                  {t(tokens.nav.salary)}{' '}
+                  {t(tokens.nav.employee)}{' '}
                 </Link>
                 <Typography
                   color="text.secondary"

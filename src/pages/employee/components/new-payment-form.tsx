@@ -10,28 +10,30 @@ import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
 import { payment } from 'src/types/employees_salaries';
+import CreateConfirmation from './create-modal-confirmation';
+import { useDialog } from 'src/hooks/use-dialog';
 
 type Option = {
   text: string;
   value: number;
 };
 
-const salaries: Option[] = [
-  { text: 'salary 1', value: 1 },
-  { text: 'salary 2', value: 2 },
-  { text: 'salary 3', value: 3 },
-  { text: 'salary 4', value: 4 },
-  { text: 'salary 5', value: 5 },
+const employees: Option[] = [
+  { text: 'Employee 1', value: 1 },
+  { text: 'Employee 2', value: 2 },
+  { text: 'Employee 3', value: 3 },
+  { text: 'Employee 4', value: 4 },
+  { text: 'Employee 5', value: 5 },
 ];
 
 const NewPayment = () => {
   const router = useRouter();
-
+  const dialog = useDialog();
   const formik = useFormik({
     initialValues: {
       id: '',
       amount: Number(),
-      salary: '',
+      employee: '',
       date: new Date(),
       createdDate: new Date(),
     },
@@ -42,7 +44,7 @@ const NewPayment = () => {
       try {
         // Handle form submission
         toast.success('Nouveau virement créé avec succès !');
-        router.replace(paths.dashboard.salary.index);
+        router.replace(paths.employee.index);
         resetForm();
       } catch (error) {
         toast.error('Erreur lors de la création un nouveau virement!');
@@ -54,7 +56,12 @@ const NewPayment = () => {
   });
   return (
     <Box sx={{ p: 3 }}>
-      <form onSubmit={formik.handleSubmit}>
+      <CreateConfirmation
+        isOpen={dialog.open}
+        onConfirm={formik.handleSubmit}
+        onCancel={dialog.handleClose}
+      />
+      <form>
         <Grid
           container
           spacing={1}
@@ -67,22 +74,22 @@ const NewPayment = () => {
             <TextField
               fullWidth
               label="Choisir un(e) salarié(e)"
-              name="salary"
-              value={formik.values.salary}
+              name="employee"
+              value={formik.values.employee}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.salary && Boolean(formik.errors.salary)}
-              helperText={formik.touched.salary && formik.errors.salary}
+              error={formik.touched.employee && Boolean(formik.errors.employee)}
+              helperText={formik.touched.employee && formik.errors.employee}
               select
               size="small"
             >
               <MenuItem disabled>--</MenuItem>
-              {salaries?.map((salary) => (
+              {employees?.map((employee) => (
                 <MenuItem
-                  key={salary?.value}
-                  value={salary?.value}
+                  key={employee?.value}
+                  value={employee?.value}
                 >
-                  {salary.text}
+                  {employee.text}
                 </MenuItem>
               ))}
             </TextField>
@@ -117,7 +124,7 @@ const NewPayment = () => {
         </Grid>
         <Box sx={{ mt: 2 }}>
           <Button
-            type="submit"
+            onClick={dialog.handleOpen}
             variant="contained"
           >
             Créer

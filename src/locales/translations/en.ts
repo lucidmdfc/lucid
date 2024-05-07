@@ -19,7 +19,7 @@ export const en = {
   [tokens.nav.create]: 'Create',
   [tokens.nav.crypto]: 'Crypto',
   [tokens.nav.revenus]: 'Revenus',
-  [tokens.nav.salary]: 'Salaires & Emoloyé(e)s',
+  [tokens.nav.employee]: 'Salaires & Emoloyé(e)s',
   [tokens.nav.cash]: 'Gestion de Caisse',
   [tokens.nav.utilities]: 'Utilities',
   [tokens.nav.suppliers]: 'Prestataire et fournisseurs',

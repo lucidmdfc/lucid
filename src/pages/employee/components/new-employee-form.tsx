@@ -7,11 +7,13 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
-import { salary } from 'src/types/employees_salaries';
+import { employee } from 'src/types/employees_salaries';
+import { useDialog } from 'src/hooks/use-dialog';
+import CreateConfirmation from './create-modal-confirmation';
 
-const NewSalary = () => {
+const NewEmployee = () => {
   const router = useRouter();
-
+  const dialog = useDialog();
   const formik = useFormik({
     initialValues: {
       id: '',
@@ -22,11 +24,11 @@ const NewSalary = () => {
       createdDate: new Date(),
     },
     // validationSchema: validationSchema,
-    onSubmit: async (values: salary, { setSubmitting, resetForm }) => {
+    onSubmit: async (values: employee, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
         toast.success('Nouveau salarié(e) créé avec succès !');
-        router.replace(paths.dashboard.salary.index);
+        router.replace(paths.employee.index);
         resetForm();
       } catch (error) {
         toast.error('Erreur lors de la création un nouveau salarié(e)!');
@@ -38,7 +40,12 @@ const NewSalary = () => {
   });
   return (
     <Box sx={{ p: 3 }}>
-      <form onSubmit={formik.handleSubmit}>
+      <CreateConfirmation
+        isOpen={dialog.open}
+        onConfirm={formik.handleSubmit}
+        onCancel={dialog.handleClose}
+      />
+      <form>
         <Grid
           container
           spacing={1}
@@ -111,8 +118,7 @@ const NewSalary = () => {
         </Grid>
         <Box sx={{ mt: 2 }}>
           <Button
-            disabled={formik.isSubmitting}
-            type="submit"
+            onClick={dialog.handleOpen}
             variant="contained"
           >
             Créer
@@ -123,4 +129,4 @@ const NewSalary = () => {
   );
 };
 
-export default NewSalary;
+export default NewEmployee;

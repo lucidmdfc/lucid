@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 
 import { Logo } from 'src/components/logo';
 import type { Invoice } from 'src/types/invoice';
-import { calculateTotals } from 'src/calculations/total-items-calculate';
+import { calculateTotals } from 'src/pages/invoices/calculations/total-items-calculate';
 
 interface InvoicePreviewProps {
   invoice: Invoice;
