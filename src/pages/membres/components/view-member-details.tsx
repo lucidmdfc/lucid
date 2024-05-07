@@ -27,7 +27,7 @@ import { date } from 'yup';
 import Trash02 from '@untitled-ui/icons-react/build/esm/Trash02';
 import { Divider } from '@mui/material';
 import toast from 'react-hot-toast';
-import DeleteConfirmationModal from '../components/delete-confirmation';
+import DeleteConfirmationModal from './delete-modal-confirmation';
 import { useDialog } from 'src/hooks/use-dialog';
 
 interface MemeberDetailsProps {
@@ -58,7 +58,7 @@ const MemeberDetails: FC<MemeberDetailsProps> = (props) => {
   const align = lgUp ? 'horizontal' : 'vertical';
 
   // const date = member.payment_date && format(member.payment_date?.toDate(), 'dd/MM/yyyy');
-  const date = member.payment_date.toLocaleDateString('en-GB');
+  const date = member.payment_date!.toLocaleDateString('en-GB');
 
   return (
     <Stack spacing={6}>

@@ -10,6 +10,8 @@ import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
+import CreateConfirmation from './create-modal-confirmation';
+import { useDialog } from 'src/hooks/use-dialog';
 
 type PaymentMethod = {
   text: string;
@@ -44,6 +46,7 @@ const validationSchema = yup.object({
 
 const NewMemberForm = () => {
   const router = useRouter();
+  const dialog = useDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -52,7 +55,7 @@ const NewMemberForm = () => {
       rc_cin: '',
       status: '',
       payment_method: null,
-      amount: 0,
+      amount: Number(),
       payment_date: new Date(),
       created_at: new Date(),
     },
@@ -82,7 +85,12 @@ const NewMemberForm = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <form onSubmit={formik.handleSubmit}>
+      <CreateConfirmation
+        isOpen={dialog.open}
+        onCancel={dialog.handleClose}
+        onConfirm={formik.handleSubmit}
+      />
+      <form>
         <Grid
           container
           spacing={3}
@@ -228,9 +236,8 @@ const NewMemberForm = () => {
 
         <Box sx={{ mt: 2 }}>
           <Button
-            type="submit"
             variant="contained"
-            disabled={formik.isSubmitting}
+            onClick={dialog.handleOpen}
           >
             {formik.isSubmitting ? 'Création en cours...' : 'Créer un membre'}
           </Button>

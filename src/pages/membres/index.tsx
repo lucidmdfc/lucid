@@ -27,14 +27,11 @@ interface Filters {
   query?: string;
   status?: string;
 }
-type SortDir = 'asc' | 'desc';
 
 interface MemberSearchState {
   filters: Filters;
   page: number | undefined;
   rowsPerPage: number | undefined;
-  sortBy?: string;
-  sortDir?: SortDir;
 }
 
 const useMembersSearch = () => {
@@ -45,21 +42,12 @@ const useMembersSearch = () => {
     },
     page: 0,
     rowsPerPage: 5,
-    sortBy: 'full_name',
-    sortDir: 'asc',
   });
 
   const handleFiltersChange = useCallback((filters: Filters): void => {
     setState((prevState) => ({
       ...prevState,
       filters,
-    }));
-  }, []);
-
-  const handleSortChange = useCallback((sortDir: SortDir): void => {
-    setState((prevState) => ({
-      ...prevState,
-      sortDir,
     }));
   }, []);
 
@@ -84,7 +72,6 @@ const useMembersSearch = () => {
 
   return {
     handleFiltersChange,
-    handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
     state,
@@ -224,12 +211,7 @@ const Page: NextPage = () => {
             <Divider />
 
             <Divider />
-            <MemberListSearch
-              onFiltersChange={membersSearch.handleFiltersChange}
-              // onSortChange={membersSearch.handleSortChange}
-              // sortBy={membersSearch.state.sortBy}
-              // sortDir={membersSearch.state.sortDir}
-            />
+            <MemberListSearch onFiltersChange={membersSearch.handleFiltersChange} />
             <Divider />
             <MemberListTable
               count={membersStore.membersCount}
