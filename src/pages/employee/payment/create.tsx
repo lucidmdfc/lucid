@@ -12,7 +12,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { Card } from '@mui/material';
-import NewPayment from '../components/new-payment-form';
+import NewPayment from '../components/create-payment-form';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 

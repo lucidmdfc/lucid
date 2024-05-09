@@ -9,9 +9,9 @@ import { useSettings } from 'src/hooks/use-settings';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { Previewer } from 'src/sections/components/previewer';
 import { Divider } from '@mui/material';
-import NewCash from 'src/pages/cash/components/new-cash-in-form';
+import NewCash from 'src/pages/cash/components/create-cash-in-form';
 import CashStats from './components/cash-stats';
-import NewOutCash from 'src/pages/cash/components/new-cash-out-form';
+import NewOutCash from 'src/pages/cash/components/create-cash-out-form';
 import TableCash from './sections/cash-table';
 import { useRef } from 'react';
 

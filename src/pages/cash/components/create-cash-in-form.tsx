@@ -7,6 +7,8 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import { cashIn } from 'src/types/cash-in';
+import { useDialog } from 'src/hooks/use-dialog';
+import CreateConfirmation from './create-confirmation-modal';
 
 interface Option {
   text: string;
@@ -21,6 +23,7 @@ const projects: Option[] = [
   { text: 'project id 5', value: 5 },
 ];
 const NewCash = () => {
+  const dialog = useDialog();
   const formik = useFormik({
     initialValues: {
       id: '',
@@ -36,6 +39,7 @@ const NewCash = () => {
         console.log(values);
         toast.success('la nouvelle entrée créé avec succès !');
         resetForm();
+        dialog.handleClose();
       } catch (error) {
         toast.error('Erreur lors de la création du Nouvelle Entrée!');
         console.error('Erreur lors de la création du Nouvelle Entrée!: ', error);
@@ -47,7 +51,12 @@ const NewCash = () => {
   });
   return (
     <Box sx={{ p: 3 }}>
-      <form onSubmit={formik.handleSubmit}>
+      <CreateConfirmation
+        isOpen={dialog.open}
+        onCancel={dialog.handleClose}
+        onConfirm={formik.handleSubmit}
+      />
+      <form>
         <Grid
           container
           spacing={1}
@@ -112,7 +121,7 @@ const NewCash = () => {
         </Grid>
         <Box sx={{ mt: 2 }}>
           <Button
-            type="submit"
+            onClick={dialog.handleOpen}
             variant="contained"
           >
             Créer

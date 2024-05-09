@@ -25,7 +25,6 @@ import { tokens } from 'src/locales/tokens';
 import { membersApi } from 'src/api/members';
 interface Filters {
   query?: string;
-  status?: string;
 }
 
 interface MemberSearchState {
@@ -38,7 +37,6 @@ const useMembersSearch = () => {
   const [state, setState] = useState<MemberSearchState>({
     filters: {
       query: undefined,
-      status: undefined,
     },
     page: 0,
     rowsPerPage: 5,

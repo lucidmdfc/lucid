@@ -12,6 +12,7 @@ import { IconButton, SvgIcon, TableHead } from '@mui/material';
 import { format } from 'date-fns';
 import { employee } from 'src/types/employees_salaries';
 import { useDialog } from 'src/hooks/use-dialog';
+import EmployeeListTableRow from '../components/employee-list-table-row';
 
 interface SalaryListTableProps {
   count?: number;
@@ -52,34 +53,12 @@ const SalaryListTable: FC<SalaryListTableProps> = (props) => {
             const date = salary.recruitmentDate && format(salary.recruitmentDate, 'dd/MM/yyyy');
 
             return (
-              <TableRow
-                hover
-                key={salary.id}
-              >
-                <TableCell>
-                  <Typography variant="subtitle2">{salary.salaryName}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle2">{salary.salaryFunction}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">{date}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">MAD {totalAmount}</Typography>
-                </TableCell>
-
-                <TableCell>
-                  <IconButton
-                    color="info"
-                    onClick={() => onSelect?.(salary.id)}
-                  >
-                    <SvgIcon>
-                      <ArrowRightIcon />
-                    </SvgIcon>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
+              <EmployeeListTableRow
+                salary={salary}
+                onSelect={onSelect}
+                date={date}
+                totalAmount={totalAmount}
+              />
             );
           })}
         </TableBody>

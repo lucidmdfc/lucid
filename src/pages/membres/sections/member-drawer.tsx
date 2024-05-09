@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import type { Theme } from '@mui/material/styles/createTheme';
 import MemeberDetails from '../components/view-member-details';
-import MemberEdit from '../components/member-edit-form';
+import MemberEdit from '../components/edit-member-form';
 import { Member } from 'src/types/member';
 import toast from 'react-hot-toast';
 

@@ -13,13 +13,13 @@ import DeleteConfirmationModal from '../components/delete-modal-confirmation';
 import toast from 'react-hot-toast';
 import { Box, Card, Divider } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
-import CashListInRow from '../components/cash-in-list-row';
+import CashListInRow from './cash-in-list-row';
 import { cashIn } from 'src/types/cash-in';
 import { cashOut } from 'src/types/cash-out';
 import { cashInApi } from 'src/api/cash-in';
 import { cashOutApi } from 'src/api/cash-out';
 import { useMounted } from 'src/hooks/use-mounted';
-import CashListOutRow from '../components/chash-out-list-row';
+import CashListOutRow from './chash-out-list-row';
 import { useDialog } from 'src/hooks/use-dialog';
 
 const tabs = [
@@ -205,7 +205,7 @@ const TableCash: FC = () => {
               </TableHead>
               <TableBody>
                 {cashStore.cashData.map((cash) => {
-                  const totalAmount = numeral(cash.amount).format(`0,0.00`);
+                  const totalAmount = Number(numeral(cash.amount).format(`0,0.00`));
                   const date = format(cash.startDate, 'dd/MM/yyyy');
                   return (
                     <CashListOutRow
@@ -215,7 +215,6 @@ const TableCash: FC = () => {
                       projectName={cash.projectId}
                       motif={(cash as cashOut).motif}
                       date={date}
-                      onDelete={dialog.handleOpen}
                     />
                   );
                 })}

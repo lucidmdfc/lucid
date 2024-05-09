@@ -3,6 +3,8 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import { Motif, cashOut } from 'src/types/cash-out';
+import CreateConfirmation from './create-confirmation-modal';
+import { useDialog } from 'src/hooks/use-dialog';
 
 type Option = {
   text: string;
@@ -24,6 +26,7 @@ const motifs: Motif[] = [
 ];
 
 const NewOutCash = () => {
+  const dialog = useDialog();
   const formik = useFormik({
     initialValues: {
       id: '',
@@ -38,6 +41,7 @@ const NewOutCash = () => {
         console.log(values);
         toast.success('la nouvelle sortie créé avec succès !');
         resetForm();
+        dialog.handleClose();
       } catch (error) {
         toast.error('Erreur lors de la création du nouvelle sortie!');
         console.error('Erreur lors de la création du nouvelle sortie!: ', error);
@@ -49,7 +53,12 @@ const NewOutCash = () => {
   });
   return (
     <Box sx={{ p: 3 }}>
-      <form onSubmit={formik.handleSubmit}>
+      <CreateConfirmation
+        isOpen={dialog.open}
+        onCancel={dialog.handleClose}
+        onConfirm={formik.handleSubmit}
+      />
+      <form>
         <Grid
           container
           spacing={1}
@@ -143,7 +152,7 @@ const NewOutCash = () => {
         </Grid>
         <Box sx={{ mt: 2 }}>
           <Button
-            type="submit"
+            onClick={dialog.handleOpen}
             variant="contained"
           >
             Créer

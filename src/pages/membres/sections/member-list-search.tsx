@@ -13,41 +13,17 @@ import { useUpdateEffect } from 'src/hooks/use-update-effect';
 
 interface Filters {
   query?: string;
-  status?: string;
-}
-
-type TabValue = 'all' | 'canceled' | 'complete' | 'pending' | 'rejected';
-
-interface TabOption {
-  label: string;
-  value: TabValue;
-}
-
-type SortDir = 'asc' | 'desc';
-
-interface SortOption {
-  label: string;
-  value: SortDir;
 }
 
 interface MemberListSearchProps {
   onFiltersChange?: (filters: Filters) => void;
-  onSortChange?: (sort: SortDir) => void;
-  sortBy?: string;
-  sortDir?: 'asc' | 'desc';
 }
 
 const MemberListSearch: FC<MemberListSearchProps> = (props) => {
-  const {
-    onFiltersChange,
-    onSortChange,
-    // sortBy = 'createdAt',
-    sortDir = 'asc',
-  } = props;
+  const { onFiltersChange } = props;
   const queryRef = useRef<HTMLInputElement | null>(null);
   const [filters, setFilters] = useState<Filters>({
     query: undefined,
-    status: undefined,
   });
 
   const handleFiltersUpdate = useCallback(() => {
@@ -66,14 +42,6 @@ const MemberListSearch: FC<MemberListSearchProps> = (props) => {
       query,
     }));
   }, []);
-
-  const handleSortChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>): void => {
-      const sortDir = event.target.value as SortDir;
-      onSortChange?.(sortDir);
-    },
-    [onSortChange]
-  );
 
   return (
     <div>
@@ -111,7 +79,4 @@ const MemberListSearch: FC<MemberListSearchProps> = (props) => {
 export default MemberListSearch;
 MemberListSearch.propTypes = {
   onFiltersChange: PropTypes.func,
-  onSortChange: PropTypes.func,
-  sortBy: PropTypes.string,
-  sortDir: PropTypes.oneOf<SortDir>(['asc', 'desc']),
 };

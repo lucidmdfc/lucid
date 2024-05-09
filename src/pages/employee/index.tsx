@@ -18,9 +18,9 @@ import { OrderListContainer } from 'src/sections/dashboard/order/order-list-cont
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDialog } from 'src/hooks/use-dialog';
 import { useMounted } from 'src/hooks/use-mounted';
-import SalaryListSearch from './sections/salary-list-search';
-import SalaryListTable from './sections/salary-list-table';
-import SalaryDrawer from './sections/salary-drawer';
+import SalaryListSearch from './sections/employee-list-search';
+import SalaryListTable from './sections/employee-list-table';
+import SalaryDrawer from './sections/employee-drawer';
 import { RouterLink } from 'src/components/router-link';
 import { paths } from 'src/paths';
 import { useTranslation } from 'react-i18next';
@@ -131,13 +131,13 @@ const Page: NextPage = () => {
   usePageView();
 
   const handleMemberDrawerOpen = useCallback(
-    (memberId: string): void => {
-      if (dialog.open && dialog.data === memberId) {
+    (employeeId: string): void => {
+      if (dialog.open && dialog.data === employeeId) {
         dialog.handleClose();
         return;
       }
 
-      dialog.handleOpen(memberId);
+      dialog.handleOpen(employeeId);
     },
     [dialog]
   );

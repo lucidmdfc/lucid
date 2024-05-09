@@ -6,7 +6,6 @@ import TableCell from '@mui/material/TableCell';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Member } from 'src/types/member';
-import { useDialog } from 'src/hooks/use-dialog';
 import MemberListTableRow from '../components/member-list-table-row';
 import { TableHead } from '@mui/material';
 
@@ -29,25 +28,10 @@ const MemberListTable: FC<MemberListTableProps> = (props) => {
     onPageChange = () => {},
     onRowsPerPageChange,
     onSelect,
-    onDelete,
     page = 0,
     rowsPerPage = 0,
-    onDeleteMember = () => {},
   } = props;
 
-  // Function to get payment method text based on value
-  const dialog = useDialog();
-  const handleMemberDrawerOpen = useCallback(
-    (memberId: string): void => {
-      if (dialog.open && dialog.data === memberId) {
-        dialog.handleClose();
-        return;
-      }
-
-      dialog.handleOpen(memberId);
-    },
-    [dialog]
-  );
   return (
     <div>
       <Table>
@@ -67,7 +51,7 @@ const MemberListTable: FC<MemberListTableProps> = (props) => {
               <MemberListTableRow
                 key={i}
                 member={member}
-                onSelect={handleMemberDrawerOpen}
+                onSelect={onSelect}
               />
             );
           })}

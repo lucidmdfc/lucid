@@ -16,7 +16,7 @@ import { paths } from 'src/paths';
 import { Card } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
-import NewEmployee from 'src/pages/employee/components/new-employee-form';
+import NewEmployee from 'src/pages/employee/components/create-employee-form';
 
 const Page: NextPage = () => {
   usePageView();
