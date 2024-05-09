@@ -9,7 +9,7 @@ import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 import { Project } from 'src/types/project';
 import { Formik, useFormik } from 'formik';
 import * as Yup from 'yup';
-import UpdateConfirmationModal from './update-confirmation-modal';
+import UpdateConfirmationModal from './edit-confirmation-modal';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
@@ -99,7 +99,7 @@ const EditProject: FC<EditProjectProps> = (props) => {
           console.log(formValues.id, formValues);
           toast.success('Projet modifié avec succès !');
           dialog.handleClose();
-          router.replace(paths.dashboard.projets.details.replace(':projetId', formValues.id));
+          router.replace(paths.projets.details.replace(':projetId', formValues.id));
         } else {
           // Handle the case where the project with the provided ID is not found
           toast.error('Projet non trouvé');

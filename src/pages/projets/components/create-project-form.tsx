@@ -13,6 +13,8 @@ import { Project } from 'src/types/project';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
+import CreateConfirmation from './create-confirmation-modal';
+import { useDialog } from 'src/hooks/use-dialog';
 
 const validationSchema = yup.object({
   project_name: yup.string().required('Nom projet est requis'),
@@ -58,7 +60,7 @@ const NewProjectForm = () => {
   };
 
   const router = useRouter();
-
+  const dialog = useDialog();
   const formik = useFormik({
     initialValues: {
       id: '', // Add id field to store the generated ID
@@ -91,7 +93,7 @@ const NewProjectForm = () => {
         localStorage.setItem('projects', JSON.stringify(updatedProjects));
         console.log(values as unknown as Project);
         toast.success('Projet créé avec succès !');
-        router.replace(paths.dashboard.projets.index);
+        router.replace(paths.projets.index);
         resetForm();
         setBeneficiaryList([]);
         setFinancialBackersList([]);
@@ -105,7 +107,12 @@ const NewProjectForm = () => {
   });
   return (
     <Box sx={{ p: 3 }}>
-      <form onSubmit={formik.handleSubmit}>
+      <CreateConfirmation
+        isOpen={dialog.open}
+        onConfirm={formik.handleSubmit}
+        onCancel={dialog.handleClose}
+      />
+      <form>
         <Grid
           container
           spacing={4}
@@ -251,9 +258,8 @@ const NewProjectForm = () => {
         </Grid>
         <Box sx={{ mt: 2 }}>
           <Button
-            type="submit"
+            onClick={dialog.handleOpen}
             variant="contained"
-            disabled={formik.isSubmitting}
           >
             {formik.isSubmitting ? 'Création en cours...' : 'Créer un projet'}
           </Button>

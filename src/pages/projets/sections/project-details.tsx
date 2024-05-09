@@ -6,7 +6,7 @@ import type { Theme } from '@mui/material/styles/createTheme';
 
 import { PropertyList } from 'src/components/property-list';
 import { PropertyListItem } from 'src/components/property-list-item';
-import ProjectDeleteManage from '../components/project-delete-management';
+import ProjectDeleteManage from './project-delete-management';
 import { LinearProgress, Typography } from '@mui/material';
 import numeral from 'numeral';
 import type { Project } from 'src/types/project';

@@ -36,16 +36,9 @@ const projects: Option[] = [
 
 const PurchaseUpdateForm: FC = (props) => {
   const router = useRouter();
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const handleOpen = () => {
-    // Add logic to Update the selected invoice
-    setOpen(true);
-  };
-  const handleUpdateCancel = () => {
-    setOpen(false);
-  };
 
   const uploadDialog = useDialog();
+  const dialog = useDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -64,7 +57,7 @@ const PurchaseUpdateForm: FC = (props) => {
         // Handle form submission
         console.log(values);
         toast.success('le prestataire créé avec succès !');
-        setOpen(false);
+        dialog.handleClose();
         router.push(paths.suppliers.search);
       } catch (error) {
         toast.error('Erreur lors de la création du prestataire!');
@@ -264,9 +257,8 @@ const PurchaseUpdateForm: FC = (props) => {
                 Télécharger
               </Button>
               <Button
-                // type="submit"
                 variant="contained"
-                onClick={handleOpen}
+                onClick={dialog.handleOpen}
               >
                 Enregistrer
               </Button>
@@ -279,9 +271,9 @@ const PurchaseUpdateForm: FC = (props) => {
         open={uploadDialog.open}
       />
       <UpdateConfirmation
-        isOpen={isOpen}
+        isOpen={dialog.open}
         onConfirm={formik.handleSubmit}
-        onCancel={handleUpdateCancel}
+        onCancel={dialog.handleClose}
       />
     </form>
   );

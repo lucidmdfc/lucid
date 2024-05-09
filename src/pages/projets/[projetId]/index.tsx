@@ -32,22 +32,13 @@ import { useRouter } from 'next/router';
 import { slice } from 'src/types/slice';
 import Plus from '@untitled-ui/icons-react/build/esm/Plus';
 import { slicesApi } from 'src/api/slices';
-import { calculateTotalAmount } from 'src/calculations/total-slices-calculate';
 
 const tabs = [
   { label: 'Détails', value: 'details' },
   { label: 'Tranches', value: 'slices' },
 ];
 
-interface SlicesData {
-  slices?: slice[];
-  totalSlicesAmounts?: number;
-  handleSliceDelete: () => void;
-  handleSliceUpdate: () => void;
-}
-
 const useProject = (projectId: string): Project | null => {
-  const isMounted = useMounted();
   const [project, setProject] = useState<Project | null>(null);
 
   const handleProjectGet = useCallback(async () => {
@@ -97,10 +88,9 @@ const useSlices = (projectId: string) => {
       const slicesForProject = response.data.filter(
         (slice: slice) => slice.project_id === projectId
       );
-      const totalAmounts = calculateTotalAmount(slicesForProject);
 
       setSlices(slicesForProject);
-      setTotalSlicesAmounts(totalAmounts);
+      setTotalSlicesAmounts(0);
       console.log('Slices for project with ID ' + projectId + ':', slicesForProject);
     } catch (error) {
       console.error('Error fetching slices:', error);

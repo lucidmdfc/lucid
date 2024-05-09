@@ -9,12 +9,13 @@ import { useRouter } from 'next/router';
 import React, { FC, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
-import DeleteSliceModal from '../components/delete-slice-modal';
+import DeleteSliceModal from './delete-slice-confirmation-modal';
 import * as yup from 'yup';
 import { slice } from 'src/types/slice';
 import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useDialog } from 'src/hooks/use-dialog';
+import UpdateConfirmationModal from './edit-confirmation-modal';
 
 interface SliceRowProps {
   slice: slice;
@@ -36,6 +37,7 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh }) => {
 
   const router = useRouter();
   const dialog = useDialog();
+  const editDialog = useDialog();
 
   const formik = useFormik({
     initialValues: {
@@ -153,17 +155,12 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh }) => {
 
       console.log('deleted slice: ' + sliceId);
       toast.success('La tranche a été supprimé avec succès!');
-      router.replace(paths.dashboard.projets.details.replace(':projetId', projectId));
+      router.replace(paths.projets.details.replace(':projetId', projectId));
       onRefresh();
     } catch (error) {
       console.error('Error deleting slice: ', error);
       toast.error('Échec de la suppression de la tranche. Veuillez réessayer.');
     }
-    dialog.handleClose();
-  };
-
-  const handleDeleteCancel = () => {
-    setSliceId(null);
     dialog.handleClose();
   };
 

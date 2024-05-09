@@ -13,10 +13,8 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { paths } from 'src/paths';
 import { Project } from 'src/types/project';
-
-interface NewInstallmentProps {
-  onSubmit: (formData: NewInstallmentData) => void;
-}
+import CreateConfirmation from './create-confirmation-modal';
+import { useDialog } from 'src/hooks/use-dialog';
 
 type Option = {
   text: string;
@@ -28,18 +26,15 @@ type PaymentMethod = {
   value: number;
 };
 
-interface NewInstallmentData {
-  paymentAmount: string;
-  paymentMethod: PaymentMethod | null;
-  selectedProject: Option | null;
-}
 const validationSchema = yup.object({
   amount: yup.number().min(1, 'Montant est requis'),
 });
-const NewInstallment: FC<NewInstallmentProps> = ({ onSubmit }) => {
+const NewInstallment = () => {
   const [projects, setProjects] = useState<Option[]>([]);
 
+  const dialog = useDialog();
   const router = useRouter();
+
   const handleProjectsGet = () => {
     try {
       // Retrieve projects from local storage
@@ -93,7 +88,7 @@ const NewInstallment: FC<NewInstallmentProps> = ({ onSubmit }) => {
 
         console.log(project_id, sliceData);
         toast.success('Tranche créé avec succès !');
-        router.replace(paths.dashboard.projets.index);
+        router.replace(paths.projets.index);
         resetForm();
       } catch (error) {
         toast.error('Erreur lors de la création du tranche!');
@@ -107,7 +102,12 @@ const NewInstallment: FC<NewInstallmentProps> = ({ onSubmit }) => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <form onSubmit={formik.handleSubmit}>
+      <CreateConfirmation
+        isOpen={dialog.open}
+        onConfirm={formik.handleSubmit}
+        onCancel={dialog.handleClose}
+      />
+      <form>
         <Grid
           container
           spacing={3}
@@ -175,7 +175,7 @@ const NewInstallment: FC<NewInstallmentProps> = ({ onSubmit }) => {
         </Grid>
         <Box sx={{ mt: 2 }}>
           <Button
-            type="submit"
+            onClick={dialog.handleOpen}
             variant="contained"
           >
             Créer une tranche

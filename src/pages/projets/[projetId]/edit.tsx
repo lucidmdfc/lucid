@@ -23,7 +23,7 @@ import { Breadcrumbs, Card } from '@mui/material';
 import { BreadcrumbsSeparator } from 'src/components/breadcrumbs-separator';
 import { Project } from 'src/types/project';
 import { useRouter } from 'next/router';
-import EditProject from '../components/edit-project';
+import EditProject from '../components/edit-project-form';
 
 const useProject = (projectId: string): Project | null => {
   const [project, setProject] = useState<Project | null>(null);

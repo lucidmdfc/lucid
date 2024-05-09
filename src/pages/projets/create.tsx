@@ -13,7 +13,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { Card } from '@mui/material';
-import NewProjectForm from 'src/pages/projets/components/add-project';
+import NewProjectForm from 'src/pages/projets/components/create-project-form';
 
 const Page: NextPage = () => {
   usePageView();

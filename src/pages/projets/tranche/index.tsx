@@ -13,7 +13,7 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import { Card } from '@mui/material';
-import NewInstallment from 'src/pages/projets/components/add-slice';
+import NewInstallment from 'src/pages/projets/components/create-slice-form';
 
 const Page: NextPage = () => {
   usePageView();

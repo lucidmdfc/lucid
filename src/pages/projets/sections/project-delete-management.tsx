@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import Button from '@mui/material/Button';
 import toast from 'react-hot-toast';
-import DeleteConfirmationModal from './delete-confirmation-modal';
+import DeleteConfirmationModal from '../components/delete-confirmation-modal';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
 import { CardActions } from '@mui/material';
@@ -44,7 +44,7 @@ const ProjectDeleteManage: FC<ProjectDeleteManageProps> = ({ projectId, ...props
       // Notify user
       console.log('deleted project: ' + projectId);
       toast.success('Le project a été supprimé avec succès!');
-      router.replace(paths.dashboard.projets.index);
+      router.replace(paths.projets.index);
     } catch (error) {
       console.error('Error deleting project: ', error);
       toast.error('Échec de la suppression du project. Veuillez réessayer.');

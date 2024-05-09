@@ -17,6 +17,8 @@ import FileUploader from './file-uploader';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import CreateConfirmation from './create-modal-confirmation';
+import { paths } from 'src/paths';
+import { useRouter } from 'next/router';
 
 type Option = {
   text: string;
@@ -32,16 +34,9 @@ const projects: Option[] = [
 ];
 
 const SupplierCreateForm: FC = () => {
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const handleOpen = () => {
-    // Add logic to Update the selected invoice
-    setOpen(true);
-  };
-  const handleCreateCancel = () => {
-    setOpen(false);
-  };
-
+  const dialog = useDialog();
   const uploadDialog = useDialog();
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -60,8 +55,9 @@ const SupplierCreateForm: FC = () => {
         // Handle form submission
         console.log(values);
         toast.success('le prestataire créé avec succès !');
-        setOpen(false);
+        dialog.handleClose();
         resetForm();
+        router.push(paths.suppliers.search);
       } catch (error) {
         toast.error('Erreur lors de la création du prestataire!');
         console.error('Erreur lors de la création du prestataire!: ', error);
@@ -260,9 +256,8 @@ const SupplierCreateForm: FC = () => {
                 Télécharger
               </Button>
               <Button
-                // type="submit"
                 variant="contained"
-                onClick={handleOpen}
+                onClick={dialog.handleOpen}
               >
                 Enregistrer
               </Button>
@@ -275,9 +270,9 @@ const SupplierCreateForm: FC = () => {
         open={uploadDialog.open}
       />
       <CreateConfirmation
-        isOpen={isOpen}
+        isOpen={dialog.open}
         onConfirm={formik.handleSubmit}
-        onCancel={handleCreateCancel}
+        onCancel={dialog.handleClose}
       />
     </form>
   );

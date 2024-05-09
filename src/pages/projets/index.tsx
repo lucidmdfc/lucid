@@ -143,7 +143,6 @@ const Page: NextPage = () => {
   const projectsSearch = useProjectsSearch();
   const projectsStore = useProjectsStore(projectsSearch.state);
   const projectsIds = useProjectIds(projectsStore.projects);
-  const projectsSelection = useSelection<string>(projectsIds);
   const settings = useSettings();
   const { t } = useTranslation();
   usePageView();
@@ -200,24 +199,14 @@ const Page: NextPage = () => {
               </Stack>
             </Stack>
             <Card>
-              <ProjectListSearch
-                onFiltersChange={projectsSearch.handleFiltersChange}
-                onSortChange={projectsSearch.handleSortChange}
-                sortBy={projectsSearch.state.sortBy}
-                sortDir={projectsSearch.state.sortDir}
-              />
+              <ProjectListSearch onFiltersChange={projectsSearch.handleFiltersChange} />
               <ProjectListTable
                 count={projectsStore.projectsCount}
                 items={projectsStore.projects}
-                onDeselectAll={projectsSelection.handleDeselectAll}
-                onDeselectOne={projectsSelection.handleDeselectOne}
                 onPageChange={projectsSearch.handlePageChange}
                 onRowsPerPageChange={projectsSearch.handleRowsPerPageChange}
-                onSelectAll={projectsSelection.handleSelectAll}
-                onSelectOne={projectsSelection.handleSelectOne}
                 page={projectsSearch.state.page}
                 rowsPerPage={projectsSearch.state.rowsPerPage}
-                selected={projectsSelection.selected}
               />
             </Card>
           </Stack>
