@@ -5,7 +5,7 @@ const config = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  reactStrictMode: false,
+  reactStrictMode: true,
   images: {
     unoptimized: true,
   },

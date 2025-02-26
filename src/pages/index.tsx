@@ -8,10 +8,9 @@ import { Seo } from 'src/components/seo';
 import { usePageView } from 'src/hooks/use-page-view';
 import { useSettings } from 'src/hooks/use-settings';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import DashboardStats from 'src/sections/components/quick-stats/dashboard-quick-stats';
 import { useTranslation } from 'react-i18next';
-import AllExpenses from 'src/sections/components/tables/all-expenses-table';
-import UnpaidExpenses from 'src/sections/components/tables/unpaid-expenses-table';
+import { ProjectOverview } from './dashboard/project-overview/ProjectOverview';
+import { UnpaidOverview } from './dashboard/unpaid/UnpaidOverview';
 
 const Page: NextPage = () => {
   const settings = useSettings();
@@ -21,7 +20,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <Seo title="Tableau de bord" />
+      <Seo title={t('Tableau de bord')} />
       <Box
         component="main"
         sx={{
@@ -44,25 +43,15 @@ const Page: NextPage = () => {
                 spacing={4}
               >
                 <div>
-                  <Typography variant="h4">Tableau de bord</Typography>
+                  <Typography variant="h4">{t('Tableau de bord')}</Typography>
                 </div>
               </Stack>
             </Grid>
-            <Grid xs={12}>
-              <Stack
-                spacing={{
-                  xs: 3,
-                  lg: 3,
-                }}
-              >
-                <DashboardStats />
-              </Stack>
-            </Grid>
             <Grid xs={8}>
-              <AllExpenses />
+              <ProjectOverview />
             </Grid>
             <Grid xs={4}>
-              <UnpaidExpenses />
+              <UnpaidOverview />
             </Grid>
           </Grid>
         </Container>
