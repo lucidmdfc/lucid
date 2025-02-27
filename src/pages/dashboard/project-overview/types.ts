@@ -6,6 +6,7 @@ export interface BaseProjectData {
   amount: number;
   date: string;
   status: PaymentStatus;
+  donor: string;
 }
 
 export interface TrancheData extends BaseProjectData {
@@ -41,5 +42,15 @@ export interface SoldeData extends BaseProjectData {
   transactionType: 'income' | 'expense';
   category: string;
   runningBalance: number;
+  description: string;
+}
+
+export interface ExpenseData extends BaseProjectData {
+  id: string;
+  employeeName: string;
+  amount: number;
+  date: string;
+  status: string;
+  expenseType: string;
   description: string;
 }

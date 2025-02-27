@@ -11,8 +11,16 @@ import { SalairesTab } from './components/tabs/SalairesTab';
 import { UtilitiesTab } from './components/tabs/UtilitiesTab';
 import { PrestatairesTab } from './components/tabs/PrestatairesTab';
 import { SoldeTab } from './components/tabs/SoldeTab';
+import { ExpensesTab } from './components/tabs/ExpensesTab';
 import { useTranslation } from 'react-i18next';
-import type { TrancheData, SalaireData, UtilityData, PrestaireData, SoldeData } from './types';
+import type {
+  TrancheData,
+  SalaireData,
+  UtilityData,
+  PrestaireData,
+  SoldeData,
+  ExpenseData,
+} from './types';
 
 export const ProjectOverview: FC = () => {
   const { t } = useTranslation();
@@ -20,7 +28,7 @@ export const ProjectOverview: FC = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('projectName');
+  const [sortBy, setSortBy] = useState('');
 
   // Mock data for each tab
   // TODO: Replace with actual data fetching
@@ -33,6 +41,7 @@ export const ProjectOverview: FC = () => {
           amount: 50000,
           date: '2024-02-25',
           status: 'paid',
+          donor: 'BAILLEUR DE FOND 1',
           trancheNumber: 1,
           trancheType: 'initial',
           dueDate: '2024-02-25',
@@ -44,6 +53,7 @@ export const ProjectOverview: FC = () => {
           amount: 75000,
           date: '2024-01-15',
           status: 'pending',
+          donor: 'BAILLEUR DE FOND 2',
           trancheNumber: 2,
           trancheType: 'milestone',
           dueDate: '2024-03-15',
@@ -58,6 +68,7 @@ export const ProjectOverview: FC = () => {
           amount: 15000,
           date: '2024-02-25',
           status: 'paid',
+          donor: 'BAILLEUR DE FOND 1',
           employeeName: 'John Doe',
           position: 'Developer',
           paymentPeriod: 'February 2024',
@@ -68,6 +79,7 @@ export const ProjectOverview: FC = () => {
           amount: 18000,
           date: '2024-01-15',
           status: 'pending',
+          donor: 'BAILLEUR DE FOND 2',
           employeeName: 'Jane Smith',
           position: 'Designer',
           paymentPeriod: 'January 2024',
@@ -81,6 +93,7 @@ export const ProjectOverview: FC = () => {
           amount: 2500,
           date: '2024-02-25',
           status: 'paid',
+          donor: 'BAILLEUR DE FOND 1',
           utilityType: 'electricity',
           provider: 'ONEE',
           billingPeriod: 'February 2024',
@@ -92,6 +105,7 @@ export const ProjectOverview: FC = () => {
           amount: 1800,
           date: '2024-01-15',
           status: 'pending',
+          donor: 'BAILLEUR DE FOND 2',
           utilityType: 'water',
           provider: 'ONEP',
           billingPeriod: 'January 2024',
@@ -106,6 +120,7 @@ export const ProjectOverview: FC = () => {
           amount: 35000,
           date: '2024-02-25',
           status: 'paid',
+          donor: 'BAILLEUR DE FOND 1',
           supplierName: 'ABC Consulting',
           serviceType: 'IT Services',
           contractPeriod: 'Q1 2024',
@@ -118,6 +133,7 @@ export const ProjectOverview: FC = () => {
           amount: 42000,
           date: '2024-01-15',
           status: 'pending',
+          donor: 'BAILLEUR DE FOND 2',
           supplierName: 'XYZ Solutions',
           serviceType: 'Marketing',
           contractPeriod: 'Q1 2024',
@@ -133,6 +149,7 @@ export const ProjectOverview: FC = () => {
           amount: 50000,
           date: '2024-02-25',
           status: 'paid',
+          donor: 'BAILLEUR DE FOND 1',
           transactionType: 'income',
           category: 'Payment',
           runningBalance: 50000,
@@ -144,67 +161,73 @@ export const ProjectOverview: FC = () => {
           amount: -25000,
           date: '2024-01-15',
           status: 'pending',
+          donor: 'BAILLEUR DE FOND 2',
           transactionType: 'expense',
           category: 'Materials',
           runningBalance: 25000,
           description: 'Purchase of materials',
         },
       ] as SoldeData[],
+
+      expensesData: [
+        {
+          id: '1',
+          projectName: 'Project A',
+          employeeName: 'John Doe',
+          amount: 1500,
+          date: '2024-02-25',
+          status: 'pending',
+          donor: 'BAILLEUR DE FOND 1',
+          expenseType: 'Transport',
+          description: 'Déplacement client',
+        },
+        {
+          id: '2',
+          projectName: 'Project B',
+          employeeName: 'Jane Smith',
+          amount: 2500,
+          date: '2024-01-15',
+          status: 'paid',
+          donor: 'BAILLEUR DE FOND 2',
+          expenseType: 'Hébergement',
+          description: 'Mission formation',
+        },
+      ] as ExpenseData[],
     };
   }, []);
 
   // Define sort options based on the current tab
   const sortOptions = useMemo<SortOption[]>(() => {
-    const commonOptions: SortOption[] = [
-      { value: 'projectName', label: t('Projet') },
-      { value: 'amount', label: t('Montant') },
-      { value: 'date', label: t('Date') },
-      { value: 'status', label: t('Statut') },
+    // Get all unique donors from the current data
+    const allData = [
+      ...mockData.tranchesData,
+      ...mockData.salairesData,
+      ...mockData.utilitiesData,
+      ...mockData.prestatairesData,
+      ...mockData.soldeData,
+      ...mockData.expensesData,
     ];
 
-    // Add tab-specific sort options
-    switch (currentTab) {
-      case 'tranches':
-        return [
-          ...commonOptions,
-          { value: 'trancheNumber', label: t('Numéro de tranche') },
-          { value: 'dueDate', label: t('Échéance') },
-        ];
-      case 'salaires':
-        return [
-          ...commonOptions,
-          { value: 'employeeName', label: t('Employé') },
-          { value: 'paymentPeriod', label: t('Période') },
-        ];
-      case 'utilities':
-        return [
-          ...commonOptions,
-          { value: 'utilityType', label: t('Service') },
-          { value: 'provider', label: t('Fournisseur') },
-        ];
-      case 'prestataires':
-        return [
-          ...commonOptions,
-          { value: 'supplierName', label: t('Prestataire') },
-          { value: 'serviceType', label: t('Type de service') },
-        ];
-      case 'solde':
-        return [
-          ...commonOptions,
-          { value: 'transactionType', label: t('Type de transaction') },
-          { value: 'runningBalance', label: t('Solde') },
-        ];
-      default:
-        return commonOptions;
-    }
-  }, [currentTab, t]);
+    const uniqueDonors = Array.from(new Set(allData.map((item) => item.donor)));
 
-  const handleTabChange = useCallback((tab: ProjectTab) => {
-    setCurrentTab(tab);
-    setPage(0);
-    // Reset sort to a common field when changing tabs
-    setSortBy('projectName');
-  }, []);
+    return [
+      { value: '', label: t('Tous les bailleurs') },
+      ...uniqueDonors.map((donor) => ({
+        value: donor,
+        label: donor,
+      })),
+    ];
+  }, [mockData, t]);
+
+  const handleTabChange = useCallback(
+    (tab: ProjectTab) => {
+      setCurrentTab(tab);
+      setPage(0);
+      // Reset sort to first donor when changing tabs
+      setSortBy(sortOptions[0]?.value || '');
+    },
+    [sortOptions]
+  );
 
   const handlePageChange = useCallback((event: any, newPage: number) => {
     setPage(newPage);
@@ -233,6 +256,8 @@ export const ProjectOverview: FC = () => {
         return mockData.prestatairesData;
       case 'solde':
         return mockData.soldeData;
+      case 'expenses':
+        return mockData.expensesData;
       default:
         return [];
     }
@@ -242,51 +267,22 @@ export const ProjectOverview: FC = () => {
   const sortedItems = useMemo(() => {
     const currentData = getCurrentData();
 
-    // Filter items based on search query
+    // First filter by selected donor if one is selected
+    const donorFilteredData = sortBy
+      ? currentData.filter((item) => item.donor === sortBy)
+      : currentData;
+
+    // Then filter by search query if one exists
     const filteredData = searchQuery
-      ? [...currentData].filter(
+      ? donorFilteredData.filter(
           (item) =>
-            item.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            // Also search in other relevant fields based on tab type
-            (currentTab === 'tranches' &&
-              (item as TrancheData).description
-                ?.toLowerCase()
-                .includes(searchQuery.toLowerCase())) ||
-            (currentTab === 'salaires' &&
-              (item as SalaireData).employeeName
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase())) ||
-            (currentTab === 'utilities' &&
-              (item as UtilityData).provider.toLowerCase().includes(searchQuery.toLowerCase())) ||
-            (currentTab === 'prestataires' &&
-              ((item as PrestaireData).supplierName
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase()) ||
-                (item as PrestaireData).serviceType
-                  .toLowerCase()
-                  .includes(searchQuery.toLowerCase()))) ||
-            (currentTab === 'solde' &&
-              ((item as SoldeData).description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (item as SoldeData).category.toLowerCase().includes(searchQuery.toLowerCase())))
+            item.donor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.projectName.toLowerCase().includes(searchQuery.toLowerCase())
         )
-      : [...currentData];
+      : donorFilteredData;
 
-    return filteredData.sort((a, b) => {
-      // Use a type-safe approach for sorting
-      const aValue = a[sortBy as keyof typeof a];
-      const bValue = b[sortBy as keyof typeof b];
-
-      if (aValue !== undefined && bValue !== undefined) {
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return aValue.localeCompare(bValue);
-        }
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-          return aValue - bValue;
-        }
-      }
-      return 0;
-    });
-  }, [currentTab, sortBy, getCurrentData, searchQuery]);
+    return filteredData;
+  }, [getCurrentData, searchQuery, sortBy]);
 
   const renderCurrentTab = () => {
     switch (currentTab) {
@@ -300,6 +296,8 @@ export const ProjectOverview: FC = () => {
         return <PrestatairesTab items={sortedItems as PrestaireData[]} />;
       case 'solde':
         return <SoldeTab items={sortedItems as SoldeData[]} />;
+      case 'expenses':
+        return <ExpensesTab items={sortedItems as ExpenseData[]} />;
       default:
         return null;
     }

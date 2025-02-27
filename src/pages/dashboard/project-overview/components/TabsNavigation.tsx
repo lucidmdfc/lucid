@@ -3,7 +3,13 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { useTranslation } from 'react-i18next';
 
-export type ProjectTab = 'tranches' | 'salaires' | 'utilities' | 'prestataires' | 'solde';
+export type ProjectTab =
+  | 'tranches'
+  | 'salaires'
+  | 'utilities'
+  | 'prestataires'
+  | 'solde'
+  | 'expenses';
 
 interface TabsNavigationProps {
   currentTab: ProjectTab;
@@ -46,6 +52,10 @@ export const TabsNavigation: FC<TabsNavigationProps> = ({ currentTab, onTabChang
       <Tab
         label={t('Solde Caisse')}
         value="solde"
+      />
+      <Tab
+        label={t('Notes de frais')}
+        value="expenses"
       />
     </Tabs>
   );
