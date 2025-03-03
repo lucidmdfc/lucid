@@ -266,10 +266,14 @@ export const ProjectOverview: FC = () => {
   // Sort items based on the selected sort option
   const sortedItems = useMemo(() => {
     const currentData = getCurrentData();
-
     // First filter by selected donor if one is selected
     const donorFilteredData = sortBy
-      ? currentData.filter((item) => item.donor === sortBy)
+      ? (
+          currentData as {
+            projectName: any;
+            donor: string;
+          }[]
+        ).filter((item) => item.donor === sortBy)
       : currentData;
 
     // Then filter by search query if one exists

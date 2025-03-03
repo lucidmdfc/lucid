@@ -50,7 +50,7 @@ export interface ExpenseData extends BaseProjectData {
   employeeName: string;
   amount: number;
   date: string;
-  status: string;
+  status: PaymentStatus;
   expenseType: string;
   description: string;
 }

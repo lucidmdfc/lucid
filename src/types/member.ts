@@ -11,9 +11,9 @@ export interface Member {
   email?: string;
   amount?: number | '';
   payment_method?: PaymentMethod;
-  payment_date?: Date;
+  payment_date?: Date | null | undefined;
   rc_cin: string;
   status: string;
-  created_at?: Date;
-  updated_at?: Date;
+  created_at?: Date | null | undefined;
+  updated_at?: Date | null | undefined;
 }

@@ -17,7 +17,7 @@ export const fr = {
   [tokens.nav.create]: 'Create',
   [tokens.nav.crypto]: 'Crypto',
   [tokens.nav.revenus]: 'Revenus',
-  [tokens.nav.salary]: 'Charges salariales',
+  [tokens.nav.employee]: 'Charges salariales',
   [tokens.nav.cash]: 'Compte Caisse',
   [tokens.nav.utilities]: 'Utilities',
   [tokens.nav.suppliers]: 'suppliers & Prestataires',

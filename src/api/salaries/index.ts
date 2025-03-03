@@ -2,7 +2,7 @@ import { deepCopy } from 'src/utils/deep-copy';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { applySort } from 'src/utils/apply-sort';
 import { dummySalaries } from './data';
-import { salary } from 'src/types/employees_salaries';
+import { employee } from 'src/types/employees_salaries';
 
 type GetSalariesRequest = {
   filters?: {
@@ -16,19 +16,19 @@ type GetSalariesRequest = {
 };
 
 type GetSalariesResponse = Promise<{
-  data: salary[];
+  data: employee[];
   count: number;
 }>;
 
 type GetSalaryRequest = object;
 
-type GetOrderResponse = Promise<salary>;
+type GetOrderResponse = Promise<employee>;
 
 class SalariesApi {
   getSalaries(request: GetSalariesRequest = {}): GetSalariesResponse {
     const { filters, page, rowsPerPage, sortBy, sortDir } = request;
 
-    let data = deepCopy(dummySalaries) as salary[];
+    let data = deepCopy(dummySalaries) as employee[];
     let count = data.length;
     if (typeof filters !== 'undefined') {
       data = data.filter((salary) => {

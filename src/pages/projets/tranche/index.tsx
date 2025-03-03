@@ -54,7 +54,7 @@ const Page: NextPage = () => {
             </Stack>
             <Container maxWidth="lg">
               <Card>
-                <NewInstallment onSubmit={handleSubmit}></NewInstallment>
+                <NewInstallment></NewInstallment>
               </Card>
             </Container>{' '}
           </Stack>
