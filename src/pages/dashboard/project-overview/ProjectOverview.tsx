@@ -3,15 +3,15 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { TabsNavigation, type ProjectTab } from './components/TabsNavigation';
-import { Filters, type SortOption } from '../components/Filters';
-import { Pagination } from '../components/Pagination';
-import { TranchesTab } from './components/tabs/TranchesTab';
-import { SalairesTab } from './components/tabs/SalairesTab';
-import { UtilitiesTab } from './components/tabs/UtilitiesTab';
-import { PrestatairesTab } from './components/tabs/PrestatairesTab';
-import { SoldeTab } from './components/tabs/SoldeTab';
-import { ExpensesTab } from './components/tabs/ExpensesTab';
+import TabsNavigation, { type ProjectTab } from './components/TabsNavigation';
+import Filters, { SortOption } from '../components/Filters';
+import Pagination from '../components/Pagination';
+import TranchesTab from './components/tabs/TranchesTab';
+import SalairesTab from './components/tabs/SalairesTab';
+import UtilitiesTab from './components/tabs/UtilitiesTab';
+import PrestatairesTab from './components/tabs/PrestatairesTab';
+import SoldeTab from './components/tabs/SoldeTab';
+import ExpensesTab from './components/tabs/ExpensesTab';
 import { useTranslation } from 'react-i18next';
 import type {
   TrancheData,
@@ -20,9 +20,9 @@ import type {
   PrestaireData,
   SoldeData,
   ExpenseData,
-} from './types';
+} from '../../../types/dashboard/projectOverViewTypes';
 
-export const ProjectOverview: FC = () => {
+const ProjectOverview: FC = () => {
   const { t } = useTranslation();
   const [currentTab, setCurrentTab] = useState<ProjectTab>('tranches');
   const [page, setPage] = useState(0);
@@ -338,3 +338,4 @@ export const ProjectOverview: FC = () => {
     </Card>
   );
 };
+export default ProjectOverview;

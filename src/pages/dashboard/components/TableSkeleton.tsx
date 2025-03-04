@@ -12,7 +12,7 @@ interface TableSkeletonProps {
   columnsCount?: number;
 }
 
-export const TableSkeleton: FC<TableSkeletonProps> = ({ rowsCount = 5, columnsCount = 4 }) => {
+const TableSkeleton: FC<TableSkeletonProps> = ({ rowsCount = 5, columnsCount = 4 }) => {
   return (
     <Box sx={{ position: 'relative' }}>
       <Table>
@@ -40,3 +40,4 @@ export const TableSkeleton: FC<TableSkeletonProps> = ({ rowsCount = 5, columnsCo
     </Box>
   );
 };
+export default TableSkeleton;

@@ -9,7 +9,7 @@ interface EmptyStateProps {
   icon?: React.ReactNode;
 }
 
-export const EmptyState: FC<EmptyStateProps> = ({ message, icon }) => {
+const EmptyState: FC<EmptyStateProps> = ({ message, icon }) => {
   const { t } = useTranslation();
 
   return (
@@ -48,3 +48,4 @@ export const EmptyState: FC<EmptyStateProps> = ({ message, icon }) => {
     </Box>
   );
 };
+export default EmptyState;

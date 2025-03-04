@@ -7,7 +7,7 @@ import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/render
 import { useTheme } from '@mui/material/styles';
 
 import type { Invoice } from 'src/types/invoice';
-import { calculateTotals } from 'src/pages/invoices/calculations/total-items-calculate';
+import { calculateTotals } from 'src/utils/calculations/total-items-calculate';
 
 const useStyles = () => {
   const theme = useTheme();
@@ -126,7 +126,7 @@ interface InvoicePdfDocumentProps {
   invoice: Invoice;
 }
 
-export const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
+const InvoicePdfDocument: FC<InvoicePdfDocumentProps> = (props) => {
   const { invoice } = props;
   const [isTvaActive, setIsTvaActive] = useState(true); // Set the initial state based on your logic
 
@@ -284,3 +284,4 @@ InvoicePdfDocument.propTypes = {
   // @ts-ignore
   invoice: PropTypes.object.isRequired,
 };
+export default InvoicePdfDocument;

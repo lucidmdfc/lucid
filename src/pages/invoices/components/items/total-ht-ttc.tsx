@@ -4,7 +4,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 import { FormControlLabel, Stack, Switch } from '@mui/material';
-import { calculateTotals } from 'src/pages/invoices/calculations/total-items-calculate';
+import { calculateTotals } from 'src/utils/calculations/total-items-calculate';
 import { Item } from 'src/types/item';
 
 interface ItemsDetailsProps {

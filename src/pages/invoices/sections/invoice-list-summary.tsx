@@ -3,7 +3,7 @@ import TotalInvoiceCard from '../components/total-invoice-card';
 import PaidInvoiceCard from '../components/paid-invoice-card';
 import PendingInvoiceCard from '../components/pending-invoice-card';
 
-export const InvoiceListSummary = () => (
+const InvoiceListSummary = () => (
   <>
     <Grid
       container
@@ -33,3 +33,4 @@ export const InvoiceListSummary = () => (
     </Grid>
   </>
 );
+export default InvoiceListSummary;

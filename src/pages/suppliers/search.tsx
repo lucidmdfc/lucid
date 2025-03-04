@@ -19,7 +19,7 @@ import type { InvoiceStatus } from 'src/types/invoice';
 import PurchaseListTable from './sections/suppliers-payment-state-list';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
-import { SupplierListContainer } from './sections/supplier-list-container';
+import SupplierListContainer from './sections/supplier-list-container';
 import { Supplier } from 'src/types/supplier';
 import { suppliersApi } from 'src/api/suppliers';
 import SupplierFilterSidebar from './sections/supplier-filter-sidebar';

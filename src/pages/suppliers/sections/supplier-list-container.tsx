@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 
-export const SupplierListContainer = styled('div', {
+ const SupplierListContainer = styled('div', {
   shouldForwardProp: (prop) => prop !== 'open',
 })<{ open?: boolean }>(({ theme, open }) => ({
   flexGrow: 1,
@@ -27,3 +27,4 @@ export const SupplierListContainer = styled('div', {
     }),
   }),
 }));
+export default SupplierListContainer;

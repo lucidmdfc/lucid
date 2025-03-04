@@ -3,22 +3,22 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { TabsNavigation, type UnpaidTab } from './components/TabsNavigation';
-import { Filters } from '../components/Filters';
-import { Pagination } from '../components/Pagination';
-import { FacturesTab } from './components/tabs/FacturesTab';
-import { SalairesTab } from './components/tabs/SalairesTab';
-import { UtilitiesTab } from './components/tabs/UtilitiesTab';
-import { PrestatairesTab } from './components/tabs/PrestatairesTab';
+import TabsNavigation, { UnpaidTab } from './components/TabsNavigation';
+import Filters from '../components/Filters';
+import Pagination from '../components/Pagination';
+import FacturesTab from './components/tabs/FacturesTab';
+import SalairesTab from './components/tabs/SalairesTab';
+import UtilitiesTab from './components/tabs/UtilitiesTab';
+import PrestatairesTab from './components/tabs/PrestatairesTab';
 import { useTranslation } from 'react-i18next';
 import type {
   FactureData,
   SalaireUnpaidData,
   UtilityUnpaidData,
   PrestaireUnpaidData,
-} from './types';
+} from '../../../types/dashboard/unpaidTypes';
 
-export const UnpaidOverview: FC = () => {
+const UnpaidOverview: FC = () => {
   const { t } = useTranslation();
   const [currentTab, setCurrentTab] = useState<UnpaidTab>('factures');
   const [page, setPage] = useState(0);
@@ -268,3 +268,4 @@ export const UnpaidOverview: FC = () => {
     </Card>
   );
 };
+export default UnpaidOverview;

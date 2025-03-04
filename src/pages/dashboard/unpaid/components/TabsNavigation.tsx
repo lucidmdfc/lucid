@@ -10,7 +10,7 @@ interface TabsNavigationProps {
   onTabChange: (tab: UnpaidTab) => void;
 }
 
-export const TabsNavigation: FC<TabsNavigationProps> = ({ currentTab, onTabChange }) => {
+const TabsNavigation: FC<TabsNavigationProps> = ({ currentTab, onTabChange }) => {
   const { t } = useTranslation();
 
   const handleTabsChange = (_: ChangeEvent<{}>, value: UnpaidTab): void => {
@@ -46,3 +46,4 @@ export const TabsNavigation: FC<TabsNavigationProps> = ({ currentTab, onTabChang
     </Tabs>
   );
 };
+export default TabsNavigation;

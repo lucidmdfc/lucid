@@ -20,10 +20,10 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import type { Invoice } from 'src/types/invoice';
 import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
-import { InvoiceListTable } from './sections/invoice-list-table';
-import { InvoiceListSidebar } from './sections/invoice-list-sidebar';
-import { InvoiceListSummary } from './sections/invoice-list-summary';
-import { InvoiceListContainer } from './sections/invoice-list-container';
+import InvoiceListTable from './sections/invoice-list-table';
+import InvoiceListSidebar from './sections/invoice-list-sidebar';
+import InvoiceListSummary from './sections/invoice-list-summary';
+import InvoiceListContainer from './sections/invoice-list-container';
 
 //  ! ADD DELETE FUNCTION
 

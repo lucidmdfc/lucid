@@ -42,7 +42,7 @@ interface InvoiceListTableProps {
   rowsPerPage?: number;
 }
 
-export const InvoiceListTable: FC<InvoiceListTableProps> = (props) => {
+const InvoiceListTable: FC<InvoiceListTableProps> = (props) => {
   const {
     group = false,
     items = [],
@@ -134,7 +134,7 @@ export const InvoiceListTable: FC<InvoiceListTableProps> = (props) => {
     </Stack>
   );
 };
-
+export default InvoiceListTable;
 InvoiceListTable.propTypes = {
   count: PropTypes.number,
   group: PropTypes.bool,

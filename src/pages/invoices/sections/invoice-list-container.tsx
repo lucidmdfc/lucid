@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 
-export const InvoiceListContainer = styled('div', {
+ const InvoiceListContainer = styled('div', {
   shouldForwardProp: (prop) => prop !== 'open',
 })<{ open?: boolean }>(({ theme, open }) => ({
   flexGrow: 1,
@@ -27,3 +27,4 @@ export const InvoiceListContainer = styled('div', {
     }),
   }),
 }));
+export default InvoiceListContainer;

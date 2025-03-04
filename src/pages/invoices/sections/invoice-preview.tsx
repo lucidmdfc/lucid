@@ -15,13 +15,13 @@ import Typography from '@mui/material/Typography';
 
 import { Logo } from 'src/components/logo';
 import type { Invoice } from 'src/types/invoice';
-import { calculateTotals } from 'src/pages/invoices/calculations/total-items-calculate';
+import { calculateTotals } from 'src/utils/calculations/total-items-calculate';
 
 interface InvoicePreviewProps {
   invoice: Invoice;
 }
 
-export const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
+const InvoicePreview: FC<InvoicePreviewProps> = (props) => {
   const { invoice, ...other } = props;
 
   const items = invoice.items || [];
@@ -256,3 +256,5 @@ InvoicePreview.propTypes = {
   // @ts-ignore
   invoice: PropTypes.object.isRequired,
 };
+
+export default InvoicePreview;

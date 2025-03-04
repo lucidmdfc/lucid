@@ -9,7 +9,7 @@ interface PaginationProps {
   onRowsPerPageChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const Pagination: FC<PaginationProps> = ({
+const Pagination: FC<PaginationProps> = ({
   count,
   page,
   rowsPerPage,
@@ -28,3 +28,4 @@ export const Pagination: FC<PaginationProps> = ({
     />
   );
 };
+export default Pagination;

@@ -7,9 +7,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { Scrollbar } from 'src/components/scrollbar';
-import { TableSkeleton } from '../../../components/TableSkeleton';
-import { EmptyState } from '../../../components/EmptyState';
-import type { TrancheData } from '../../types';
+import TableSkeleton from '../../../components/TableSkeleton';
+import EmptyState from '../../../components/EmptyState';
+import type { TrancheData } from '../../../../../types/dashboard/projectOverViewTypes';
 import { useTranslation } from 'react-i18next';
 import { SeverityPill, type SeverityPillColor } from 'src/components/severity-pill';
 
@@ -18,7 +18,7 @@ interface TranchesTabProps {
   isLoading?: boolean;
 }
 
-export const TranchesTab: FC<TranchesTabProps> = ({ items, isLoading }) => {
+const TranchesTab: FC<TranchesTabProps> = ({ items, isLoading }) => {
   const { t } = useTranslation();
 
   // Map status to SeverityPill color
@@ -91,3 +91,4 @@ export const TranchesTab: FC<TranchesTabProps> = ({ items, isLoading }) => {
     </Card>
   );
 };
+export default TranchesTab;

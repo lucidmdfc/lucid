@@ -9,8 +9,8 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { useSettings } from 'src/hooks/use-settings';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { useTranslation } from 'react-i18next';
-import { ProjectOverview } from './dashboard/project-overview/ProjectOverview';
-import { UnpaidOverview } from './dashboard/unpaid/UnpaidOverview';
+import ProjectOverview from './dashboard/project-overview/ProjectOverview';
+import UnpaidOverview from './dashboard/unpaid/UnpaidOverview';
 
 const Page: NextPage = () => {
   const settings = useSettings();

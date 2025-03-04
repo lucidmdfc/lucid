@@ -7,9 +7,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { Scrollbar } from 'src/components/scrollbar';
-import { TableSkeleton } from '../../../components/TableSkeleton';
-import { EmptyState } from '../../../components/EmptyState';
-import type { PrestaireData } from '../../types';
+import TableSkeleton from '../../../components/TableSkeleton';
+import EmptyState from '../../../components/EmptyState';
+import type { PrestaireData } from '../../../../../types/dashboard/projectOverViewTypes';
 import { useTranslation } from 'react-i18next';
 import { SeverityPill, type SeverityPillColor } from 'src/components/severity-pill';
 
@@ -18,7 +18,7 @@ interface PrestatairesTabProps {
   isLoading?: boolean;
 }
 
-export const PrestatairesTab: FC<PrestatairesTabProps> = ({ items, isLoading }) => {
+const PrestatairesTab: FC<PrestatairesTabProps> = ({ items, isLoading }) => {
   const { t } = useTranslation();
 
   // Map status to SeverityPill color
@@ -89,3 +89,4 @@ export const PrestatairesTab: FC<PrestatairesTabProps> = ({ items, isLoading }) 
     </Card>
   );
 };
+export default PrestatairesTab;

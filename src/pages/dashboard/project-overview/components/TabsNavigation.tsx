@@ -16,7 +16,7 @@ interface TabsNavigationProps {
   onTabChange: (tab: ProjectTab) => void;
 }
 
-export const TabsNavigation: FC<TabsNavigationProps> = ({ currentTab, onTabChange }) => {
+const TabsNavigation: FC<TabsNavigationProps> = ({ currentTab, onTabChange }) => {
   const { t } = useTranslation();
 
   const handleTabsChange = (_: ChangeEvent<{}>, value: ProjectTab): void => {
@@ -60,3 +60,4 @@ export const TabsNavigation: FC<TabsNavigationProps> = ({ currentTab, onTabChang
     </Tabs>
   );
 };
+export default TabsNavigation;

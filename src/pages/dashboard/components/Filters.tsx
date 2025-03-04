@@ -26,7 +26,7 @@ interface FiltersProps {
   sortLabel?: string;
 }
 
-export const Filters: FC<FiltersProps> = ({
+const Filters: FC<FiltersProps> = ({
   onSearchChange,
   searchValue,
   placeholder,
@@ -127,3 +127,4 @@ export const Filters: FC<FiltersProps> = ({
     </Box>
   );
 };
+export default Filters;

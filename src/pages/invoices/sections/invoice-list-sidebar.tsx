@@ -45,7 +45,7 @@ interface InvoiceListSidebarProps {
   open?: boolean;
 }
 
-export const InvoiceListSidebar: FC<InvoiceListSidebarProps> = (props) => {
+ const InvoiceListSidebar: FC<InvoiceListSidebarProps> = (props) => {
   const {
     container,
     filters = {},
@@ -329,3 +329,4 @@ InvoiceListSidebar.propTypes = {
   onGroupChange: PropTypes.func,
   open: PropTypes.bool,
 };
+export default InvoiceListSidebar;

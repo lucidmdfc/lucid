@@ -9,7 +9,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 
 import type { Invoice } from 'src/types/invoice';
 
-import { InvoicePdfDocument } from './invoice-pdf-document';
+import InvoicePdfDocument from './invoice-pdf-document';
 
 interface InvoicePdfDialogProps {
   invoice?: Invoice;
@@ -17,7 +17,7 @@ interface InvoicePdfDialogProps {
   open?: boolean;
 }
 
-export const InvoicePdfDialog: FC<InvoicePdfDialogProps> = (props) => {
+const InvoicePdfDialog: FC<InvoicePdfDialogProps> = (props) => {
   const { invoice, onClose, open = false, ...other } = props;
 
   if (!invoice) {
@@ -75,3 +75,4 @@ InvoicePdfDialog.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool,
 };
+export default InvoicePdfDialog;

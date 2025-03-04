@@ -7,9 +7,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { Scrollbar } from 'src/components/scrollbar';
-import { TableSkeleton } from '../../../components/TableSkeleton';
-import { EmptyState } from '../../../components/EmptyState';
-import type { SalaireUnpaidData } from '../../types';
+import TableSkeleton from '../../../components/TableSkeleton';
+import EmptyState from '../../../components/EmptyState';
+import type { SalaireUnpaidData } from '../../../../../types/dashboard/unpaidTypes';
 import { useTranslation } from 'react-i18next';
 import { SeverityPill, type SeverityPillColor } from 'src/components/severity-pill';
 
@@ -18,7 +18,7 @@ interface SalairesTabProps {
   isLoading?: boolean;
 }
 
-export const SalairesTab: FC<SalairesTabProps> = ({ items, isLoading }) => {
+const SalairesTab: FC<SalairesTabProps> = ({ items, isLoading }) => {
   const { t } = useTranslation();
 
   // Map status to SeverityPill color
@@ -89,3 +89,4 @@ export const SalairesTab: FC<SalairesTabProps> = ({ items, isLoading }) => {
     </Card>
   );
 };
+export default SalairesTab;
