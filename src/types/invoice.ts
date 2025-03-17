@@ -1,3 +1,6 @@
+//Should include invoice number 
+//Invoice number should calculated automatically ex: 010324 
+
 import { Item } from './item';
 
 export enum InvoiceStatus {
