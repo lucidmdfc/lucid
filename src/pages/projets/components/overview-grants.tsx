@@ -17,7 +17,7 @@ interface OverviewDoneTasksProps {
   id: string;
 }
 
-export const OverviewGrants: FC<OverviewDoneTasksProps> = (props) => {
+const OverviewGrants: FC<OverviewDoneTasksProps> = (props) => {
   const { amount, name, id } = props;
   const router = useRouter();
 
@@ -83,3 +83,4 @@ export const OverviewGrants: FC<OverviewDoneTasksProps> = (props) => {
 OverviewGrants.propTypes = {
   amount: PropTypes.number.isRequired,
 };
+export default OverviewGrants;

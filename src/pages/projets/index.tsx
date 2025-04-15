@@ -26,7 +26,7 @@ import { tokens } from 'src/locales/tokens';
 import { projectsApi } from 'src/api/projects';
 import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
 import { useQuery } from '@apollo/client';
-import { OverviewGrants } from './components/overview-grants';
+import OverviewGrants from './components/overview-grants';
 import { Grid } from '@mui/material';
 
 interface Filters {

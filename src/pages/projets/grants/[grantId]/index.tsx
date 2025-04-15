@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { Grid } from '@mui/material';
 import GrantDetails from '../components/grants-details';
 import ProjectDetails from '../../components/project-details';
-import { AnalyticsGrantDonors } from '../components/analytics-grant-donors';
+import AnalyticsGrantDonors from '../components/analytics-grant-donors';
 
 const Page: NextPage = () => {
   const router = useRouter();

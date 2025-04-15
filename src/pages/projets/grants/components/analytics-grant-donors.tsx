@@ -74,7 +74,7 @@ interface AnalyticsSocialSourcesProps {
   labels: string[];
 }
 
-export const AnalyticsGrantDonors: FC<AnalyticsSocialSourcesProps> = (props) => {
+const AnalyticsGrantDonors: FC<AnalyticsSocialSourcesProps> = (props) => {
   const { chartSeries, labels } = props;
   const chartOptions = useChartOptions(labels);
 
@@ -134,3 +134,4 @@ AnalyticsGrantDonors.propTypes = {
   chartSeries: PropTypes.any.isRequired,
   labels: PropTypes.array.isRequired,
 };
+export default AnalyticsGrantDonors;
