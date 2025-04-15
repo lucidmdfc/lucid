@@ -112,6 +112,11 @@ export const paths = {
       postDetails: '/dashboard/blog/:postId',
       postCreate: '/dashboard/blog/create',
     },
+    customers: {
+      index: '/dashboard/customers',
+      details: '/dashboard/customers/:customerId',
+      edit: '/dashboard/customers/:customerId/edit',
+    },
     calendar: '/dashboard/calendar',
     chat: '/dashboard/chat',
     crypto: '/dashboard/crypto',

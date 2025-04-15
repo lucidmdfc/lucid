@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const DONOR_FRAGMENT = gql`
-  fragment DonorFragment on Donor {
+  fragment DonorFragment on donors {
     id
     name
     email

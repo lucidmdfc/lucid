@@ -26,6 +26,8 @@ import { Layout as AuthLayout } from 'src/layouts/auth/classic-layout';
 import { paths } from 'src/paths';
 import { AuthIssuer } from 'src/sections/auth/auth-issuer';
 import { Issuer } from 'src/utils/auth';
+import { supabase } from 'src/libs/supabaseClient';
+import { useState } from 'react';
 
 interface Values {
   email: string;
@@ -54,21 +56,43 @@ const Page: NextPage = () => {
     initialValues,
     validationSchema,
     onSubmit: async (values, helpers): Promise<void> => {
-      try {
-        await signIn(values.email, values.password);
-
-        if (isMounted()) {
-          router.push(returnTo || paths.dashboard.index);
-        }
-      } catch (err) {
-        console.error(err);
-
+      let { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+      if (error) {
+        console.log(error);
         if (isMounted()) {
           helpers.setStatus({ success: false });
-          helpers.setErrors({ submit: err.message });
+          helpers.setErrors({ submit: error.message });
           helpers.setSubmitting(false);
         }
+        return;
       }
+
+      signIn('demo@devias.io', 'Password123!');
+      if (isMounted()) {
+        router.push(returnTo || paths.dashboard.index);
+        console.log('Login successful, redirecting...');
+        console.log('paths.dashboard.index:', paths.dashboard.index);
+      }
+
+      // try {
+      //   await signIn(values.email, values.password);
+      //   console.log(values);
+      //   // if (isMounted()) {
+      //   //   router.push(returnTo || paths.dashboard.index);
+      //   // }
+
+      // } catch (err) {
+      //   console.error(err);
+
+      //   if (isMounted()) {
+      //     helpers.setStatus({ success: false });
+      //     helpers.setErrors({ submit: err.message });
+      //     helpers.setSubmitting(false);
+      //   }
+      // }
     },
   });
 

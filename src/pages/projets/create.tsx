@@ -16,25 +16,41 @@ import {
 } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { useDialog } from 'src/hooks/use-dialog';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
+import { GET_DONORS } from 'src/graphql/entities/donors/queries';
+import { CREATE_GRANT_AGREEMENT } from 'src/graphql/entities/grantProjectAgreement/mutations';
+import { CREATE_PROJECT } from 'src/graphql/entities/projects/mutations';
+import { CREATE_DONOR } from 'src/graphql/entities/donors/mutations';
+import toast from 'react-hot-toast';
 
-const steps = ['Select Project', 'Add Donors', 'Agreement Details'];
+const steps = ['Select Project', 'Select Donors', 'Agreement Details'];
 
 const Page: NextPage = () => {
+  const {
+    loading: projectsLoading,
+    error: projectsError,
+    data: projectsData,
+    refetch: projectRefetsh,
+  } = useQuery(GET_PROJECTS);
+  const {
+    loading: donorsLoading,
+    error: donorsError,
+    data: donorsData,
+    refetch: donorsRefetsh,
+  } = useQuery(GET_DONORS);
+
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState<{
     project: string;
-    donors: { name: string; amount: number }[];
+    donors: { id: string; amount: number }[];
     agreementDate: string;
-    grantAmount: string;
   }>({
     project: '',
     donors: [],
     agreementDate: '',
-    grantAmount: '',
   });
-
-  const [projects, setProjects] = useState(['Project A', 'Project B']);
-  const [donorsList, setDonorsList] = useState(['Donor X', 'Donor Y']);
+  // console.log('FormData :', formData);
 
   const [newProject, setNewProject] = useState({
     name: '',
@@ -42,13 +58,13 @@ const Page: NextPage = () => {
     start_date: '',
     end_date: '',
     project_budget: '',
-    total_slice_amount: '',
     contact_person_email: '',
     contact_person_name: '',
+    note: '',
     status: false,
   });
 
-  const [newDonorName, setNewDonorName] = useState('');
+  const [newDonorId, setNewDonorId] = useState('');
   const [newDonorAmount, setNewDonorAmount] = useState('');
 
   const [newDonor, setNewDonor] = useState({
@@ -56,30 +72,105 @@ const Page: NextPage = () => {
     email: '',
     phone: '',
     note: '',
-    amount: '',
   });
+  const [CreateProject] = useMutation(CREATE_PROJECT);
+  const [CreateDonor] = useMutation(CREATE_DONOR);
 
-  const handleCreateProject = () => {
-    setProjects([...projects, newProject.name]);
+  const handleCreateProject = async () => {
+    // setProjects([...projects, newProject.name]);
     console.log(newProject);
-    setNewProject({
-      name: '',
-      description: '',
-      start_date: '',
-      end_date: '',
-      project_budget: '',
-      total_slice_amount: '',
-      contact_person_email: '',
-      contact_person_name: '',
-      status: false,
-    });
+    try {
+      const { data } = await CreateProject({
+        variables: {
+          name: newProject.name,
+          description: newProject.description,
+          start_date: newProject.start_date,
+          end_date: newProject.end_date,
+          project_budget: newProject.project_budget,
+          contact_person_email: newProject.contact_person_email,
+          contact_person_name: newProject.contact_person_name,
+          status: newProject.status,
+          note: newProject.note,
+        },
+      });
+      console.log(data);
+      toast.success('Nouveau projet créé avec succès !');
+      setNewProject({
+        name: '',
+        description: '',
+        start_date: '',
+        end_date: '',
+        project_budget: '',
+        contact_person_email: '',
+        contact_person_name: '',
+        status: false,
+        note: '',
+      });
+      projectRefetsh();
+    } catch (error) {
+      console.log('error', error);
+      toast.error('Erreur lors de la création un nouveau projet!');
+    }
     projectDialog.handleClose();
   };
-  const handleCreateDonor = () => {
-    setDonorsList([...donorsList, newDonor.name]);
+
+  const handleCreateDonor = async () => {
+    // setDonorsList([...donorsList, newDonor.name]);
     console.log(newDonor);
-    setNewDonor({ name: '', email: '', phone: '', note: '', amount: '' });
+    try {
+      const { data } = await CreateDonor({
+        variables: {
+          name: newDonor.name,
+          email: newDonor.email,
+          phone: newDonor.phone,
+          note: newDonor.note,
+        },
+      });
+      console.log(data);
+      toast.success('Nouveau donateur créé avec succès !');
+    } catch (error) {
+      toast.error('Erreur lors de la création un nouveau donateur!');
+      // toast.error(error.message);
+      console.log('error', error);
+    }
+    donorsRefetsh();
+    setNewDonor({ name: '', email: '', phone: '', note: '' });
     donorDialog.handleClose();
+  };
+
+  const [CreateGrantAgreement] = useMutation(CREATE_GRANT_AGREEMENT);
+
+  const handleSubmit = async () => {
+    const donors = formData.donors;
+
+    try {
+      for (const donor of donors) {
+        const { data } = await CreateGrantAgreement({
+          variables: {
+            donor_id: donor.id,
+            project_id: formData.project,
+            grant: donor.amount.toString(),
+            agreement_date: formData.agreementDate,
+          },
+        });
+        setFormData({
+          project: '',
+          donors: [],
+          agreementDate: '',
+        });
+        setNewDonorId('');
+        setActiveStep(0);
+        toast.success('Nouveau grant créé avec succès !');
+        // console.log('Created grant:', data);
+        console.log(
+          'Grants created successfully:',
+          data?.insert_grant_project_agreement?.returning
+        );
+      }
+    } catch (error) {
+      console.error('Error creating grants:', error);
+      toast.error('Erreur lors de la création un nouveau grant!');
+    }
   };
 
   const projectDialog = useDialog();
@@ -107,12 +198,13 @@ const Page: NextPage = () => {
                 value={formData.project}
                 onChange={(e) => setFormData({ ...formData, project: e.target.value })}
               >
-                {projects.map((project, i) => (
+                {projectsLoading && <MenuItem value="">Loading...</MenuItem>}
+                {projectsData?.projectsCollection?.edges.map((project: any) => (
                   <MenuItem
-                    key={i}
-                    value={project}
+                    key={project.node.id}
+                    value={project.node.id}
                   >
-                    {project}
+                    {project.node.name}
                   </MenuItem>
                 ))}
               </TextField>
@@ -169,16 +261,6 @@ const Page: NextPage = () => {
                 />
                 <TextField
                   fullWidth
-                  label="Total Slice Amount"
-                  type="number"
-                  value={newProject.total_slice_amount}
-                  onChange={(e) =>
-                    setNewProject({ ...newProject, total_slice_amount: e.target.value })
-                  }
-                  sx={{ mt: 2 }}
-                />
-                <TextField
-                  fullWidth
                   label="Contact Person Email"
                   value={newProject.contact_person_email}
                   onChange={(e) =>
@@ -193,6 +275,13 @@ const Page: NextPage = () => {
                   onChange={(e) =>
                     setNewProject({ ...newProject, contact_person_name: e.target.value })
                   }
+                  sx={{ mt: 2 }}
+                />
+                <TextField
+                  fullWidth
+                  label="Note"
+                  value={newProject.note}
+                  onChange={(e) => setNewProject({ ...newProject, note: e.target.value })}
                   sx={{ mt: 2 }}
                 />
                 <TextField
@@ -230,15 +319,23 @@ const Page: NextPage = () => {
                 select
                 fullWidth
                 label="Select Donor"
-                value={newDonorName}
-                onChange={(e) => setNewDonorName(e.target.value)}
+                value={newDonorId}
+                onChange={(e) => setNewDonorId(e.target.value)}
               >
-                {donorsList.map((donor, i) => (
+                {/* {donorsList.map((donor, i) => (
                   <MenuItem
                     key={i}
                     value={donor}
                   >
                     {donor}
+                  </MenuItem>
+                ))} */}
+                {donorsData.donorsCollection?.edges.map((donor: any) => (
+                  <MenuItem
+                    key={donor.node.id}
+                    value={donor.node.id}
+                  >
+                    {donor.node.name}
                   </MenuItem>
                 ))}
               </TextField>
@@ -257,15 +354,15 @@ const Page: NextPage = () => {
             <Button
               variant="outlined"
               onClick={() => {
-                if (newDonorName && newDonorAmount) {
+                if (newDonorId && newDonorAmount) {
                   setFormData({
                     ...formData,
                     donors: [
                       ...formData.donors,
-                      { name: newDonorName, amount: parseFloat(newDonorAmount) },
+                      { id: newDonorId, amount: parseFloat(newDonorAmount) },
                     ],
                   });
-                  setNewDonorName('');
+                  setNewDonorId('');
                   setNewDonorAmount('');
                 }
               }}
@@ -278,7 +375,7 @@ const Page: NextPage = () => {
               {formData.donors.length === 0 ? <Typography>No donors added yet.</Typography> : null}
               {formData.donors.map((donor, i) => (
                 <Typography key={i}>
-                  {donor.name} - ${donor.amount}
+                  {donor.id} - ${donor.amount}
                 </Typography>
               ))}
             </Box>
@@ -338,23 +435,11 @@ const Page: NextPage = () => {
               InputLabelProps={{ shrink: true }}
             />
 
-            <TextField
-              fullWidth
-              label="Grant Amount"
-              type="number"
-              value={formData.grantAmount}
-              onChange={(e) => setFormData({ ...formData, grantAmount: e.target.value })}
-              sx={{ mb: 2 }}
-            />
-
             <Typography variant="h6">Summary:</Typography>
             <Typography>Project: {formData.project}</Typography>
             <Typography>Donors: {formData.donors.length}</Typography>
             <Typography>
               Agreement Date: {formData.agreementDate ? formData.agreementDate : 'Not Yet'}{' '}
-            </Typography>
-            <Typography>
-              Grant Amount: {formData.grantAmount ? formData.grantAmount : 'Not Yet'}{' '}
             </Typography>
             {/* <Typography>Donors:</Typography>
             {formData.donors.map((d, i) => (
@@ -399,7 +484,7 @@ const Page: NextPage = () => {
         {activeStep === steps.length - 1 ? (
           <Button
             variant="contained"
-            onClick={() => console.log('Submitting', formData)}
+            onClick={handleSubmit}
           >
             Submit
           </Button>

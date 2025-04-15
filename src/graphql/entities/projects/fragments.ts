@@ -10,7 +10,6 @@ export const PROJECT_FRAGMENT = gql`
     project_budget
     created_at
     updated_at
-    total_slice_amount
     status
     note
   }

@@ -24,6 +24,10 @@ import { Project } from 'src/types/project';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 import { projectsApi } from 'src/api/projects';
+import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
+import { useQuery } from '@apollo/client';
+import { OverviewGrants } from './components/overview-grants';
+import { Grid } from '@mui/material';
 
 interface Filters {
   query?: string;
@@ -36,7 +40,18 @@ interface ProjectsSearchState {
   sortBy: string;
   sortDir: 'asc' | 'desc';
 }
-
+export const mapProjectData = (raw: any[]): Project[] =>
+  raw.map((item) => ({
+    id: item.id,
+    project_name: item.name || '--',
+    email: item.contactEmail || '--', // fallback in case it's not provided
+    amount: Number(item.project_budget) || 0,
+    totalSliceAmount: item.totalSliceAmount || 0,
+    financial_backer: item.funders || [],
+    beneficiaries: item.recipients || [],
+    created_at: item.created_at ? new Date(item.created_at) : undefined,
+    updated_at: item.updated_at ? new Date(item.updated_at) : undefined,
+  }));
 const useProjectsSearch = () => {
   const [state, setState] = useState<ProjectsSearchState>({
     filters: {
@@ -141,12 +156,37 @@ const useProjectIds = (projects: Project[] = []) => {
 
 const Page: NextPage = () => {
   const projectsSearch = useProjectsSearch();
-  const projectsStore = useProjectsStore(projectsSearch.state);
-  const projectsIds = useProjectIds(projectsStore.projects);
+  // const projectsStore = useProjectsStore(projectsSearch.state);
+  // const projectsIds = useProjectIds(projectsStore.projects);
   const settings = useSettings();
   const { t } = useTranslation();
   usePageView();
 
+  const {
+    loading: projectsLoading,
+    error: projectsError,
+    data: projectsData,
+    refetch: projectRefetsh,
+  } = useQuery(GET_PROJECTS);
+
+  console.log(projectsData?.projectsCollection?.edges);
+  const nodes = projectsData?.projectsCollection?.edges?.map((edge: any) => edge.node) || [];
+  const mappedData = mapProjectData(nodes);
+  const projectsStore = {
+    projects: mappedData,
+    projectsCount: mappedData.length,
+  };
+
+  console.log(nodes);
+  console.log(mappedData);
+  const grantsData = [
+    { id: '1', amount: 80, name: 'Project 1' },
+    { id: '2', amount: 45, name: 'Project 2' },
+    { id: '3', amount: 100, name: 'Project 3' },
+    { id: '4', amount: 60, name: 'Project 4' },
+    { id: '5', amount: 90, name: 'Project 5' },
+    { id: '1', amount: 70, name: 'Project 6' },
+  ];
   return (
     <>
       <Seo title="Revenus: Gestion projets" />
@@ -198,7 +238,28 @@ const Page: NextPage = () => {
                 </Button>
               </Stack>
             </Stack>
-            <Card>
+
+            <Grid
+              container
+              spacing={3}
+            >
+              {grantsData.map((grant, index) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  key={index}
+                >
+                  <OverviewGrants
+                    amount={grant.amount}
+                    name={grant.name}
+                    id={grant.id}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            {/* <Card>
               <ProjectListSearch onFiltersChange={projectsSearch.handleFiltersChange} />
               <ProjectListTable
                 count={projectsStore.projectsCount}
@@ -208,7 +269,7 @@ const Page: NextPage = () => {
                 page={projectsSearch.state.page}
                 rowsPerPage={projectsSearch.state.rowsPerPage}
               />
-            </Card>
+            </Card> */}
           </Stack>
         </Container>
       </Box>
