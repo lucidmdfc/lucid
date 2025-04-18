@@ -81,9 +81,9 @@ const AnalyticsGrantDonors: FC<AnalyticsSocialSourcesProps> = (props) => {
   return (
     <Card>
       <CardHeader
-        title="Social Media Sources"
+        title="Contributions par Bailleur"
         action={
-          <Tooltip title="Refresh rate is 24h">
+          <Tooltip title="Contributions par Bailleur">
             <SvgIcon color="action">
               <InfoCircleIcon />
             </SvgIcon>

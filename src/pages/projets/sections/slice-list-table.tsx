@@ -26,7 +26,10 @@ import { useRouter } from 'next/router';
 import { paths } from 'src/paths';
 import { useFormik } from 'formik';
 import SliceRow from '../components/slice-list-table-row';
-import { Divider, LinearProgress } from '@mui/material';
+import { Button, Divider, LinearProgress } from '@mui/material';
+import { Stack } from '@mui/system';
+import { RouterLink } from 'src/components/router-link';
+import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 
 interface SlicesListTableProps {
   slices?: slice[] | null;
@@ -44,8 +47,42 @@ const SlicesListTable: FC<SlicesListTableProps> = (props) => {
     <>
       <Card {...other}>
         {loading && <LinearProgress />}
-
-        <CardHeader title="Historique des tranches de paiement" />
+        <CardHeader
+          title="Historique des tranches de paiement"
+          action={
+            <Button
+              component={RouterLink}
+              href={paths.projets.tranche}
+              startIcon={
+                <SvgIcon>
+                  <PlusIcon />
+                </SvgIcon>
+              }
+              variant="contained"
+            >
+              Nouvelle Tranche
+            </Button>
+          }
+        />
+        {/* <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          // sx={{ p: 3 }}
+        >
+          <Button
+            component={RouterLink}
+            href={paths.projets.tranche}
+            startIcon={
+              <SvgIcon>
+                <PlusIcon />
+              </SvgIcon>
+            }
+            variant="contained"
+          >
+            Nouvelle Tranche
+          </Button>
+        </Stack> */}
         <Scrollbar>
           <Table sx={{ minWidth: 600 }}>
             <TableHead>

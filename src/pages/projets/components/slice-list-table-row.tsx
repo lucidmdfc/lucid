@@ -16,6 +16,8 @@ import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useDialog } from 'src/hooks/use-dialog';
 import UpdateConfirmationModal from './edit-confirmation-modal';
+import { useMutation } from '@apollo/client';
+import { DELETE_GRANT_SLICE, UPDATE_GRANT_SLICE } from 'src/graphql/entities/grantSlices/mutations';
 
 interface SliceRowProps {
   slice: slice;
@@ -72,42 +74,53 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh }) => {
 
   const handleEditClick = (sliceId: string) => {
     setEditRowId(sliceId);
+    console.log(sliceId);
   };
 
   const handleCancelEdit = () => {
     setEditRowId(null);
   };
 
+  const [updateGrantSlice, { data, loading, error }] = useMutation(UPDATE_GRANT_SLICE);
   const handleSaveEdit = async (sliceId: string) => {
     try {
       // Make sure formik values are valid
       await formik.validateForm();
 
       // Update the slice with the formik values
-      const updatedSlice = {
-        ...slice,
-        amount: formik.values.amount,
-        received_date: new Date(formik.values.received_date),
-      };
+      // const updatedSlice = {
+      //   ...slice,
+      //   amount: formik.values.amount,
+      //   received_date: new Date(formik.values.received_date),
+      // };
+      const updatedAmount = formik.values.amount;
+      const updatedDate = new Date(formik.values.received_date).toISOString(); // ISO format
+      await updateGrantSlice({
+        variables: {
+          id: parseInt(sliceId), // make sure it's a number
+          amount: String(updatedAmount),
+          received_date: updatedDate,
+        },
+      });
 
       // Get slices from local storage
-      const slicesJson = localStorage.getItem('slices');
-      if (!slicesJson) {
-        throw new Error('No slices found in local storage');
-      }
-      const slices: slice[] = JSON.parse(slicesJson);
+      // const slicesJson = localStorage.getItem('slices');
+      // if (!slicesJson) {
+      //   throw new Error('No slices found in local storage');
+      // }
+      // const slices: slice[] = JSON.parse(slicesJson);
 
-      // Find the index of the slice to update
-      const index = slices.findIndex((slice) => slice.id === sliceId);
-      if (index === -1) {
-        throw new Error('Slice not found in local storage');
-      }
+      // // Find the index of the slice to update
+      // const index = slices.findIndex((slice) => slice.id === sliceId);
+      // if (index === -1) {
+      //   throw new Error('Slice not found in local storage');
+      // }
 
       // Update the slice in the array
-      slices[index] = updatedSlice;
+      // slices[index] = updatedSlice;
 
       // Save the updated slices back to local storage
-      localStorage.setItem('slices', JSON.stringify(slices));
+      // localStorage.setItem('slices', JSON.stringify(slices));
 
       // Notify user and refresh
       toast.success('Slice modifiée avec succès !');
@@ -131,31 +144,38 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh }) => {
     setSliceId(id);
     dialog.handleOpen();
   };
+  const [deleteGrantSlice, { loading: deleteSliceLoading, error: deleteSliceError }] = useMutation(
+    DELETE_GRANT_SLICE,
+    {
+      variables: { id: sliceId },
+    }
+  );
 
   const handleDeleteConfirmation = async (sliceId: string) => {
     try {
       if (!sliceId) {
         throw new Error('Slice ID is undefined');
       }
+      console.log(sliceId);
+      deleteGrantSlice();
+      // const slicesJson = localStorage.getItem('slices');
+      // if (!slicesJson) {
+      //   throw new Error('No slices found for the project in local storage');
+      // }
+      // const slices: { id: string; name: string }[] = JSON.parse(slicesJson);
 
-      const slicesJson = localStorage.getItem('slices');
-      if (!slicesJson) {
-        throw new Error('No slices found for the project in local storage');
-      }
-      const slices: { id: string; name: string }[] = JSON.parse(slicesJson);
+      // const sliceIndex = slices.findIndex((slice) => slice.id === sliceId);
+      // if (sliceIndex === -1) {
+      //   throw new Error('Slice not found');
+      // }
 
-      const sliceIndex = slices.findIndex((slice) => slice.id === sliceId);
-      if (sliceIndex === -1) {
-        throw new Error('Slice not found');
-      }
+      // slices.splice(sliceIndex, 1);
 
-      slices.splice(sliceIndex, 1);
-
-      localStorage.setItem('slices', JSON.stringify(slices));
+      // localStorage.setItem('slices', JSON.stringify(slices));
 
       console.log('deleted slice: ' + sliceId);
       toast.success('La tranche a été supprimé avec succès!');
-      router.replace(paths.projets.details.replace(':projetId', projectId));
+      // router.replace(paths.projets.details.replace(':projetId', projectId));
       onRefresh();
     } catch (error) {
       console.error('Error deleting slice: ', error);

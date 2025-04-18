@@ -24,10 +24,11 @@ import { Project } from 'src/types/project';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 import { projectsApi } from 'src/api/projects';
-import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
+import { GET_PROJECTS, getProjectsWithDonors } from 'src/graphql/entities/projects/queries';
 import { useQuery } from '@apollo/client';
-import OverviewGrants from './components/overview-grants';
+import OverviewProjectFromGrants from './components/overview-projects-from-grants';
 import { Grid } from '@mui/material';
+import { supabase } from 'src/libs/supabaseClient';
 
 interface Filters {
   query?: string;
@@ -161,32 +162,38 @@ const Page: NextPage = () => {
   const settings = useSettings();
   const { t } = useTranslation();
   usePageView();
+  const [donorsInProject, setDonorsInProject] = useState<any[]>([]);
 
-  const {
-    loading: projectsLoading,
-    error: projectsError,
-    data: projectsData,
-    refetch: projectRefetsh,
-  } = useQuery(GET_PROJECTS);
+  // const {
+  //   loading: projectsLoading,
+  //   error: projectsError,
+  //   data: projectsData,
+  //   refetch: projectRefetsh,
+  // } = useQuery(GET_PROJECTS);
+  // console.log(projectsData?.projectsCollection?.edges);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getProjectsWithDonors();
+        // console.log(data);
+        setDonorsInProject(data);
+      } catch (error) {
+        console.error('Error fetching projects with donors', error);
+      }
+    };
 
-  console.log(projectsData?.projectsCollection?.edges);
-  const nodes = projectsData?.projectsCollection?.edges?.map((edge: any) => edge.node) || [];
-  const mappedData = mapProjectData(nodes);
-  const projectsStore = {
-    projects: mappedData,
-    projectsCount: mappedData.length,
-  };
+    fetchData();
+  }, []);
+  // console.log(donorsInProject);
+  // const nodes = projectsData?.projectsCollection?.edges?.map((edge: any) => edge.node) || [];
+  // const mappedData = mapProjectData(nodes);
+  // const projectsStore = {
+  //   projects: mappedData,
+  //   projectsCount: mappedData.length,
+  // };
 
-  console.log(nodes);
-  console.log(mappedData);
-  const grantsData = [
-    { id: '1', amount: 80, name: 'Project 1' },
-    { id: '2', amount: 45, name: 'Project 2' },
-    { id: '3', amount: 100, name: 'Project 3' },
-    { id: '4', amount: 60, name: 'Project 4' },
-    { id: '5', amount: 90, name: 'Project 5' },
-    { id: '1', amount: 70, name: 'Project 6' },
-  ];
+  // console.log(nodes);
+  // console.log(mappedData);
   return (
     <>
       <Seo title="Revenus: Gestion projets" />
@@ -243,7 +250,7 @@ const Page: NextPage = () => {
               container
               spacing={3}
             >
-              {grantsData.map((grant, index) => (
+              {donorsInProject?.map((grant, index) => (
                 <Grid
                   item
                   xs={12}
@@ -251,10 +258,11 @@ const Page: NextPage = () => {
                   md={4}
                   key={index}
                 >
-                  <OverviewGrants
-                    amount={grant.amount}
-                    name={grant.name}
-                    id={grant.id}
+                  <OverviewProjectFromGrants
+                    amount={grant.project_budget}
+                    name={grant.project_name}
+                    id={grant.project_id}
+                    donors={grant.donors.length}
                   />
                 </Grid>
               ))}

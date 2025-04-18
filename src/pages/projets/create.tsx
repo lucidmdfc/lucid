@@ -7,10 +7,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   MenuItem,
   Step,
   StepLabel,
   Stepper,
+  SvgIcon,
   TextField,
   Typography,
 } from '@mui/material';
@@ -23,6 +25,7 @@ import { CREATE_GRANT_AGREEMENT } from 'src/graphql/entities/grantProjectAgreeme
 import { CREATE_PROJECT } from 'src/graphql/entities/projects/mutations';
 import { CREATE_DONOR } from 'src/graphql/entities/donors/mutations';
 import toast from 'react-hot-toast';
+import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 
 const steps = ['Select Project', 'Select Donors', 'Agreement Details'];
 
@@ -208,7 +211,11 @@ const Page: NextPage = () => {
                   </MenuItem>
                 ))}
               </TextField>
-              <Button onClick={() => projectDialog.handleOpen()}>+ Add</Button>
+              <IconButton onClick={() => projectDialog.handleOpen()}>
+                <SvgIcon>
+                  <PlusIcon />
+                </SvgIcon>
+              </IconButton>
             </Box>
 
             <Dialog
@@ -339,7 +346,11 @@ const Page: NextPage = () => {
                   </MenuItem>
                 ))}
               </TextField>
-              <Button onClick={() => donorDialog.handleOpen()}>+ Add</Button>
+              <IconButton onClick={() => donorDialog.handleOpen()}>
+                <SvgIcon>
+                  <PlusIcon />
+                </SvgIcon>
+              </IconButton>
             </Box>
 
             <TextField
@@ -456,7 +467,7 @@ const Page: NextPage = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', padding: '10px 22px' }}>
+    <Box sx={{ width: '100%', padding: '60px 60px' }}>
       <Stepper
         activeStep={activeStep}
         alternativeLabel

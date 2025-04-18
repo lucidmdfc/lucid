@@ -12,3 +12,24 @@ export const CREATE_DONOR = gql`
   }
   ${DONOR_FRAGMENT}
 `;
+
+export const UPDATE_DONOR = gql`
+  mutation UpdateDonor($set: donorsUpdateInput!, $filter: donorsFilter, $atMost: Int!) {
+    updatedonorsCollection(set: $set, filter: $filter, atMost: $atMost) {
+      records {
+        id
+        name
+        email
+        phone
+        note
+      }
+    }
+  }
+`;
+export const DELETE_DONOR = gql`
+  mutation DeleteDonor($id: Int!) {
+    deleteFromdonorsCollection(filter: { id: { eq: $id } }) {
+      affectedCount
+    }
+  }
+`;

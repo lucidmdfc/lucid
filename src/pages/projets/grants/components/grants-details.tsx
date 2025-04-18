@@ -21,16 +21,16 @@ const GrantDetails: FC<CustomerBasicDetailsProps> = (props) => {
       {...other}
       sx={{ height: '100%' }}
     >
-      <CardHeader title="Grant details" />
+      <CardHeader title="Détails du grant" />
       <PropertyList>
         <PropertyListItem
           divider
-          label="Total amount"
+          label="Montant total"
           value={totalAmount}
         />
         <PropertyListItem
           divider
-          label="Agreement Date"
+          label="Date de l'accord"
           value={agreementDate}
         />
       </PropertyList>

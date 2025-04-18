@@ -15,6 +15,11 @@ import { paths } from 'src/paths';
 import { Project } from 'src/types/project';
 import CreateConfirmation from './create-confirmation-modal';
 import { useDialog } from 'src/hooks/use-dialog';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
+import { GET_GRANTS_SLICE_BY_PROJECT_ID } from 'src/graphql/entities/grantSlices/queries';
+import { CREATE_GRANT_SLICE } from 'src/graphql/entities/grantSlices/mutations';
+import { GET_GRANT_PROJECT_AGREEMENT } from 'src/graphql/entities/grantProjectAgreement/queries';
 
 type Option = {
   text: string;
@@ -34,30 +39,57 @@ const NewInstallment = () => {
 
   const dialog = useDialog();
   const router = useRouter();
+  const {
+    loading: projectsLoading,
+    error: projectsError,
+    data: projectsData,
+    refetch: projectRefetsh,
+  } = useQuery(GET_PROJECTS);
+  // const {
+  //   loading: projectGrantAgreementLoading,
+  //   error: projectGrantAgreementError,
+  //   data: projectGrantAgreementData,
+  //   refetch: projectGrantAgreementRefetsh,
+  // } = useQuery(GET_GRANT_PROJECT_AGREEMENT);
+  // console.log(projectGrantAgreementData);
 
-  const handleProjectsGet = () => {
-    try {
-      // Retrieve projects from local storage
-      const storedProjects = localStorage.getItem('projects');
-      const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
+  const [createGrantSlice] = useMutation(CREATE_GRANT_SLICE);
 
-      // Map the existing projects to create an array of objects with 'text' and 'value' properties
-      const mappedProjects = existingProjects.map(({ id, project_name }: Project) => ({
-        text: project_name,
-        value: id,
-      }));
+  // const handleProjectsGet = () => {
+  //   try {
+  //     // Retrieve projects from local storage
 
-      // Set the projects state with the mapped projects
-      setProjects(mappedProjects);
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-    }
-  };
+  //     const storedProjects = localStorage.getItem('projects');
+  //     const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
+
+  //     // Map the existing projects to create an array of objects with 'text' and 'value' properties
+  //     const mappedProjects = existingProjects.map(({ id, project_name }: Project) => ({
+  //       text: project_name,
+  //       value: id,
+  //     }));
+
+  //     // Set the projects state with the mapped projects
+  //     setProjects(mappedProjects);
+  //   } catch (error) {
+  //     console.error('Error fetching projects:', error);
+  //   }
+  // };
 
   useEffect(() => {
     // Call handleProjectsGet when the component mounts
-    handleProjectsGet();
-  }, []);
+    // handleProjectsGet();
+    if (projectsData?.projectsCollection?.edges) {
+      const mappedProjects = projectsData?.projectsCollection?.edges.map((edge: any) => {
+        const node: any = edge.node;
+        return {
+          text: node.name,
+          value: node.id,
+        };
+      });
+
+      setProjects(mappedProjects);
+    }
+  }, [projectsData]);
 
   const formik = useFormik({
     initialValues: {
@@ -71,20 +103,28 @@ const NewInstallment = () => {
       const { project_id, ...sliceData } = values;
       try {
         // Generate a unique ID for the slice
-        const slice_id = Math.random().toString(36).substring(7);
+        // const slice_id = Math.random().toString(36).substring(7);
 
         // Construct the slice object including the generated ID
-        const slice = { id: slice_id, project_id, ...sliceData };
+        // const slice = { id: slice_id, project_id, ...sliceData };
 
         // Retrieve existing slices from local storage
-        const storedSlices = localStorage.getItem('slices');
-        const existingSlices = storedSlices ? JSON.parse(storedSlices) : [];
+        // const storedSlices = localStorage.getItem('slices');
+        // const existingSlices = storedSlices ? JSON.parse(storedSlices) : [];
 
         // Add the new slice to the array of existing slices
-        const updatedSlices = [...existingSlices, slice];
+        // const updatedSlices = [...existingSlices, slice];
 
         // Store the updated slices array in local storage
-        localStorage.setItem('slices', JSON.stringify(updatedSlices));
+        // localStorage.setItem('slices', JSON.stringify(updatedSlices));
+        await createGrantSlice({
+          variables: {
+            project_id: Number(project_id),
+            amount: sliceData.amount.toString(),
+            received_date: sliceData.received_date,
+            status: 'received',
+          },
+        });
 
         console.log(project_id, sliceData);
         toast.success('Tranche créé avec succès !');

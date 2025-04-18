@@ -35,3 +35,29 @@ export const CREATE_PROJECT = gql`
   }
   ${PROJECT_FRAGMENT}
 `;
+export const UPDATE_PROJECT = gql`
+  mutation UpdateProject($set: projectsUpdateInput!, $filter: projectsFilter, $atMost: Int!) {
+    updateprojectsCollection(set: $set, filter: $filter, atMost: $atMost) {
+      records {
+        id
+        name
+        description
+        start_date
+        end_date
+        project_budget
+        status
+        note
+        contact_person_email
+        contact_person_name
+      }
+    }
+  }
+`;
+
+export const DELETE_PROJECT = gql`
+  mutation DeleteProject($id: Int!) {
+    deleteFromprojectsCollection(filter: { id: { eq: $id } }) {
+      affectedCount
+    }
+  }
+`;

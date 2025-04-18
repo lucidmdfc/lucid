@@ -13,15 +13,16 @@ import { useRouter } from 'next/router';
 
 interface OverviewDoneTasksProps {
   amount: number;
+  donors: number;
   name: string;
   id: string;
 }
 
-const OverviewGrants: FC<OverviewDoneTasksProps> = (props) => {
-  const { amount, name, id } = props;
+const OverviewProjectFromGrants: FC<OverviewDoneTasksProps> = (props) => {
+  const { amount, name, id, donors } = props;
   const router = useRouter();
 
-  console.log(id);
+  // console.log(donors);
 
   const handleClick = () => {
     router.push(`/projets/grants/${id}`);
@@ -59,6 +60,13 @@ const OverviewGrants: FC<OverviewDoneTasksProps> = (props) => {
           >
             {amount}
           </Typography>
+
+          <Typography
+            color="text.secondary"
+            variant="body2"
+          >
+            Total donrs in this project : {donors}
+          </Typography>
         </Box>
       </Stack>
       <Divider />
@@ -80,7 +88,7 @@ const OverviewGrants: FC<OverviewDoneTasksProps> = (props) => {
   );
 };
 
-OverviewGrants.propTypes = {
+OverviewProjectFromGrants.propTypes = {
   amount: PropTypes.number.isRequired,
 };
-export default OverviewGrants;
+export default OverviewProjectFromGrants;

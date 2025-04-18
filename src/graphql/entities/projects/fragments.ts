@@ -12,5 +12,7 @@ export const PROJECT_FRAGMENT = gql`
     updated_at
     status
     note
+    contact_person_email
+    contact_person_name
   }
 `;

@@ -14,7 +14,7 @@ const authLink = setContext(async (_, { headers }) => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  console.log(session);
+  // console.log(session);
   // Return the headers to the context so httpLink can read them
   const token = session ? `Bearer ${session.access_token}` : '';
 

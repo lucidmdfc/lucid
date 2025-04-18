@@ -4,11 +4,15 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardHeader from '@mui/material/CardHeader';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { PropertyList } from 'src/components/property-list';
 import { PropertyListItem } from 'src/components/property-list-item';
+import Link from 'next/link';
+import { IconButton } from '@mui/material';
 
 interface ProjectDetailsProps {
+  id: string;
   name: string;
   description?: string;
   start_date?: string;
@@ -21,18 +25,34 @@ interface ProjectDetailsProps {
 }
 
 const ProjectDetails: FC<ProjectDetailsProps> = (props) => {
-  const { name, description, start_date, end_date, project_budget, status, note, ...other } = props;
-
+  const { id, name, description, start_date, end_date, project_budget, status, note, ...other } =
+    props;
+  console.log(id);
   return (
     <Card
       {...other}
       sx={{ height: '100%' }}
     >
-      <CardHeader title="Project Details" />
+      <CardHeader
+        title="Détails du projet"
+        action={
+          <Link
+            href={`/projets/${id}/edit`}
+            passHref
+          >
+            <IconButton
+              component="a"
+              aria-label="Edit project"
+            >
+              <EditIcon />
+            </IconButton>
+          </Link>
+        }
+      />
       <PropertyList>
         <PropertyListItem
           divider
-          label="Name"
+          label="Nom"
           value={name}
         />
         <PropertyListItem
@@ -42,17 +62,17 @@ const ProjectDetails: FC<ProjectDetailsProps> = (props) => {
         />
         <PropertyListItem
           divider
-          label="Start Date"
+          label="Date de début"
           value={start_date}
         />
         <PropertyListItem
           divider
-          label="End Date"
+          label="Date de fin"
           value={end_date}
         />
         <PropertyListItem
           divider
-          label="Project Budget"
+          label="Budget du projet"
           value={project_budget ? `${project_budget} MAD` : 'N/A'}
         />
         <PropertyListItem
