@@ -231,7 +231,7 @@ const Page: NextPage = () => {
                 >
                   Nouveau Projet
                 </Button>
-                <Button
+                {/* <Button
                   component={RouterLink}
                   href={paths.projets.tranche}
                   startIcon={
@@ -242,7 +242,7 @@ const Page: NextPage = () => {
                   variant="contained"
                 >
                   Nouvelle Tranche
-                </Button>
+                </Button> */}
               </Stack>
             </Stack>
 
