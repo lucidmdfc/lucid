@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const ENTITY_FRAGMENT = gql`
-  fragment EntityFragment on Entity {
+  fragment EntityFragment on entity {
     id
     fullName
     address

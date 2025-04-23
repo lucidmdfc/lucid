@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const PROVIDER_INVOICE_FRAGMENT = gql`
-  fragment ProviderInvoiceFragment on ProviderInvoice {
+  fragment ProviderInvoiceFragment on provider_invoices {
     id
     service_provider_id
     project_id

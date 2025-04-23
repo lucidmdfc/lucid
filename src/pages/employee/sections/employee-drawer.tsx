@@ -20,10 +20,11 @@ interface SalaryDrawerProps {
   open?: boolean;
   onClose?: () => void;
   salary?: employee;
+  employeesRefetch: any;
 }
 
 const SalaryDrawer: FC<SalaryDrawerProps> = (props) => {
-  const { container, onClose, open, salary } = props;
+  const { container, onClose, open, salary, employeesRefetch } = props;
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
@@ -76,6 +77,7 @@ const SalaryDrawer: FC<SalaryDrawerProps> = (props) => {
               onEdit={handleEditOpen}
               onReject={onClose}
               salary={salary}
+              employeesRefetch={employeesRefetch}
             />
           ) : (
             <EmployeeEdit

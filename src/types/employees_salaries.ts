@@ -4,6 +4,9 @@ export interface employee {
   salaryFunction: string;
   grossSalary: number;
   recruitmentDate: Date;
+  email: string;
+  phone: string;
+  status: string;
   createdDate: Date;
   updatedDate?: Date;
 }

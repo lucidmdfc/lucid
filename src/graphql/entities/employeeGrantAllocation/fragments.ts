@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const EMPLOYEE_GRANT_ALLOCATION_FRAGMENT = gql`
-  fragment EmployeeGrantAllocationFragment on EmployeeGrantAllocation {
+  fragment EmployeeGrantAllocationFragment on employee_grant_allocations {
     id
     employee_id
     project_id

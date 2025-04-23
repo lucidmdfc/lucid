@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const PETTY_CASH_FRAGMENT = gql`
-  fragment PettyCashFragment on PettyCash {
+  fragment PettyCashFragment on petty_cash {
     id
     grant_project_agreement_id
     category_id

@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
 
 export const EMPLOYEE_FRAGMENT = gql`
-  fragment EmployeeFragment on Employee {
+  fragment EmployeeFragment on employees {
     id
     salaryName
     salaryFunction
     email
     phone
-    salary_transfer
+    grossSalary
     recruitmentDate
     status
     created_at

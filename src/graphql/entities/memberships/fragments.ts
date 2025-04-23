@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const MEMBERSHIP_FRAGMENT = gql`
-  fragment MembershipFragment on Membership {
+  fragment MembershipFragment on memberships {
     id
     created_at
     member_id

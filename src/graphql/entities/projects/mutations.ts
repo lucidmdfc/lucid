@@ -5,10 +5,10 @@ export const CREATE_PROJECT = gql`
   mutation CreateProject(
     $name: String!
     $description: String
-    $start_date: date!
-    $end_date: date!
-    $project_budget: numeric!
-    $status: String
+    $start_date: Date!
+    $end_date: Date!
+    $project_budget: BigFloat!
+    $status: Boolean
     $note: String
     $contact_person_email: String
     $contact_person_name: String

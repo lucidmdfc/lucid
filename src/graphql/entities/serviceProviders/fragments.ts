@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const SERVICE_PROVIDER_FRAGMENT = gql`
-  fragment ServiceProviderFragment on ServiceProvider {
+  fragment ServiceProviderFragment on service_providers {
     id
     name
     email

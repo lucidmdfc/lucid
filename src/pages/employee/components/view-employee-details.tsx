@@ -24,19 +24,26 @@ import PaymentHistoryTableRow from '../sections/payment-history-table-row';
 import { useDialog } from 'src/hooks/use-dialog';
 import { payment, employee } from 'src/types/employees_salaries';
 import { dummyPayments } from 'src/api/salaries/data';
+import { DELETE_EMPLOYEE } from 'src/graphql/entities/employees/mutations';
+import { useMutation } from '@apollo/client';
+import { useDeleteEmployeeMutation } from 'src/hooks/generatedHook';
 
 interface EmployeeDetailsProps {
   onApprove?: () => void;
   onEdit?: () => void;
   onReject?: () => void;
   salary: employee;
+  employeesRefetch: any;
 }
 
 const EmployeeDetails: FC<EmployeeDetailsProps> = (props) => {
-  const { onApprove, onEdit, onReject, salary } = props;
+  const { onApprove, onEdit, onReject, salary, employeesRefetch } = props;
   const dialog = useDialog();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
-  const date = salary.recruitmentDate && format(salary.recruitmentDate, 'dd/MM/yyyy');
+  const date =
+    salary?.recruitmentDate && !isNaN(new Date(salary.recruitmentDate).getTime())
+      ? format(new Date(salary.recruitmentDate), 'dd/MM/yyyy')
+      : 'date indéfinie';
 
   const align = lgUp ? 'horizontal' : 'vertical';
 
@@ -45,11 +52,15 @@ const EmployeeDetails: FC<EmployeeDetailsProps> = (props) => {
     // For now, let's just log the paymentId
     console.log(`Deleting payment with ID: ${paymentId}`);
   };
+  const [deleteEmployee, { loading: deleteEmployeeLoading, error: deleteEmployeeError }] =
+    useDeleteEmployeeMutation();
 
   const handleDeleteConfirmation = async (id: string | undefined) => {
     try {
       console.log('salarié avec id ', id, 'est supprimer');
 
+      deleteEmployee({ variables: { id: Number(id) } });
+      employeesRefetch();
       // await firebaseSlice.deleteSlice(projectId, sliceId, onRefresh);
       toast.success('Le salarié a été supprimé avec succès!');
       if (onReject) {
@@ -132,6 +143,20 @@ const EmployeeDetails: FC<EmployeeDetailsProps> = (props) => {
             divider
             label="Date de recrutement"
             value={date}
+          />
+          <PropertyListItem
+            align={align}
+            disableGutters
+            divider
+            label="email"
+            value={salary.email}
+          />
+          <PropertyListItem
+            align={align}
+            disableGutters
+            divider
+            label="phone"
+            value={salary.phone}
           />
 
           <PropertyListItem

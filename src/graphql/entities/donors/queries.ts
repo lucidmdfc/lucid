@@ -14,7 +14,7 @@ export const GET_DONORS = gql`
   ${DONOR_FRAGMENT}
 `;
 export const GET_DONOR_BY_ID = gql`
-  query GetDonorById($id: String!) {
+  query GetDonorById($id: Int!) {
     donorsCollection(filter: { id: { eq: $id } }, first: 1) {
       edges {
         node {

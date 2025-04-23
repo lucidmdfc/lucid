@@ -27,6 +27,9 @@ import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 import { slariesApi } from 'src/api/salaries';
 import { employee } from 'src/types/employees_salaries';
+import { GET_EMPLOYEE, GET_EMPLOYEES } from 'src/graphql/entities/employees/queries';
+import { useQuery } from '@apollo/client';
+import { useGetEmployeeQuery, useGetEmployeesQuery } from 'src/hooks/generatedHook';
 
 interface Filters {
   query?: string;
@@ -126,6 +129,33 @@ const Page: NextPage = () => {
     () => salariesStore.salaries.find((salary) => salary.id === dialog.data),
     [salariesStore.salaries, dialog.data]
   );
+
+  const {
+    loading: employeesLoading,
+    error: employeesError,
+    data: employeesData,
+    refetch: employeesRefetch,
+  } = useGetEmployeesQuery({
+    variables: {
+      first: salariesSearch.state.rowsPerPage,
+      offset: salariesSearch.state.page * salariesSearch.state.rowsPerPage,
+    },
+  });
+
+  const employees = employeesData?.employeesCollection?.edges?.map((edge: any) => edge.node) || [];
+  const {
+    loading: employeeLoading,
+    error: employeeError,
+    data: employeeData,
+    refetch: employeeRefetsh,
+  } = useGetEmployeeQuery({
+    variables: { id: Number(dialog.data) },
+  });
+
+  const employee = employeeData?.employeesCollection?.edges?.map((edge: any) => edge.node) || [];
+  console.log('employeeError', employeeError);
+  console.log('employee', employee);
+
   const { t } = useTranslation();
 
   usePageView();
@@ -213,8 +243,8 @@ const Page: NextPage = () => {
           <SalaryListSearch onFiltersChange={salariesSearch.handleFiltersChange} />
           <Divider />
           <SalaryListTable
-            count={salariesStore.salariesCount}
-            salaries={salariesStore.salaries}
+            count={salariesStore?.salariesCount}
+            salaries={employees}
             onPageChange={salariesSearch.handlePageChange}
             onRowsPerPageChange={salariesSearch.handleRowsPerPageChange}
             onSelect={handleMemberDrawerOpen}
@@ -226,7 +256,8 @@ const Page: NextPage = () => {
           container={rootRef.current}
           onClose={dialog.handleClose}
           open={dialog.open}
-          salary={currentOrder}
+          salary={employee[0]}
+          employeesRefetch={employeesRefetch}
         />
       </Box>
     </Box>

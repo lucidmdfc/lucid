@@ -10,6 +10,13 @@ import UpdateConfirmation from './edit-modal-confirmation';
 import { useDialog } from 'src/hooks/use-dialog';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
+import { useMutation } from '@apollo/client';
+import { UPDATE_EMPLOYEE } from 'src/graphql/entities/employees/mutations';
+import { status } from 'nprogress';
+import { stat } from 'fs';
+import * as yup from 'yup';
+import { useUpdateEmployeeMutation } from 'src/hooks/generatedHook';
+import { EmployeeFragmentFragment } from 'src/types/generatedTypes';
 
 interface EmployeeEditProps {
   onCancel?: () => void;
@@ -20,22 +27,52 @@ interface EmployeeEditProps {
 const EmployeeEdit: FC<EmployeeEditProps> = (props) => {
   const { onCancel, onSave, salary } = props;
   const dialog = useDialog();
+  const [updateEmployee, { data, loading, error }] = useUpdateEmployeeMutation();
+  const validationSchema = yup.object({
+    salaryName: yup.string().required('Nom membre est requis'),
+    salaryFunction: yup.string().required('Fonction est requise'),
+    email: yup.string().required('Email est requis').email('Format email invalide'),
+    phone: yup.string().required('Téléphone est requis'),
+    grossSalary: yup
+      .number()
+      .typeError('Salaire brut doit être un nombre')
+      .required('Salaire brut est requis'),
+    recruitmentDate: yup.date().required('Date de recrutement est requise'),
+    status: yup.string().required('Statut est requis'),
+  });
+
   const formik = useFormik({
     initialValues: {
-      id: '',
+      id: 0,
       salaryName: '',
       salaryFunction: '',
+      email: '',
+      phone: '',
       recruitmentDate: new Date(),
       grossSalary: Number(),
-      updatedDate: new Date(),
-      createdDate: new Date(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      status: 'active',
     },
-    // validationSchema: validationSchema,
-    onSubmit: async (values: employee, { setSubmitting, resetForm }) => {
-      console.log(values, salary);
+    validationSchema: validationSchema,
+    onSubmit: async (values: EmployeeFragmentFragment, { setSubmitting, resetForm }) => {
+      // console.log(values, salary);
+      // console.log('values', values);
 
       try {
         // Handle form submission
+        await updateEmployee({
+          variables: {
+            id: Number(salary.id),
+            salaryName: values.salaryName,
+            salaryFunction: values.salaryFunction,
+            email: values.email ?? '',
+            phone: values.phone,
+            grossSalary: values.grossSalary.toString(),
+            recruitmentDate: new Date(values.recruitmentDate),
+            status: values.status,
+          },
+        });
         toast.success('Nouveau salarié(e) créé avec succès !');
         dialog.handleClose();
       } catch (error) {
@@ -50,12 +87,13 @@ const EmployeeEdit: FC<EmployeeEditProps> = (props) => {
     formik.initialValues;
     formik.setValues({
       ...formik.values,
-      id: salary.id,
+      id: Number(salary.id),
       salaryName: salary.salaryName,
       salaryFunction: salary.salaryFunction,
+      email: salary.email,
+      phone: salary.phone,
       grossSalary: salary.grossSalary,
       recruitmentDate: new Date(salary.recruitmentDate),
-      createdDate: new Date(salary.createdDate),
     });
   }, [salary]);
   return (
@@ -76,6 +114,9 @@ const EmployeeEdit: FC<EmployeeEditProps> = (props) => {
                 name="salaryName"
                 value={formik.values.salaryName}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.salaryName && Boolean(formik.errors.salaryName)}
+                helperText={formik.touched.salaryName && formik.errors.salaryName}
               />
               <TextField
                 fullWidth
@@ -83,6 +124,9 @@ const EmployeeEdit: FC<EmployeeEditProps> = (props) => {
                 name="salaryFunction"
                 value={formik.values.salaryFunction}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.salaryFunction && Boolean(formik.errors.salaryFunction)}
+                helperText={formik.touched.salaryFunction && formik.errors.salaryFunction}
               />
 
               <TextField
@@ -92,6 +136,33 @@ const EmployeeEdit: FC<EmployeeEditProps> = (props) => {
                 type="number"
                 value={formik.values.grossSalary}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.grossSalary && Boolean(formik.errors.grossSalary)}
+                helperText={
+                  formik.touched.grossSalary && typeof formik.errors.grossSalary === 'string'
+                    ? formik.errors.grossSalary
+                    : undefined
+                }
+              />
+              <TextField
+                fullWidth
+                label="email"
+                name="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
+              <TextField
+                fullWidth
+                label="phone"
+                name="phone"
+                value={formik.values.phone}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.phone && Boolean(formik.errors.phone)}
+                helperText={formik.touched.phone && formik.errors.phone}
               />
               <DatePicker
                 label="Date de recrutement"

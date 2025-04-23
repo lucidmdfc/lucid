@@ -5,8 +5,8 @@ export const CREATE_GRANT_AGREEMENT = gql`
   mutation CreateGrantAgreement(
     $donor_id: Int!
     $project_id: Int!
-    $grant: String!
-    $agreement_date: date!
+    $grant: BigFloat!
+    $agreement_date: Date!
   ) {
     insertIntogrant_project_agreementCollection(
       objects: [

@@ -9,7 +9,7 @@ export const DELETE_GRANT_SLICE = gql`
 `;
 
 export const UPDATE_GRANT_SLICE = gql`
-  mutation UpdateGrantSlice($id: Int!, $amount: Float!, $received_date: Date!) {
+  mutation UpdateGrantSlice($id: Int!, $amount: BigFloat!, $received_date: Datetime!) {
     updategrant_slicesCollection(
       filter: { id: { eq: $id } }
       set: { amount: $amount, received_date: $received_date }
@@ -27,8 +27,8 @@ export const UPDATE_GRANT_SLICE = gql`
 export const CREATE_GRANT_SLICE = gql`
   mutation CreateGrantSlice(
     $project_id: Int!
-    $amount: Float!
-    $received_date: Date!
+    $amount: BigFloat!
+    $received_date: Datetime!
     $status: String!
   ) {
     insertIntogrant_slicesCollection(

@@ -16,7 +16,7 @@ export const GET_PROJECTS = gql`
 `;
 
 export const GET_PROJECT_BY_ID = gql`
-  query GetProjectById($id: String!) {
+  query GetProjectById($id: Int!) {
     projectsCollection(filter: { id: { eq: $id } }, first: 1) {
       edges {
         node {

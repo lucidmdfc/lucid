@@ -65,7 +65,7 @@ const OverviewProjectFromGrants: FC<OverviewDoneTasksProps> = (props) => {
             color="text.secondary"
             variant="body2"
           >
-            Total donrs in this project : {donors}
+            Total des bailleurs dans ce projet : {donors}
           </Typography>
         </Box>
       </Stack>
@@ -81,7 +81,7 @@ const OverviewProjectFromGrants: FC<OverviewDoneTasksProps> = (props) => {
           size="small"
           onClick={handleClick}
         >
-          See grant details
+          Voir les détails du projet.
         </Button>
       </CardActions>
     </Card>

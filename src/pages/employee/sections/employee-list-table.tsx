@@ -50,8 +50,10 @@ const SalaryListTable: FC<SalaryListTableProps> = (props) => {
         <TableBody>
           {salaries.map((salary) => {
             const totalAmount = numeral(salary.grossSalary).format(`0,0.00`);
-            const date = salary.recruitmentDate && format(salary.recruitmentDate, 'dd/MM/yyyy');
-
+            const date =
+              salary?.recruitmentDate && !isNaN(new Date(salary.recruitmentDate).getTime())
+                ? format(new Date(salary.recruitmentDate), 'dd/MM/yyyy')
+                : 'date indéfinie';
             return (
               <EmployeeListTableRow
                 salary={salary}
