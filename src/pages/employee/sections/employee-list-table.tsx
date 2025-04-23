@@ -13,10 +13,11 @@ import { format } from 'date-fns';
 import { employee } from 'src/types/employees_salaries';
 import { useDialog } from 'src/hooks/use-dialog';
 import EmployeeListTableRow from '../components/employee-list-table-row';
+import { EmployeeFragmentFragment } from 'src/types/generatedTypes';
 
 interface SalaryListTableProps {
   count?: number;
-  salaries?: employee[];
+  salaries?: EmployeeFragmentFragment[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onSelect?: (employeeId: string) => void;

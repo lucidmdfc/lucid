@@ -21,7 +21,7 @@ import { EmployeeFragmentFragment } from 'src/types/generatedTypes';
 interface EmployeeEditProps {
   onCancel?: () => void;
   onSave?: () => void;
-  salary: employee;
+  salary: EmployeeFragmentFragment;
 }
 
 const EmployeeEdit: FC<EmployeeEditProps> = (props) => {

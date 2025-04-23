@@ -14,12 +14,13 @@ import type { Theme } from '@mui/material/styles/createTheme';
 import EmployeeDetails from '../components/view-employee-details';
 import EmployeeEdit from '../components/edit-employee-form';
 import { employee } from 'src/types/employees_salaries';
+import { EmployeeFragmentFragment } from 'src/types/generatedTypes';
 
 interface SalaryDrawerProps {
   container?: HTMLDivElement | null;
   open?: boolean;
   onClose?: () => void;
-  salary?: employee;
+  salary?: EmployeeFragmentFragment;
   employeesRefetch: any;
 }
 

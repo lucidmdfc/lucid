@@ -27,12 +27,13 @@ import { dummyPayments } from 'src/api/salaries/data';
 import { DELETE_EMPLOYEE } from 'src/graphql/entities/employees/mutations';
 import { useMutation } from '@apollo/client';
 import { useDeleteEmployeeMutation } from 'src/hooks/generatedHook';
+import { EmployeeFragmentFragment } from 'src/types/generatedTypes';
 
 interface EmployeeDetailsProps {
   onApprove?: () => void;
   onEdit?: () => void;
   onReject?: () => void;
-  salary: employee;
+  salary: EmployeeFragmentFragment;
   employeesRefetch: any;
 }
 
@@ -80,7 +81,7 @@ const EmployeeDetails: FC<EmployeeDetailsProps> = (props) => {
         onConfirm={handleDeleteConfirmation}
         onCancel={dialog.handleClose}
         message="Êtes vous sûr de vouloir supprimer ce salarié(e)? Cette action sera irréversible."
-        id={salary?.id}
+        id={salary?.id ? String(salary.id) : undefined}
       />
       <Stack spacing={3}>
         <Stack
@@ -149,7 +150,7 @@ const EmployeeDetails: FC<EmployeeDetailsProps> = (props) => {
             disableGutters
             divider
             label="email"
-            value={salary.email}
+            value={salary.email ?? ''}
           />
           <PropertyListItem
             align={align}

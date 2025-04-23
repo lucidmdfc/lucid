@@ -2,8 +2,9 @@ import { IconButton, SvgIcon, TableCell, TableRow, Typography } from '@mui/mater
 import ArrowRight from '@untitled-ui/icons-react/build/esm/ArrowRight';
 import React, { FC } from 'react';
 import { employee } from 'src/types/employees_salaries';
+import { EmployeeFragmentFragment } from 'src/types/generatedTypes';
 interface EmployeeListTableRowProps {
-  salary: employee;
+  salary: EmployeeFragmentFragment;
   date: string;
   totalAmount: string;
   onSelect?: (EmployeeId: string) => void;
@@ -35,7 +36,7 @@ const EmployeeListTableRow: FC<EmployeeListTableRowProps> = ({
       <TableCell>
         <IconButton
           color="info"
-          onClick={() => onSelect?.(salary.id)}
+          onClick={() => onSelect?.(String(salary.id))}
         >
           <SvgIcon>
             <ArrowRight />
