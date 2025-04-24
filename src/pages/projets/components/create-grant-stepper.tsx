@@ -448,11 +448,20 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
               {formData.donors.length === 0 && (
                 <Typography>Aucun bailleur ajouté pour le moment.</Typography>
               )}
-              {formData.donors.map((d, i) => (
-                <Typography key={i}>
-                  {d.id} – ${d.amount}
-                </Typography>
-              ))}
+              {formData.donors.map((d, i) => {
+                const donorInfo = donorsData?.donorsCollection?.edges.find(
+                  (edge: any) => edge.node.id === d.id
+                );
+
+                return (
+                  <Typography
+                    key={i}
+                    sx={{ padding: '8px 0' }}
+                  >
+                    {donorInfo?.node.name ?? 'Unknown Donor'} – {d.amount} MAD
+                  </Typography>
+                );
+              })}
             </Box>
 
             {/* ---- Add‑donor dialog ---- */}
