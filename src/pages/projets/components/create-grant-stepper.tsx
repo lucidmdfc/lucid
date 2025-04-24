@@ -17,6 +17,8 @@ import {
 } from '@mui/material';
 import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 import { useDialog } from 'src/hooks/use-dialog';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 interface DonorEntry {
   id: string;
@@ -41,6 +43,28 @@ interface FormDataState {
 }
 
 const steps = ['Sélectionner le projet', 'Sélectionner les bailleurs', 'Détails de l’accord'];
+// Validation schemas
+const projectValidationSchema = Yup.object({
+  name: Yup.string().required('Le nom du projet est requis'),
+  description: Yup.string().required('La description est requise'),
+  start_date: Yup.date().required('La date de début est requise'),
+  end_date: Yup.date()
+    .required('La date de fin est requise')
+    .min(Yup.ref('start_date'), 'La date de fin doit être après la date de début'),
+  project_budget: Yup.number()
+    .typeError('Le budget doit être un nombre')
+    .required('Le budget est requis')
+    .positive('Le budget doit être positif'),
+  contact_person_email: Yup.string()
+    .email('Email invalide')
+    .required("L'email de contact est requis"),
+  contact_person_name: Yup.string().required('Le nom de contact est requis'),
+});
+const donorValidationSchema = Yup.object({
+  name: Yup.string().required('Le nom du bailleur est requis'),
+  email: Yup.string().email('Email invalide').required("L'email est requis"),
+  phone: Yup.string().required('Le téléphone est requis'),
+});
 
 const GrantAgreementStepper: React.FC<StepperProps> = ({
   projectsLoading,
@@ -59,18 +83,51 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
     agreementDate: '',
   });
 
-  const [newProject, setNewProject] = useState({
-    name: '',
-    description: '',
-    start_date: '',
-    end_date: '',
-    project_budget: '',
-    contact_person_email: '',
-    contact_person_name: '',
-    note: '',
-    status: false,
+  const projectFormik = useFormik({
+    initialValues: {
+      name: '',
+      description: '',
+      start_date: '',
+      end_date: '',
+      project_budget: '',
+      contact_person_email: '',
+      contact_person_name: '',
+      note: '',
+      status: false,
+    },
+    validationSchema: projectValidationSchema,
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      try {
+        console.log('values', values);
+        await handleCreateProject(values);
+        resetForm();
+        projectRefetch();
+        projectDialog.handleClose();
+      } catch (error) {
+        console.error('Erreur lors de la création du projet!: ', error);
+      }
+    },
   });
-
+  // Donor form handling with Formik
+  const donorFormik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      phone: '',
+      note: '',
+    },
+    validationSchema: donorValidationSchema,
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        await handleCreateDonor(values);
+        resetForm();
+        donorsRefetch();
+        donorDialog.handleClose();
+      } catch (error) {
+        console.error('Erreur lors de la création du bailleur!: ', error);
+      }
+    },
+  });
   const [newDonorId, setNewDonorId] = useState('');
   const [newDonorAmount, setNewDonorAmount] = useState('');
   const [newDonor, setNewDonor] = useState({
@@ -104,6 +161,22 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
       case 0:
         return (
           <Box>
+            <Typography
+              variant="h5"
+              gutterBottom
+              paddingBottom={1}
+            >
+              Sélectionnez un projet
+            </Typography>
+            <Typography
+              variant="body1"
+              component="p"
+              color="text.secondary"
+              gutterBottom
+              paddingBottom={2}
+            >
+              Commencez par effectuer une recherche ou créez un nouveau projet directement ici.
+            </Typography>
             <Box
               display="flex"
               gap={2}
@@ -146,81 +219,128 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
                 <DialogContent>
                   <TextField
                     fullWidth
-                    label="Name"
-                    value={newProject.name}
-                    onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+                    label="Nom"
+                    name="name"
+                    value={projectFormik.values.name}
+                    onChange={projectFormik.handleChange}
+                    onBlur={projectFormik.handleBlur}
+                    error={projectFormik.touched.name && Boolean(projectFormik.errors.name)}
+                    helperText={projectFormik.touched.name && projectFormik.errors.name}
                     sx={{ mt: 2 }}
                   />
                   <TextField
                     fullWidth
                     label="Description"
+                    name="description"
                     multiline
                     rows={2}
-                    value={newProject.description}
-                    onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+                    value={projectFormik.values.description}
+                    onChange={projectFormik.handleChange}
+                    onBlur={projectFormik.handleBlur}
+                    error={
+                      projectFormik.touched.description && Boolean(projectFormik.errors.description)
+                    }
+                    helperText={
+                      projectFormik.touched.description && projectFormik.errors.description
+                    }
                     sx={{ mt: 2 }}
                   />
                   <TextField
                     fullWidth
-                    label="Start Date"
+                    label="Date de début"
+                    type="date"
+                    name="start_date"
+                    InputLabelProps={{ shrink: true }}
+                    value={projectFormik.values.start_date}
+                    onChange={projectFormik.handleChange}
+                    onBlur={projectFormik.handleBlur}
+                    error={
+                      projectFormik.touched.start_date && Boolean(projectFormik.errors.start_date)
+                    }
+                    helperText={projectFormik.touched.start_date && projectFormik.errors.start_date}
+                    sx={{ mt: 2 }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Date de fin"
+                    name="end_date"
                     type="date"
                     InputLabelProps={{ shrink: true }}
-                    value={newProject.start_date}
-                    onChange={(e) => setNewProject({ ...newProject, start_date: e.target.value })}
+                    value={projectFormik.values.end_date}
+                    onChange={projectFormik.handleChange}
+                    onBlur={projectFormik.handleBlur}
+                    error={projectFormik.touched.end_date && Boolean(projectFormik.errors.end_date)}
+                    helperText={projectFormik.touched.end_date && projectFormik.errors.end_date}
                     sx={{ mt: 2 }}
                   />
                   <TextField
                     fullWidth
-                    label="End Date"
-                    type="date"
-                    InputLabelProps={{ shrink: true }}
-                    value={newProject.end_date}
-                    onChange={(e) => setNewProject({ ...newProject, end_date: e.target.value })}
-                    sx={{ mt: 2 }}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Project Budget"
+                    label="Budget du projet"
+                    name="project_budget"
                     type="number"
-                    value={newProject.project_budget}
-                    onChange={(e) =>
-                      setNewProject({ ...newProject, project_budget: e.target.value })
+                    value={projectFormik.values.project_budget}
+                    onChange={projectFormik.handleChange}
+                    onBlur={projectFormik.handleBlur}
+                    error={
+                      projectFormik.touched.project_budget &&
+                      Boolean(projectFormik.errors.project_budget)
+                    }
+                    helperText={
+                      projectFormik.touched.project_budget && projectFormik.errors.project_budget
                     }
                     sx={{ mt: 2 }}
                   />
                   <TextField
                     fullWidth
                     label="Contact Person Email"
-                    value={newProject.contact_person_email}
-                    onChange={(e) =>
-                      setNewProject({ ...newProject, contact_person_email: e.target.value })
+                    name="contact_person_email"
+                    value={projectFormik.values.contact_person_email}
+                    onChange={projectFormik.handleChange}
+                    onBlur={projectFormik.handleBlur}
+                    error={
+                      projectFormik.touched.contact_person_email &&
+                      Boolean(projectFormik.errors.contact_person_email)
+                    }
+                    helperText={
+                      projectFormik.touched.contact_person_email &&
+                      projectFormik.errors.contact_person_email
                     }
                     sx={{ mt: 2 }}
                   />
                   <TextField
                     fullWidth
                     label="Contact Person Name"
-                    value={newProject.contact_person_name}
-                    onChange={(e) =>
-                      setNewProject({ ...newProject, contact_person_name: e.target.value })
+                    name="contact_person_name"
+                    value={projectFormik.values.contact_person_name}
+                    onChange={projectFormik.handleChange}
+                    onBlur={projectFormik.handleBlur}
+                    error={
+                      projectFormik.touched.contact_person_name &&
+                      Boolean(projectFormik.errors.contact_person_name)
+                    }
+                    helperText={
+                      projectFormik.touched.contact_person_name &&
+                      projectFormik.errors.contact_person_name
                     }
                     sx={{ mt: 2 }}
                   />
                   <TextField
                     fullWidth
                     label="Note"
-                    value={newProject.note}
-                    onChange={(e) => setNewProject({ ...newProject, note: e.target.value })}
+                    name="note"
+                    value={projectFormik.values.note}
+                    onChange={projectFormik.handleChange}
                     sx={{ mt: 2 }}
                   />
                   <TextField
                     fullWidth
                     label="Status"
+                    name="status"
                     select
-                    value={newProject.status.toString()}
-                    onChange={(e) =>
-                      setNewProject({ ...newProject, status: e.target.value === 'true' })
-                    }
+                    value={projectFormik.values.status.toString()}
+                    onChange={(e) => {
+                      projectFormik.setFieldValue('status', e.target.value === 'true');
+                    }}
                     sx={{ mt: 2 }}
                   >
                     <MenuItem value="true">Active</MenuItem>
@@ -229,27 +349,15 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
                 </DialogContent>
               </DialogContent>
               <DialogActions>
-                <Button onClick={projectDialog.handleClose}>Cancel</Button>
                 <Button
-                  onClick={async () => {
-                    await handleCreateProject(newProject);
-                    setNewProject({
-                      name: '',
-                      description: '',
-                      start_date: '',
-                      end_date: '',
-                      project_budget: '',
-                      contact_person_email: '',
-                      contact_person_name: '',
-                      note: '',
-                      status: false,
-                    });
-                    projectRefetch();
-                    projectDialog.handleClose();
+                  onClick={() => {
+                    projectDialog.handleClose;
+                    projectFormik.resetForm();
                   }}
                 >
-                  Add
+                  Annuler
                 </Button>
+                <Button onClick={() => projectFormik.handleSubmit()}>Ajouter</Button>
               </DialogActions>
             </Dialog>
           </Box>
@@ -259,6 +367,23 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
       case 1:
         return (
           <Box>
+            <Typography
+              variant="h5"
+              gutterBottom
+              paddingBottom={1}
+            >
+              Bailleurs et contributions
+            </Typography>
+            <Typography
+              variant="body1"
+              component="p"
+              color="text.secondary"
+              gutterBottom
+              paddingBottom={2}
+            >
+              Sélectionnez les bailleurs et précisez leurs contributions.
+            </Typography>
+
             <Box
               display="flex"
               gap={2}
@@ -337,45 +462,53 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
             >
               <DialogTitle>Ajouter un bailleur</DialogTitle>
               <DialogContent>
-                <DialogContent>
-                  <TextField
-                    fullWidth
-                    label="Name"
-                    value={newDonor.name}
-                    onChange={(e) => setNewDonor({ ...newDonor, name: e.target.value })}
-                    sx={{ mt: 2 }}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Email"
-                    value={newDonor.email}
-                    onChange={(e) => setNewDonor({ ...newDonor, email: e.target.value })}
-                    sx={{ mt: 2 }}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Phone"
-                    value={newDonor.phone}
-                    onChange={(e) => setNewDonor({ ...newDonor, phone: e.target.value })}
-                    sx={{ mt: 2 }}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Note"
-                    value={newDonor.note}
-                    onChange={(e) => setNewDonor({ ...newDonor, note: e.target.value })}
-                    sx={{ mt: 2 }}
-                  />
-                </DialogContent>
+                <TextField
+                  fullWidth
+                  label="Name"
+                  name="name"
+                  value={donorFormik.values.name}
+                  onChange={donorFormik.handleChange}
+                  onBlur={donorFormik.handleBlur}
+                  error={donorFormik.touched.name && Boolean(donorFormik.errors.name)}
+                  helperText={donorFormik.touched.name && donorFormik.errors.name}
+                  sx={{ mt: 2 }}
+                />
+                <TextField
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  value={donorFormik.values.email}
+                  onChange={donorFormik.handleChange}
+                  onBlur={donorFormik.handleBlur}
+                  error={donorFormik.touched.email && Boolean(donorFormik.errors.email)}
+                  helperText={donorFormik.touched.email && donorFormik.errors.email}
+                  sx={{ mt: 2 }}
+                />
+                <TextField
+                  fullWidth
+                  label="Phone"
+                  name="phone"
+                  value={donorFormik.values.phone}
+                  onChange={donorFormik.handleChange}
+                  onBlur={donorFormik.handleBlur}
+                  error={donorFormik.touched.phone && Boolean(donorFormik.errors.phone)}
+                  helperText={donorFormik.touched.phone && donorFormik.errors.phone}
+                  sx={{ mt: 2 }}
+                />
+                <TextField
+                  fullWidth
+                  label="Note"
+                  name="note"
+                  value={donorFormik.values.note}
+                  onChange={donorFormik.handleChange}
+                  sx={{ mt: 2 }}
+                />
               </DialogContent>
               <DialogActions>
                 <Button onClick={donorDialog.handleClose}>Annuler</Button>
                 <Button
-                  onClick={async () => {
-                    await handleCreateDonor(newDonor);
-                    setNewDonor({ name: '', email: '', phone: '', note: '' });
-                    donorsRefetch();
-                    donorDialog.handleClose();
+                  onClick={() => {
+                    donorFormik.handleSubmit();
                   }}
                 >
                   Ajouter
@@ -389,6 +522,23 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
       case 2:
         return (
           <Box>
+            <Typography
+              variant="h5"
+              gutterBottom
+              paddingBottom={1}
+            >
+              Détails de la subvention
+            </Typography>
+            <Typography
+              variant="body1"
+              component="p"
+              color="text.secondary"
+              gutterBottom
+              paddingBottom={2}
+            >
+              Finalisez les détails de la subvention avant la soumission.
+            </Typography>
+
             <TextField
               fullWidth
               label="Date de l'accord"
@@ -417,6 +567,7 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
       <Stepper
         activeStep={activeStep}
         alternativeLabel
+        sx={{ paddingBottom: '40px' }}
       >
         {steps.map((label) => (
           <Step key={label}>

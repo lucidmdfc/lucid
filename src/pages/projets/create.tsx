@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
@@ -38,6 +38,7 @@ const Page: NextPage = () => {
   const [CreateDonor] = useMutation(CREATE_DONOR);
 
   const handleCreateProject = async (variables: any) => {
+    console.log('variables', variables);
     try {
       const { data } = await CreateProject({
         variables: {
@@ -45,7 +46,7 @@ const Page: NextPage = () => {
           description: variables.description,
           start_date: variables.start_date,
           end_date: variables.end_date,
-          project_budget: variables.project_budget,
+          project_budget: variables.project_budget.toString(),
           contact_person_email: variables.contact_person_email,
           contact_person_name: variables.contact_person_name,
           status: variables.status,
@@ -101,17 +102,34 @@ const Page: NextPage = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', padding: '60px 60px' }}>
-      <GrantAgreementStepper
-        projectsLoading={projectsLoading}
-        projectsData={projectsData}
-        projectRefetch={projectRefetch}
-        donorsData={donorsData}
-        donorsRefetch={donorsRefetch}
-        handleCreateProject={handleCreateProject}
-        handleCreateDonor={handleCreateDonor}
-        handleSubmit={handleSubmit}
-      />
+    <Box sx={{ py: { xs: 4, sm: 6, md: 8 } }}>
+      <Box sx={{ px: { xs: 2, sm: 4, md: 8, lg: 18 } }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          pb={2}
+        >
+          Créer un nouveau Grant
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          width: '100%',
+          px: { xs: 2, sm: 4, md: 8, lg: 36 },
+          // py: { xs: 4, sm: 6, md: 8 },
+        }}
+      >
+        <GrantAgreementStepper
+          projectsLoading={projectsLoading}
+          projectsData={projectsData}
+          projectRefetch={projectRefetch}
+          donorsData={donorsData}
+          donorsRefetch={donorsRefetch}
+          handleCreateProject={handleCreateProject}
+          handleCreateDonor={handleCreateDonor}
+          handleSubmit={handleSubmit}
+        />
+      </Box>
     </Box>
   );
 };
