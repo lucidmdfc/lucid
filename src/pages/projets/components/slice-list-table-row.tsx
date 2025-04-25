@@ -18,6 +18,7 @@ import { useDialog } from 'src/hooks/use-dialog';
 import UpdateConfirmationModal from './edit-confirmation-modal';
 import { useMutation } from '@apollo/client';
 import { DELETE_GRANT_SLICE, UPDATE_GRANT_SLICE } from 'src/graphql/entities/grantSlices/mutations';
+import { useDeleteGrantSliceMutation, useUpdateGrantSliceMutation } from 'src/hooks/generatedHook';
 
 interface SliceRowProps {
   slice: slice;
@@ -81,7 +82,7 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh }) => {
     setEditRowId(null);
   };
 
-  const [updateGrantSlice, { data, loading, error }] = useMutation(UPDATE_GRANT_SLICE);
+  const [updateGrantSlice, { data, loading, error }] = useUpdateGrantSliceMutation();
   const handleSaveEdit = async (sliceId: string) => {
     try {
       // Make sure formik values are valid
@@ -144,12 +145,10 @@ const SliceRow: FC<SliceRowProps> = ({ slice, projectId, onRefresh }) => {
     setSliceId(id);
     dialog.handleOpen();
   };
-  const [deleteGrantSlice, { loading: deleteSliceLoading, error: deleteSliceError }] = useMutation(
-    DELETE_GRANT_SLICE,
-    {
-      variables: { id: sliceId },
-    }
-  );
+  const [deleteGrantSlice, { loading: deleteSliceLoading, error: deleteSliceError }] =
+    useDeleteGrantSliceMutation({
+      variables: { id: sliceId ? parseInt(sliceId, 10) : 0 },
+    });
 
   const handleDeleteConfirmation = async (sliceId: string) => {
     try {

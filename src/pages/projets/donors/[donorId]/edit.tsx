@@ -24,6 +24,7 @@ import { GET_PROJECT_BY_ID, GET_PROJECTS } from 'src/graphql/entities/projects/q
 import { useRouter } from 'next/router';
 import { GET_DONOR_BY_ID } from 'src/graphql/entities/donors/queries';
 import { UPDATE_DONOR } from 'src/graphql/entities/donors/mutations';
+import { useGetDonorByIdQuery, useUpdateDonorMutation } from 'src/hooks/generatedHook';
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -34,7 +35,7 @@ const Page: NextPage = () => {
     error: donorError,
     data: donorData,
     refetch: donorRefetsh,
-  } = useQuery(GET_DONOR_BY_ID, {
+  } = useGetDonorByIdQuery({
     variables: {
       id: Number(donorId),
     },
@@ -42,7 +43,7 @@ const Page: NextPage = () => {
   const donor = donorData?.donorsCollection?.edges?.[0]?.node;
   console.log(donor);
 
-  const [updateDonor, { loading, error }] = useMutation(UPDATE_DONOR);
+  const [updateDonor, { loading, error }] = useUpdateDonorMutation();
   console.log(error);
   const formik = useFormik({
     initialValues: {

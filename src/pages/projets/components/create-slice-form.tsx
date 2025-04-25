@@ -17,9 +17,9 @@ import CreateConfirmation from './create-confirmation-modal';
 import { useDialog } from 'src/hooks/use-dialog';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
-import { GET_GRANTS_SLICE_BY_PROJECT_ID } from 'src/graphql/entities/grantSlices/queries';
 import { CREATE_GRANT_SLICE } from 'src/graphql/entities/grantSlices/mutations';
 import { GET_GRANT_PROJECT_AGREEMENT } from 'src/graphql/entities/grantProjectAgreement/queries';
+import { useCreateGrantSliceMutation, useGetProjectsQuery } from 'src/hooks/generatedHook';
 
 type Option = {
   text: string;
@@ -44,7 +44,7 @@ const NewInstallment = () => {
     error: projectsError,
     data: projectsData,
     refetch: projectRefetsh,
-  } = useQuery(GET_PROJECTS);
+  } = useGetProjectsQuery();
   // const {
   //   loading: projectGrantAgreementLoading,
   //   error: projectGrantAgreementError,
@@ -53,7 +53,7 @@ const NewInstallment = () => {
   // } = useQuery(GET_GRANT_PROJECT_AGREEMENT);
   // console.log(projectGrantAgreementData);
 
-  const [createGrantSlice] = useMutation(CREATE_GRANT_SLICE);
+  const [createGrantSlice] = useCreateGrantSliceMutation();
 
   // const handleProjectsGet = () => {
   //   try {

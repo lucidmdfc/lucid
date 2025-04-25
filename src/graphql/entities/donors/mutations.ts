@@ -17,14 +17,11 @@ export const UPDATE_DONOR = gql`
   mutation UpdateDonor($set: donorsUpdateInput!, $filter: donorsFilter, $atMost: Int!) {
     updatedonorsCollection(set: $set, filter: $filter, atMost: $atMost) {
       records {
-        id
-        name
-        email
-        phone
-        note
+        ...DonorFragment
       }
     }
   }
+  ${DONOR_FRAGMENT}
 `;
 export const DELETE_DONOR = gql`
   mutation DeleteDonor($id: Int!) {

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -25,6 +25,8 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { paths } from 'src/paths';
 import { ExpenseDetails, expense, expenseDetails } from 'src/types/expense';
+import { useGetEmployeesQuery, useGetProjectsQuery } from 'src/hooks/generatedHook';
+import { ExpenseClaimFragmentFragment } from 'src/types/generatedTypes';
 
 const validationSchema = Yup.object().shape({
   projectId: Yup.string().required('Nom projet est requis'),
@@ -52,32 +54,58 @@ const salaries: Option[] = [
   { text: 'salary 4', value: 4 },
   { text: 'salary 5', value: 5 },
 ];
+interface types {
+  expenseClaim: ExpenseClaimFragmentFragment;
+}
 
-const EditExpense: FC = () => {
+const EditExpense: FC<types> = (expenseClaim) => {
   const router = useRouter();
 
   const [isSwitchOn, setSwitchOn] = useState(false);
   const handleSwitchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSwitchOn(event.target.checked);
   };
+  console.log('expenseClaim', expenseClaim);
 
   const uploadDialog = useDialog();
+  const {
+    loading: projectsLoading,
+    error: projectsError,
+    data: projectsData,
+    refetch: projectRefetch,
+  } = useGetProjectsQuery();
+  const {
+    loading: employeesLoading,
+    error: employeesError,
+    data: employeesData,
+    refetch: employeesRefetch,
+  } = useGetEmployeesQuery();
 
-  const formik = useFormik<expense>({
+  const mappedProjects = projectsData?.projectsCollection?.edges?.map((project) => ({
+    text: project?.node?.name,
+    value: project?.node?.id,
+  }));
+  console.log('mappedProjects', mappedProjects);
+  const mappedSalaries = employeesData?.employeesCollection?.edges.map((employee) => ({
+    text: `${employee.node.salaryName} `,
+    value: employee.node.id,
+  }));
+
+  const formik = useFormik<ExpenseClaimFragmentFragment>({
     initialValues: {
-      id: '',
-      projectId: '',
-      salaryId: '',
+      id: 0,
+      project_id: 0,
+      employee_id: 0,
       amount: 0,
       comment: '',
       startDate: new Date(),
       endDate: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: false,
+      created_at: new Date(),
+      updated_at: new Date(),
+      status_id: 0,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values: expense, { setSubmitting, resetForm }) => {
+    onSubmit: async (values: ExpenseClaimFragmentFragment, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
         console.log(values);
@@ -94,6 +122,22 @@ const EditExpense: FC = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (expenseClaim) {
+      formik.setValues({
+        id: Number(expenseClaim?.expenseClaim?.id),
+        project_id: Number(expenseClaim?.expenseClaim?.project_id),
+        employee_id: expenseClaim?.expenseClaim?.employee_id,
+        amount: expenseClaim?.expenseClaim?.amount,
+        startDate: new Date(expenseClaim?.expenseClaim?.startDate),
+        endDate: new Date(expenseClaim?.expenseClaim?.endDate),
+        created_at: new Date(expenseClaim?.expenseClaim?.created_at),
+        updated_at: new Date(expenseClaim?.expenseClaim?.updated_at),
+        status_id: expenseClaim?.expenseClaim?.status_id,
+      });
+    }
+  }, [expenseClaim]);
 
   const renderExpenseDetails = (detail: ExpenseDetails) => (
     <Grid
@@ -165,15 +209,15 @@ const EditExpense: FC = () => {
                     fullWidth
                     label="Nom projet"
                     name="projectId"
-                    value={formik.values.projectId}
+                    value={formik.values.project_id}
                     onChange={formik.handleChange}
                     select
                     size="small"
-                    error={formik.touched.projectId && Boolean(formik.errors.projectId)}
-                    helperText={formik.touched.projectId && formik.errors.projectId}
+                    error={formik.touched.project_id && Boolean(formik.errors.project_id)}
+                    helperText={formik.touched.project_id && formik.errors.project_id}
                   >
                     <MenuItem value="">--</MenuItem>
-                    {projects.map((project) => (
+                    {(mappedProjects ?? []).map((project) => (
                       <MenuItem
                         value={project.value}
                         key={project.value}
@@ -193,15 +237,15 @@ const EditExpense: FC = () => {
                     fullWidth
                     label="Salarié"
                     name="salaryId"
-                    value={formik.values.salaryId}
+                    value={formik.values.employee_id}
                     onChange={formik.handleChange}
                     select
                     size="small"
-                    error={formik.touched.salaryId && Boolean(formik.errors.salaryId)}
-                    helperText={formik.touched.salaryId && formik.errors.salaryId}
+                    error={formik.touched.employee_id && Boolean(formik.errors.employee_id)}
+                    helperText={formik.touched.employee_id && formik.errors.employee_id}
                   >
                     <MenuItem value="">--</MenuItem>
-                    {salaries.map((salary) => (
+                    {(mappedSalaries ?? []).map((salary) => (
                       <MenuItem
                         value={salary.value}
                         key={salary.value}
@@ -233,7 +277,11 @@ const EditExpense: FC = () => {
                       value={formik.values.amount}
                       onChange={formik.handleChange}
                       error={formik.touched.amount && Boolean(formik.errors.amount)}
-                      helperText={formik.touched.amount && formik.errors.amount}
+                      helperText={
+                        formik.touched.amount && typeof formik.errors.amount === 'string'
+                          ? formik.errors.amount
+                          : ''
+                      }
                     />
                   </Grid>
                   <Grid
@@ -301,18 +349,18 @@ const EditExpense: FC = () => {
                 xs={12}
                 md={12}
               >
-                <FormControlLabel
+                {/* <FormControlLabel
                   control={
                     <Switch
                       name="status"
-                      checked={formik?.values.status}
+                      checked={formik?.values.status_id}
                       onChange={(e) => {
                         formik?.setFieldValue('status', e.target.checked);
                       }}
                     />
                   }
                   label="Validié"
-                />
+                /> */}
               </Grid>
               <Box sx={{ mt: 2 }}>
                 <Button

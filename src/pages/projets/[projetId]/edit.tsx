@@ -23,6 +23,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_PROJECT_BY_ID, GET_PROJECTS } from 'src/graphql/entities/projects/queries';
 import { useRouter } from 'next/router';
 import { DELETE_PROJECT, UPDATE_PROJECT } from 'src/graphql/entities/projects/mutations';
+import { useGetProjectByIdQuery, useUpdateProjectMutation } from 'src/hooks/generatedHook';
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const Page: NextPage = () => {
     error: projectError,
     data: projectData,
     refetch: projectRefetsh,
-  } = useQuery(GET_PROJECT_BY_ID, {
+  } = useGetProjectByIdQuery({
     variables: {
       id: Number(projetId),
     },
@@ -41,14 +42,14 @@ const Page: NextPage = () => {
   const project = projectData?.projectsCollection?.edges?.[0]?.node;
   console.log(project);
   const [updateProject, { loading: updateProjectLoading, error: updateProjectError }] =
-    useMutation(UPDATE_PROJECT);
+    useUpdateProjectMutation();
 
-  const [deleteProject, { loading: deleteProjectLoading, error: deleteProjectError }] = useMutation(
-    DELETE_PROJECT,
-    {
-      variables: { id: projetId },
-    }
-  );
+  // const [deleteProject, { loading: deleteProjectLoading, error: deleteProjectError }] = useMutation(
+  //   DELETE_PROJECT,
+  //   {
+  //     variables: { id: projetId },
+  //   }
+  // );
 
   const formik = useFormik({
     initialValues: {

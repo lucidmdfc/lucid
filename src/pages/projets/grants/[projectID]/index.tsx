@@ -9,11 +9,10 @@ import { useEffect, useState } from 'react';
 import SlicesListTable from '../../sections/slice-list-table';
 import { Box } from '@mui/system';
 import { useMutation, useQuery } from '@apollo/client';
-import { GET_GRANTS_SLICE_BY_PROJECT_ID } from 'src/graphql/entities/grantSlices/queries';
 import DonorstDetails from '../../donors/components/donors-details';
 import AnalyticsGrantDonors from '../../donors/components/analytics-grant-donors';
 import { DELETE_DONOR } from 'src/graphql/entities/donors/mutations';
-
+import { useDeleteDonorMutation, useGetGrantsByProjectIdQuery } from 'src/hooks/generatedHook';
 const Page: NextPage = () => {
   const router = useRouter();
   const { projectID } = router.query;
@@ -23,17 +22,17 @@ const Page: NextPage = () => {
     error: grantsSliceError,
     data: grantsSliceData,
     refetch: grantsSliceRefetsh,
-  } = useQuery(GET_GRANTS_SLICE_BY_PROJECT_ID, {
+  } = useGetGrantsByProjectIdQuery({
     variables: {
-      projectId: projectID ? Number(projectID) : null,
+      projectId: projectID ? Number(projectID) : 0,
     },
   });
-  const [deleteDonorSlice, { loading: deleteDonorLoading, error: deleteDonorError }] = useMutation(
-    DELETE_DONOR,
-    {
-      variables: { id: donorInProject[0]?.donors?.[0].id },
-    }
-  );
+  
+  
+  // const [deleteDonorSlice, { loading: deleteDonorLoading, error: deleteDonorError }] =
+  //   useDeleteDonorMutation({
+  //     variables: { id: donorInProject[0]?.donors?.[0].id },
+  //   });
 
   const grantSlicesNodes =
     grantsSliceData?.grant_slicesCollection?.edges?.map((edge: any) => edge.node) || [];

@@ -20,31 +20,22 @@ import DeleteConfirmationModal from '../components/delete-modal-confirmation';
 import toast from 'react-hot-toast';
 import { useDialog } from 'src/hooks/use-dialog';
 import { expense } from 'src/types/expense';
+import { useMutation } from '@apollo/client';
+import { DELETE_EXPENSE_CLAIM } from 'src/graphql/entities/expenseClaims/mutations';
+import { ExpenseClaimFragmentFragment } from 'src/types/generatedTypes';
 
 interface ExpenseListTableProps {
   count?: number;
-  items?: expense[];
+  items?: ExpenseClaimFragmentFragment[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onSelect?: (orderId: string) => void;
   page?: number;
   rowsPerPage?: number;
+  expensesRefetch?: any;
 }
 
 const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
-  const dialog = useDialog();
-
-  // Replace this with your actual delete function
-  const handleDelete = async (projectId: string | undefined) => {
-    // Implement the delete logic here
-    try {
-      toast.success('Le frais a été supprimé avec succès!');
-      dialog.handleOpen();
-    } catch (error) {
-      console.error('Error deleting expense: ', error);
-      toast.error('Échec de la suppression du frais. Veuillez réessayer.');
-    }
-  };
   const {
     count = 0,
     items = [],
@@ -53,7 +44,28 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
     onSelect,
     page = 0,
     rowsPerPage = 0,
+    expensesRefetch,
   } = props;
+  const dialog = useDialog();
+  const [deleteExpenseClaim] = useMutation(DELETE_EXPENSE_CLAIM);
+  // Replace this with your actual delete function
+  const handleDelete = async (projectId: string | undefined) => {
+    // Implement the delete logic here
+    try {
+      console.log('Deleting expense with ID:', projectId);
+      await deleteExpenseClaim({
+        variables: { id: Number(projectId) },
+      });
+      expensesRefetch();
+      toast.success('Le frais a été supprimé avec succès!');
+      dialog.handleClose();
+    } catch (error) {
+      console.error('Error deleting expense: ', error);
+      toast.error('Échec de la suppression du frais. Veuillez réessayer.');
+    }
+  };
+
+  console.log(items);
 
   return (
     <div>
@@ -71,29 +83,29 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
         <TableBody>
           {items.map((expense) => {
             const totalAmount = numeral(expense.amount).format(`0,0.00`);
-            const date = expense.updatedAt && format(expense.updatedAt, 'dd/MM/yyyy');
-
+            const date = expense.startDate ? format(new Date(expense.startDate), 'dd/MM/yyyy') : '';
+            console.log('expense', expense);
             return (
               <TableRow
                 hover
                 key={expense.id}
               >
                 <TableCell>
-                  <Typography variant="subtitle2">{expense.projectId}</Typography>
+                  <Typography variant="subtitle2">{expense?.projects?.name}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="subtitle2">{expense.salaryId}</Typography>
+                  <Typography variant="subtitle2">{expense?.employees?.salaryName}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">{date}</Typography>
+                  <Typography variant="body2">{date || 'N/A'}</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">{totalAmount}</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">
-                    <SeverityPill color={expense.status ? 'info' : 'error'}>
-                      {expense.status ? 'Validé' : 'En Attente'}
+                    <SeverityPill color={expense.status_id ? 'info' : 'error'}>
+                      {expense.status_id ? 'Validé' : 'En Attente'}
                     </SeverityPill>
                   </Typography>
                 </TableCell>
@@ -109,7 +121,7 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
                   </IconButton>
                   <IconButton
                     component={RouterLink}
-                    href={paths.expenses.edit}
+                    href={`/expenses/${expense.id}/edite`}
                     color="warning"
                   >
                     <SvgIcon>
@@ -117,6 +129,12 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
                     </SvgIcon>
                   </IconButton>
                 </TableCell>
+                <DeleteConfirmationModal
+                  isOpen={dialog.open}
+                  onConfirm={() => handleDelete(String(expense.id))}
+                  onCancel={dialog.handleClose}
+                  message="Êtes vous sûr de vouloir supprimer le frais? Cette action sera irréversible."
+                />
               </TableRow>
             );
           })}
@@ -131,12 +149,6 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}
         labelRowsPerPage="Lignes par page"
-      />
-      <DeleteConfirmationModal
-        isOpen={dialog.open}
-        onConfirm={handleDelete}
-        onCancel={dialog.handleClose}
-        message="Êtes vous sûr de vouloir supprimer le frais? Cette action sera irréversible."
       />
     </div>
   );

@@ -10,10 +10,14 @@ import toast from 'react-hot-toast';
 import { paths } from 'src/paths';
 import * as Yup from 'yup';
 import { expense } from 'src/types/expense';
+import { useGetEmployeesQuery, useGetProjectsQuery } from 'src/hooks/generatedHook';
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_EXPENSE_CLAIM } from 'src/graphql/entities/expenseClaims/mutations';
+import { ExpenseClaimFragmentFragment } from 'src/types/generatedTypes';
 
 const validationSchema = Yup.object().shape({
-  projectId: Yup.string().required('Nom projet est requis'),
-  salaryId: Yup.string().required('Salarié est requis'),
+  project_id: Yup.string().required('Nom projet est requis'),
+  employee_id: Yup.string().required('Salarié est requis'),
   amount: Yup.number().required('Montant est requis').positive('Le montant doit être positif'),
 });
 interface Option {
@@ -44,25 +48,53 @@ const NewExpenseForm: FC = () => {
   const handleSwitchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSwitchOn(event.target.checked);
   };
+  const {
+    loading: projectsLoading,
+    error: projectsError,
+    data: projectsData,
+    refetch: projectRefetch,
+  } = useGetProjectsQuery();
+  const {
+    loading: employeesLoading,
+    error: employeesError,
+    data: employeesData,
+    refetch: employeesRefetch,
+  } = useGetEmployeesQuery();
 
-  const formik = useFormik<expense>({
+  // console.log('statusData', statusData);
+  // console.log(employeesData);
+  const [CreateExpenseClaim] = useMutation(CREATE_EXPENSE_CLAIM);
+
+  const formik = useFormik<ExpenseClaimFragmentFragment>({
     initialValues: {
-      id: '',
-      projectId: '',
-      salaryId: '',
+      id: 0,
+      project_id: 0,
+      employee_id: 0,
       amount: Number(),
       startDate: new Date(),
       endDate: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: false,
+      created_at: new Date(),
+      updated_at: new Date(),
+      status_id: 0,
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
-        console.log(values);
+        console.log('Form Submitted with values:', values); // Log form values
 
+        const { project_id, employee_id, amount, startDate, endDate } = values;
+        console.log(values);
+        const response = await CreateExpenseClaim({
+          variables: {
+            employee_id: Number(employee_id),
+            project_id: Number(project_id),
+            amount: amount.toString(),
+            startDate: startDate.toISOString(),
+            endDate: isSwitchOn ? endDate?.toISOString() : null,
+          },
+        });
+        console.log('response', response);
         toast.success('Nouveaux frais créés avec succès !');
         router.replace(paths.dashboard.expenses.index);
         resetForm();
@@ -91,24 +123,24 @@ const NewExpenseForm: FC = () => {
             <TextField
               fullWidth
               label="Nom projet"
-              name="projectId"
-              value={formik.values.projectId}
+              name="project_id"
+              value={formik.values.project_id}
               onChange={formik.handleChange}
               select
               size="small"
-              error={formik.touched.projectId && Boolean(formik.errors.projectId)}
-              helperText={formik.touched.projectId && formik.errors.projectId}
+              error={formik.touched.project_id && Boolean(formik.errors.project_id)}
+              helperText={formik.touched.project_id && formik.errors.project_id}
             >
-              <MenuItem value="">--</MenuItem>
-              {projects.map((project) => (
+              <MenuItem value={0}>--Sélectionner un projet--</MenuItem>
+              {projectsData?.projectsCollection?.edges.map((p: any) => (
                 <MenuItem
-                  value={project.value}
-                  key={project.value}
+                  key={p.node.id}
+                  value={p.node.id}
                 >
-                  {project.text}
+                  {p.node.name}
                 </MenuItem>
               ))}
-              <MenuItem value={0}>autre</MenuItem>
+              {/* <MenuItem value={0}>autre</MenuItem> */}
             </TextField>
           </Grid>
           <Grid
@@ -119,21 +151,21 @@ const NewExpenseForm: FC = () => {
             <TextField
               fullWidth
               label="Salarié"
-              name="salaryId"
-              value={formik.values.salaryId}
+              name="employee_id"
+              value={formik.values.employee_id}
               onChange={formik.handleChange}
               select
               size="small"
-              error={formik.touched.salaryId && Boolean(formik.errors.salaryId)}
-              helperText={formik.touched.salaryId && formik.errors.salaryId}
+              error={formik.touched.employee_id && Boolean(formik.errors.employee_id)}
+              helperText={formik.touched.employee_id && formik.errors.employee_id}
             >
-              <MenuItem value="">--</MenuItem>
-              {salaries.map((salary) => (
+              <MenuItem value={0}>--Sélectionnez un employé--</MenuItem>
+              {employeesData?.employeesCollection?.edges.map((p: any) => (
                 <MenuItem
-                  value={salary.value}
-                  key={salary.value}
+                  key={p.node.id}
+                  value={p.node.id}
                 >
-                  {salary.text}
+                  {p.node.salaryName}
                 </MenuItem>
               ))}
             </TextField>
@@ -160,7 +192,11 @@ const NewExpenseForm: FC = () => {
                 value={formik.values.amount}
                 onChange={formik.handleChange}
                 error={formik.touched.amount && Boolean(formik.errors.amount)}
-                helperText={formik.touched.amount && formik.errors.amount}
+                helperText={
+                  formik.touched.amount && typeof formik.errors.amount === 'string'
+                    ? formik.errors.amount
+                    : ''
+                }
               />
             </Grid>
           </Grid>

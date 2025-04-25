@@ -19,6 +19,9 @@ import { paths } from 'src/paths';
 import { expense } from 'src/types/expense';
 import { expensesApi } from 'src/api/expenses';
 import { Seo } from 'src/components/seo';
+import { useQuery } from '@apollo/client';
+import { GET_EXPENSE_CLAIMS } from 'src/graphql/entities/expenseClaims/queries';
+import { ExpenseClaimFragmentFragment } from 'src/types/generatedTypes';
 
 interface Filters {
   query?: string;
@@ -124,7 +127,18 @@ const Page: NextPage = () => {
   const dialog = useDialog<string>();
   const currentOrder = useCurrentOrder(expensesStore.expenses, dialog.data);
   const settings = useSettings();
-
+  const {
+    loading: expeseClaimsLoading,
+    error: expeseClaimsError,
+    data: expeseClaimsData,
+    refetch: expeseClaimsRefetch,
+  } = useQuery(GET_EXPENSE_CLAIMS);
+  // console.log(expeseClaimsData?.expense_claimsCollection?.edges);
+  const nodes = expeseClaimsData?.expense_claimsCollection?.edges.map((edge: any) => {
+    const node: any = edge.node;
+    return node;
+  }) as ExpenseClaimFragmentFragment[];
+  // console.log('nodes', nodes);
   usePageView();
   const handleOrderOpen = useCallback(
     (orderId: string): void => {
@@ -179,7 +193,8 @@ const Page: NextPage = () => {
             <Divider />
             <ExpenseListTable
               count={expensesStore.expensesCount}
-              items={expensesStore.expenses}
+              items={nodes}
+              expensesRefetch={expeseClaimsRefetch}
               onPageChange={expensesSearch.handlePageChange}
               onRowsPerPageChange={expensesSearch.handleRowsPerPageChange}
               onSelect={handleOrderOpen}

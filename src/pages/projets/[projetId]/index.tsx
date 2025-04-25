@@ -32,8 +32,6 @@ import { useRouter } from 'next/router';
 import { slice } from 'src/types/slice';
 import Plus from '@untitled-ui/icons-react/build/esm/Plus';
 import { slicesApi } from 'src/api/slices';
-import { GET_PROJECT_BY_ID } from 'src/graphql/entities/projects/queries';
-import { useQuery } from '@apollo/client';
 
 const tabs = [
   { label: 'Détails', value: 'details' },
@@ -120,22 +118,12 @@ const Page: NextPage = () => {
   const [currentTab, setCurrentTab] = useState<string>('details');
   const router = useRouter();
   const { projetId } = router.query;
-  const {
-    data: projectById,
-    loading: projectByIdLoading,
-    refetch: refetchProjectById,
-    error: errorProjectById,
-  } = useQuery(GET_PROJECT_BY_ID, {
-    variables: { id: projetId },
-  });
-  console.log('projectById', projectById?.projectsCollection?.edges);
 
   // Ensure projetId is a string or an array of strings
-  // const projectIds: string[] = Array.isArray(projetId) ? projetId : [projetId || ''];
+  const projectIds: string[] = Array.isArray(projetId) ? projetId : [projetId || ''];
 
   // Assuming useProject expects a single string, you can take the first element
-  // const projectIdToUse: string = projectIds[0] || '';
-  const projectIdToUse = projectById?.projectsCollection?.edges[0]?.node;
+  const projectIdToUse: string = projectIds[0] || '';
 
   // Unconditionally call the hook
   const project = useProject(projectIdToUse);

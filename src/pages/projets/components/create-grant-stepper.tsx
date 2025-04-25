@@ -130,12 +130,6 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
   });
   const [newDonorId, setNewDonorId] = useState('');
   const [newDonorAmount, setNewDonorAmount] = useState('');
-  const [newDonor, setNewDonor] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    note: '',
-  });
 
   const projectDialog = useDialog();
   const donorDialog = useDialog();

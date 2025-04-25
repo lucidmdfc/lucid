@@ -25,10 +25,9 @@ import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 import { projectsApi } from 'src/api/projects';
 import { GET_PROJECTS, getProjectsWithDonors } from 'src/graphql/entities/projects/queries';
-import { useQuery } from '@apollo/client';
+// import { useQuery } from '@apollo/client';
 import OverviewProjectFromGrants from './components/overview-projects-from-grants';
 import { Grid } from '@mui/material';
-import { supabase } from 'src/libs/supabaseClient';
 
 interface Filters {
   query?: string;

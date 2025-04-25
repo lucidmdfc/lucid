@@ -2,14 +2,21 @@ import type { NextPage } from 'next';
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import { useMutation, useQuery } from '@apollo/client';
-import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
-import { GET_DONORS } from 'src/graphql/entities/donors/queries';
-import { CREATE_GRANT_AGREEMENT } from 'src/graphql/entities/grantProjectAgreement/mutations';
-import { CREATE_PROJECT } from 'src/graphql/entities/projects/mutations';
-import { CREATE_DONOR } from 'src/graphql/entities/donors/mutations';
+// import { useMutation, useQuery } from '@apollo/client';
+// import { GET_PROJECTS } from 'src/graphql/entities/projects/queries';
+// import { GET_DONORS } from 'src/graphql/entities/donors/queries';
+// import { CREATE_GRANT_AGREEMENT } from 'src/graphql/entities/grantProjectAgreement/mutations';
+// import { CREATE_PROJECT } from 'src/graphql/entities/projects/mutations';
+// import { CREATE_DONOR } from 'src/graphql/entities/donors/mutations';
 import toast from 'react-hot-toast';
 import GrantAgreementStepper from './components/create-grant-stepper';
+import {
+  useCreateDonorMutation,
+  useCreateGrantAgreementMutation,
+  useCreateProjectMutation,
+  useGetDonorsQuery,
+  useGetProjectsQuery,
+} from 'src/hooks/generatedHook';
 
 // possible enhancement for the stepper:
 //projects/
@@ -26,19 +33,19 @@ const Page: NextPage = () => {
     error: projectsError,
     data: projectsData,
     refetch: projectRefetch,
-  } = useQuery(GET_PROJECTS);
+  } = useGetProjectsQuery();
   const {
     loading: donorsLoading,
     error: donorsError,
     data: donorsData,
     refetch: donorsRefetch,
-  } = useQuery(GET_DONORS);
+  } = useGetDonorsQuery();
 
-  const [CreateProject] = useMutation(CREATE_PROJECT);
-  const [CreateDonor] = useMutation(CREATE_DONOR);
+  const [CreateProject] = useCreateProjectMutation();
+  const [CreateDonor] = useCreateDonorMutation();
 
   const handleCreateProject = async (variables: any) => {
-    console.log('variables', variables);
+    // console.log('variables', variables);
     try {
       const { data } = await CreateProject({
         variables: {
@@ -53,7 +60,7 @@ const Page: NextPage = () => {
           note: variables.note,
         },
       });
-      console.log(data);
+      // console.log(data);
       toast.success('Nouveau projet créé avec succès !');
     } catch (error) {
       console.log('error', error);
@@ -79,7 +86,7 @@ const Page: NextPage = () => {
     }
   };
 
-  const [CreateGrantAgreement] = useMutation(CREATE_GRANT_AGREEMENT);
+  const [CreateGrantAgreement] = useCreateGrantAgreementMutation();
 
   const handleSubmit = async (data: any) => {
     try {

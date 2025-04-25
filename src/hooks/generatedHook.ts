@@ -36,20 +36,6 @@ export const EmployeeGrantAllocationFragmentFragmentDoc = gql`
     grant_project_agreement_id
   }
 `;
-export const EmployeeFragmentFragmentDoc = gql`
-  fragment EmployeeFragment on employees {
-    id
-    salaryName
-    salaryFunction
-    email
-    phone
-    grossSalary
-    recruitmentDate
-    status
-    created_at
-    updated_at
-  }
-`;
 export const EntityFragmentFragmentDoc = gql`
   fragment EntityFragment on entity {
     id
@@ -70,12 +56,47 @@ export const ExpenseCategoryFragmentFragmentDoc = gql`
     updated_at
   }
 `;
+export const ProjectFragmentFragmentDoc = gql`
+  fragment ProjectFragment on projects {
+    id
+    name
+    description
+    start_date
+    end_date
+    project_budget
+    created_at
+    updated_at
+    status
+    note
+    contact_person_email
+    contact_person_name
+  }
+`;
+export const EmployeeFragmentFragmentDoc = gql`
+  fragment EmployeeFragment on employees {
+    id
+    salaryName
+    salaryFunction
+    email
+    phone
+    grossSalary
+    recruitmentDate
+    status
+    created_at
+    updated_at
+  }
+`;
 export const ExpenseClaimFragmentFragmentDoc = gql`
   fragment ExpenseClaimFragment on expense_claims {
     id
     employee_id
     project_id
-    category_id
+    projects {
+      ...ProjectFragment
+    }
+    employees {
+      ...EmployeeFragment
+    }
     amount
     startDate
     endDate
@@ -83,7 +104,19 @@ export const ExpenseClaimFragmentFragmentDoc = gql`
     updated_at
     comment
     status_id
+    transport_amount
+    transport_document
+    accommodation_amount
+    accommodation_document
+    meals_amount
+    meals_document
+    gifts_and_entertainment_amount
+    gifts_and_entertainment_document
+    documentation_amount
+    documentation_document
   }
+  ${ProjectFragmentFragmentDoc}
+  ${EmployeeFragmentFragmentDoc}
 `;
 export const GrantProjectAgreementFragmentFragmentDoc = gql`
   fragment GrantProjectAgreementFragment on grant_project_agreement {
@@ -157,22 +190,6 @@ export const PettyCashFragmentFragmentDoc = gql`
     created_at
     updated_at
     project
-  }
-`;
-export const ProjectFragmentFragmentDoc = gql`
-  fragment ProjectFragment on projects {
-    id
-    name
-    description
-    start_date
-    end_date
-    project_budget
-    created_at
-    updated_at
-    status
-    note
-    contact_person_email
-    contact_person_name
   }
 `;
 export const ProviderInvoiceFragmentFragmentDoc = gql`
@@ -876,6 +893,201 @@ export type GetEmployeeSuspenseQueryHookResult = ReturnType<typeof useGetEmploye
 export type GetEmployeeQueryResult = Apollo.QueryResult<
   Types.GetEmployeeQuery,
   Types.GetEmployeeQueryVariables
+>;
+export const CreateExpenseClaimDocument = gql`
+  mutation CreateExpenseClaim(
+    $employee_id: Int!
+    $project_id: Int!
+    $amount: BigFloat!
+    $startDate: Date!
+    $endDate: Date
+  ) {
+    insertIntoexpense_claimsCollection(
+      objects: [
+        {
+          employee_id: $employee_id
+          project_id: $project_id
+          amount: $amount
+          startDate: $startDate
+          endDate: $startDate
+        }
+      ]
+    ) {
+      records {
+        ...ExpenseClaimFragment
+      }
+    }
+  }
+  ${ExpenseClaimFragmentFragmentDoc}
+`;
+export type CreateExpenseClaimMutationFn = Apollo.MutationFunction<
+  Types.CreateExpenseClaimMutation,
+  Types.CreateExpenseClaimMutationVariables
+>;
+
+/**
+ * __useCreateExpenseClaimMutation__
+ *
+ * To run a mutation, you first call `useCreateExpenseClaimMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateExpenseClaimMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createExpenseClaimMutation, { data, loading, error }] = useCreateExpenseClaimMutation({
+ *   variables: {
+ *      employee_id: // value for 'employee_id'
+ *      project_id: // value for 'project_id'
+ *      amount: // value for 'amount'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *   },
+ * });
+ */
+export function useCreateExpenseClaimMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    Types.CreateExpenseClaimMutation,
+    Types.CreateExpenseClaimMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    Types.CreateExpenseClaimMutation,
+    Types.CreateExpenseClaimMutationVariables
+  >(CreateExpenseClaimDocument, options);
+}
+export type CreateExpenseClaimMutationHookResult = ReturnType<typeof useCreateExpenseClaimMutation>;
+export type CreateExpenseClaimMutationResult =
+  Apollo.MutationResult<Types.CreateExpenseClaimMutation>;
+export type CreateExpenseClaimMutationOptions = Apollo.BaseMutationOptions<
+  Types.CreateExpenseClaimMutation,
+  Types.CreateExpenseClaimMutationVariables
+>;
+export const DeleteExpenseClaimDocument = gql`
+  mutation DeleteExpenseClaim($id: Int!) {
+    deleteFromexpense_claimsCollection(filter: { id: { eq: $id } }) {
+      affectedCount
+    }
+  }
+`;
+export type DeleteExpenseClaimMutationFn = Apollo.MutationFunction<
+  Types.DeleteExpenseClaimMutation,
+  Types.DeleteExpenseClaimMutationVariables
+>;
+
+/**
+ * __useDeleteExpenseClaimMutation__
+ *
+ * To run a mutation, you first call `useDeleteExpenseClaimMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteExpenseClaimMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteExpenseClaimMutation, { data, loading, error }] = useDeleteExpenseClaimMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteExpenseClaimMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    Types.DeleteExpenseClaimMutation,
+    Types.DeleteExpenseClaimMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    Types.DeleteExpenseClaimMutation,
+    Types.DeleteExpenseClaimMutationVariables
+  >(DeleteExpenseClaimDocument, options);
+}
+export type DeleteExpenseClaimMutationHookResult = ReturnType<typeof useDeleteExpenseClaimMutation>;
+export type DeleteExpenseClaimMutationResult =
+  Apollo.MutationResult<Types.DeleteExpenseClaimMutation>;
+export type DeleteExpenseClaimMutationOptions = Apollo.BaseMutationOptions<
+  Types.DeleteExpenseClaimMutation,
+  Types.DeleteExpenseClaimMutationVariables
+>;
+export const GetExpenseClaimsDocument = gql`
+  query GetExpenseClaims {
+    expense_claimsCollection {
+      edges {
+        node {
+          ...ExpenseClaimFragment
+        }
+      }
+    }
+  }
+  ${ExpenseClaimFragmentFragmentDoc}
+`;
+
+/**
+ * __useGetExpenseClaimsQuery__
+ *
+ * To run a query within a React component, call `useGetExpenseClaimsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetExpenseClaimsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetExpenseClaimsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetExpenseClaimsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    Types.GetExpenseClaimsQuery,
+    Types.GetExpenseClaimsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<Types.GetExpenseClaimsQuery, Types.GetExpenseClaimsQueryVariables>(
+    GetExpenseClaimsDocument,
+    options
+  );
+}
+export function useGetExpenseClaimsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    Types.GetExpenseClaimsQuery,
+    Types.GetExpenseClaimsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<Types.GetExpenseClaimsQuery, Types.GetExpenseClaimsQueryVariables>(
+    GetExpenseClaimsDocument,
+    options
+  );
+}
+export function useGetExpenseClaimsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        Types.GetExpenseClaimsQuery,
+        Types.GetExpenseClaimsQueryVariables
+      >
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<Types.GetExpenseClaimsQuery, Types.GetExpenseClaimsQueryVariables>(
+    GetExpenseClaimsDocument,
+    options
+  );
+}
+export type GetExpenseClaimsQueryHookResult = ReturnType<typeof useGetExpenseClaimsQuery>;
+export type GetExpenseClaimsLazyQueryHookResult = ReturnType<typeof useGetExpenseClaimsLazyQuery>;
+export type GetExpenseClaimsSuspenseQueryHookResult = ReturnType<
+  typeof useGetExpenseClaimsSuspenseQuery
+>;
+export type GetExpenseClaimsQueryResult = Apollo.QueryResult<
+  Types.GetExpenseClaimsQuery,
+  Types.GetExpenseClaimsQueryVariables
 >;
 export const CreateGrantAgreementDocument = gql`
   mutation CreateGrantAgreement(
@@ -1607,4 +1819,69 @@ export type GetProjectByIdSuspenseQueryHookResult = ReturnType<
 export type GetProjectByIdQueryResult = Apollo.QueryResult<
   Types.GetProjectByIdQuery,
   Types.GetProjectByIdQueryVariables
+>;
+export const GetStatusDocument = gql`
+  query GetStatus {
+    statusCollection {
+      edges {
+        node {
+          ...StatusFragment
+        }
+      }
+    }
+  }
+  ${StatusFragmentFragmentDoc}
+`;
+
+/**
+ * __useGetStatusQuery__
+ *
+ * To run a query within a React component, call `useGetStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStatusQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetStatusQuery(
+  baseOptions?: Apollo.QueryHookOptions<Types.GetStatusQuery, Types.GetStatusQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<Types.GetStatusQuery, Types.GetStatusQueryVariables>(
+    GetStatusDocument,
+    options
+  );
+}
+export function useGetStatusLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<Types.GetStatusQuery, Types.GetStatusQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<Types.GetStatusQuery, Types.GetStatusQueryVariables>(
+    GetStatusDocument,
+    options
+  );
+}
+export function useGetStatusSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<Types.GetStatusQuery, Types.GetStatusQueryVariables>
+) {
+  const options =
+    baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<Types.GetStatusQuery, Types.GetStatusQueryVariables>(
+    GetStatusDocument,
+    options
+  );
+}
+export type GetStatusQueryHookResult = ReturnType<typeof useGetStatusQuery>;
+export type GetStatusLazyQueryHookResult = ReturnType<typeof useGetStatusLazyQuery>;
+export type GetStatusSuspenseQueryHookResult = ReturnType<typeof useGetStatusSuspenseQuery>;
+export type GetStatusQueryResult = Apollo.QueryResult<
+  Types.GetStatusQuery,
+  Types.GetStatusQueryVariables
 >;
