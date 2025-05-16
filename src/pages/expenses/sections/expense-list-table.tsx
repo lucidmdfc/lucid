@@ -104,8 +104,8 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">
-                    <SeverityPill color={expense.status_id ? 'info' : 'error'}>
-                      {expense.status_id ? 'Validé' : 'En Attente'}
+                    <SeverityPill color={expense.status ? 'info' : 'error'}>
+                      {expense.status ? 'Validé' : 'En Attente'}
                     </SeverityPill>
                   </Typography>
                 </TableCell>

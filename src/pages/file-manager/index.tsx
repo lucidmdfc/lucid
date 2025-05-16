@@ -23,6 +23,8 @@ import { ItemList } from 'src/sections/dashboard/file-manager/item-list';
 import { ItemSearch } from 'src/sections/dashboard/file-manager/item-search';
 import { StorageStats } from 'src/sections/dashboard/file-manager/storage-stats';
 import { Item } from 'src/types/template-types/file-manager';
+import { useQuery } from '@apollo/client';
+import { GET_FILES } from 'src/graphql/entities/files/queries';
 
 type View = 'grid' | 'list';
 
@@ -191,6 +193,59 @@ const Page: NextPage = () => {
     [detailsDialog, itemsStore]
   );
 
+  const {
+    loading: filesLoading,
+    error: filesError,
+    data: filesData,
+    refetch: filesRefetch,
+  } = useQuery(GET_FILES);
+  console.log(filesData);
+  const mapFilesToItems = (filesData: {
+    filesCollection: {
+      edges: {
+        map: (
+          arg0: ({ node }: { node: any }) => {
+            id: string;
+            name: any;
+            size: number;
+            extension: any;
+            type: string;
+            createdAt: number;
+            updatedAt: number | undefined;
+            isPublic: boolean;
+            tags: any[];
+            author: { name: string | undefined };
+          }
+        ) => Item[];
+      };
+    };
+  }): Item[] => {
+    if (!filesData?.filesCollection?.edges) return [];
+
+    return filesData.filesCollection.edges.map(({ node }) => {
+      const extension = node.original_filename.split('.').pop();
+
+      return {
+        id: String(node.id),
+        name: node.original_filename,
+        size: Number(node.size_bytes),
+        extension,
+        type: 'file',
+        createdAt: new Date(node.created_at).getTime(),
+        updatedAt: node.uploaded_at ? new Date(node.uploaded_at).getTime() : undefined,
+        isPublic: true,
+        url: node.public_url,
+        tags: [node.document_category, node.expense_claim_category].filter(Boolean),
+        author: {
+          name: node.metadata?.expense_claim?.expense_claim_id
+            ? `Claim #${node.metadata.expense_claim.expense_claim_id}`
+            : undefined,
+        },
+      };
+    });
+  };
+  console.log(mapFilesToItems(filesData));
+
   return (
     <>
       <Seo title="Dashboard: File Manager" />
@@ -257,7 +312,7 @@ const Page: NextPage = () => {
                 />
                 <ItemList
                   count={itemsStore.itemsCount}
-                  items={itemsStore.items}
+                  items={mapFilesToItems(filesData)}
                   onDelete={handleDelete}
                   onFavorite={itemsStore.handleFavorite}
                   onOpen={detailsDialog.handleOpen}

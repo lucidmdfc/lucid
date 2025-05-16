@@ -27,10 +27,13 @@ import { paths } from 'src/paths';
 import { ExpenseDetails, expense, expenseDetails } from 'src/types/expense';
 import { useGetEmployeesQuery, useGetProjectsQuery } from 'src/hooks/generatedHook';
 import { ExpenseClaimFragmentFragment } from 'src/types/generatedTypes';
+import { useMutation } from '@apollo/client';
+import { UPDATE_EXPENSE_CLAIM } from 'src/graphql/entities/expenseClaims/mutations';
+import { UPLOAD_FILE } from 'src/graphql/operations/mutations';
 
 const validationSchema = Yup.object().shape({
-  projectId: Yup.string().required('Nom projet est requis'),
-  salaryId: Yup.string().required('Salarié est requis'),
+  project_id: Yup.string().required('Nom projet est requis'),
+  employee_id: Yup.string().required('Salarié est requis'),
   amount: Yup.number().required('Montant est requis').positive('Le montant doit être positif'),
 });
 
@@ -60,12 +63,11 @@ interface types {
 
 const EditExpense: FC<types> = (expenseClaim) => {
   const router = useRouter();
-
+  // console.log(expenseClaim);
   const [isSwitchOn, setSwitchOn] = useState(false);
   const handleSwitchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSwitchOn(event.target.checked);
   };
-  console.log('expenseClaim', expenseClaim);
 
   const uploadDialog = useDialog();
   const {
@@ -81,16 +83,38 @@ const EditExpense: FC<types> = (expenseClaim) => {
     refetch: employeesRefetch,
   } = useGetEmployeesQuery();
 
+  const [uploadFile, { data: uploadFileData, loading: uploadFileLoading, error: uploadFileError }] =
+    useMutation(UPLOAD_FILE);
+
+  console.log('uploadFileData :', uploadFileData);
+  console.log('uploadFileError :', uploadFileError);
   const mappedProjects = projectsData?.projectsCollection?.edges?.map((project) => ({
     text: project?.node?.name,
     value: project?.node?.id,
   }));
-  console.log('mappedProjects', mappedProjects);
+  // console.log('mappedProjects', mappedProjects);
   const mappedSalaries = employeesData?.employeesCollection?.edges.map((employee) => ({
     text: `${employee.node.salaryName} `,
     value: employee.node.id,
   }));
+  const [expenseDetailsState, setExpenseDetailsState] = useState<{
+    [key: string]: { amount: number; file: File | null };
+  }>({});
 
+  const validationFileuploadSchema = Yup.object({
+    expense_category: Yup.string().required('Champ requis'),
+  });
+  const formikExpenseFile = useFormik({
+    initialValues: {
+      expense_category: '',
+    },
+    validationSchema: validationFileuploadSchema,
+    onSubmit: (values) => {
+      console.log('Form submitted with:', values);
+    },
+  });
+  // console.log(expenseDetailsState);
+  const [updateExpenseClaim] = useMutation(UPDATE_EXPENSE_CLAIM);
   const formik = useFormik<ExpenseClaimFragmentFragment>({
     initialValues: {
       id: 0,
@@ -102,14 +126,47 @@ const EditExpense: FC<types> = (expenseClaim) => {
       endDate: new Date(),
       created_at: new Date(),
       updated_at: new Date(),
-      status_id: 0,
+      status: false,
+
+      // transport_amount: 0,
+      // accommodation_amount: 0,
+      // meals_amount: 0,
+      // gifts_and_entertainment_amount: 0,
+      // documentation_amount: 0,
     },
     validationSchema: validationSchema,
     onSubmit: async (values: ExpenseClaimFragmentFragment, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
         console.log(values);
+        console.log(expenseDetailsState);
+        const { data, errors } = await updateExpenseClaim({
+          variables: {
+            set: {
+              project_id: Number(values.project_id),
+              employee_id: Number(values.employee_id),
+              amount: String(values.amount),
+              startDate: values.startDate.toISOString(),
+              endDate: isSwitchOn ? values.endDate.toISOString() : null,
+              status: values.status,
+              comment: values.comment,
 
+              // transport_amount: String(expenseDetailsState['transport_amount']?.amount) || 0,
+              // accommodation_amount:
+              //   String(expenseDetailsState['accommodation_amount']?.amount) || 0,
+              // meals_amount: String(expenseDetailsState['meals_amount']?.amount) || 0,
+              // gifts_and_entertainment_amount:
+              //   String(expenseDetailsState['gifts_and_entertainment_amount']?.amount) || 0,
+              // documentation_amount:
+              //   String(expenseDetailsState['documentation_amount']?.amount) || 0,
+            },
+            filter: { id: { eq: Number(expenseClaim?.expenseClaim?.id) } },
+            atMost: 1,
+          },
+        });
+
+        console.log(data);
+        console.log(errors);
         toast.success('Nouveaux frais modifié avec succès !');
         router.replace(paths.dashboard.expenses.index);
         resetForm();
@@ -122,6 +179,26 @@ const EditExpense: FC<types> = (expenseClaim) => {
       }
     },
   });
+  const handleFileUpload = async (file: any) => {
+    console.log('file', file);
+    console.log('file', typeof file);
+    if (!file) return;
+    try {
+      const { data } = await uploadFile({
+        variables: {
+          file,
+          documentCategory: 'expense_claims',
+          expense_claim_category: formikExpenseFile.values.expense_category,
+          expense_status: formik.values.status,
+          expense_claim_id: String(expenseClaim?.expenseClaim?.id),
+        },
+      });
+      console.log('data : ', data);
+      console.log('File uploaded successfully:', data.uploadFile);
+    } catch (err) {
+      console.error('Upload failed:', err);
+    }
+  };
 
   useEffect(() => {
     if (expenseClaim) {
@@ -134,8 +211,10 @@ const EditExpense: FC<types> = (expenseClaim) => {
         endDate: new Date(expenseClaim?.expenseClaim?.endDate),
         created_at: new Date(expenseClaim?.expenseClaim?.created_at),
         updated_at: new Date(expenseClaim?.expenseClaim?.updated_at),
-        status_id: expenseClaim?.expenseClaim?.status_id,
+        status: expenseClaim?.expenseClaim?.status,
+        comment: expenseClaim?.expenseClaim?.comment,
       });
+      setSwitchOn(expenseClaim?.expenseClaim?.endDate ? true : false);
     }
   }, [expenseClaim]);
 
@@ -163,10 +242,21 @@ const EditExpense: FC<types> = (expenseClaim) => {
         <TextField
           fullWidth
           label="Montant"
-          name="amount"
+          name={`amount-${detail.value}`}
           type="number"
-          required
+          // required
           size="small"
+          value={expenseDetailsState[detail.value]?.amount || 0}
+          onChange={(e) => {
+            const amount = Number(e.target.value);
+            setExpenseDetailsState((prev) => ({
+              ...prev,
+              [detail.value]: {
+                ...prev[detail.value],
+                amount,
+              },
+            }));
+          }}
         />
       </Grid>
       <Grid
@@ -175,7 +265,9 @@ const EditExpense: FC<types> = (expenseClaim) => {
         md={4}
       >
         <Button
-          onClick={uploadDialog.handleOpen}
+          onClick={() => {
+            uploadDialog.handleOpen(detail.value);
+          }}
           startIcon={
             <SvgIcon>
               <Upload01 />
@@ -208,7 +300,7 @@ const EditExpense: FC<types> = (expenseClaim) => {
                   <TextField
                     fullWidth
                     label="Nom projet"
-                    name="projectId"
+                    name="project_id"
                     value={formik.values.project_id}
                     onChange={formik.handleChange}
                     select
@@ -236,7 +328,7 @@ const EditExpense: FC<types> = (expenseClaim) => {
                   <TextField
                     fullWidth
                     label="Salarié"
-                    name="salaryId"
+                    name="employee_id"
                     value={formik.values.employee_id}
                     onChange={formik.handleChange}
                     select
@@ -342,25 +434,78 @@ const EditExpense: FC<types> = (expenseClaim) => {
                   </Grid>
                 </Grid>
 
-                {expenseDetails.map(renderExpenseDetails)}
+                {/* {expenseDetails.map(renderExpenseDetails)} */}
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                >
+                  <TextField
+                    fullWidth
+                    label="Catégorie de dépense"
+                    name="expense_category"
+                    value={formikExpenseFile.values.expense_category}
+                    onChange={formikExpenseFile.handleChange}
+                    select
+                    size="small"
+                    error={
+                      formikExpenseFile.touched.expense_category &&
+                      Boolean(formikExpenseFile.errors.expense_category)
+                    }
+                    helperText={
+                      formikExpenseFile.touched.expense_category &&
+                      formikExpenseFile.errors.expense_category
+                    }
+                  >
+                    <MenuItem value="">--</MenuItem>
+                    {expenseDetails.map((detail) => (
+                      <MenuItem
+                        key={detail.value}
+                        value={detail.value}
+                      >
+                        {detail.text}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                <Grid
+                  item
+                  xs={12}
+                  md={4}
+                >
+                  <Button
+                    onClick={uploadDialog.handleOpen}
+                    startIcon={
+                      <SvgIcon>
+                        <Upload01 />
+                      </SvgIcon>
+                    }
+                    color="secondary"
+                    variant="contained"
+                    disabled={!formikExpenseFile.values.expense_category}
+                  >
+                    Télécharger
+                  </Button>
+                </Grid>
               </Grid>
               <Grid
                 item
                 xs={12}
                 md={12}
               >
-                {/* <FormControlLabel
+                <FormControlLabel
                   control={
                     <Switch
                       name="status"
-                      checked={formik?.values.status_id}
+                      checked={formik?.values.status}
                       onChange={(e) => {
                         formik?.setFieldValue('status', e.target.checked);
                       }}
                     />
                   }
                   label="Validié"
-                /> */}
+                />
               </Grid>
               <Box sx={{ mt: 2 }}>
                 <Button
@@ -377,6 +522,13 @@ const EditExpense: FC<types> = (expenseClaim) => {
       <FileUploader
         onClose={uploadDialog.handleClose}
         open={uploadDialog.open}
+        onUpload={(files) => {
+          const file = files?.[0];
+          if (file) {
+            handleFileUpload(file);
+            uploadDialog.handleClose();
+          }
+        }}
       />
     </form>
   );

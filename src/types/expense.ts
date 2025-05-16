@@ -18,8 +18,8 @@ export interface ExpenseDetails {
 
 export const expenseDetails: ExpenseDetails[] = [
   { text: 'Transport', value: 'transport' },
-  { text: 'Hébergement', value: 'hebergement' },
-  { text: 'Repas', value: 'repas' },
-  { text: 'Cadeaux & Représentations', value: 'gifts' },
+  { text: 'Hébergement', value: 'accommodation' },
+  { text: 'Repas', value: 'meals' },
+  { text: 'Cadeaux & Représentations', value: 'gifts_and_entertainment' },
   { text: 'Documentation', value: 'documentation' },
 ];

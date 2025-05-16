@@ -44,7 +44,6 @@ export const ItemListCard: FC<ItemListCardProps> = (props) => {
   if (item.type === 'folder') {
     size += `• ${item.itemsCount} items`;
   }
-
   const createdAt = item.createdAt && format(item.createdAt, 'MMM dd, yyyy');
   const showShared = !item.isPublic && (item.shared || []).length > 0;
 
@@ -102,7 +101,7 @@ export const ItemListCard: FC<ItemListCardProps> = (props) => {
             }}
           >
             <Box
-              onClick={() => onOpen?.(item.id)}
+              onClick={() => item.url && window.open(item.url, '_blank')}
               sx={{
                 display: 'inline-flex',
                 cursor: 'pointer',

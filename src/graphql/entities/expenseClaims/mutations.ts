@@ -34,13 +34,13 @@ export const DELETE_EXPENSE_CLAIM = gql`
   }
 `;
 
-// export const UPDATE_EXPENSE_CLAIM = gql`
-//   mutation UpdateDonor() {
-//     updateexpense_claimsCollection($set: donorsUpdateInput!, $filter: donorsFilter, $atMost: Int!) {
-//       records {
-//         ...ExpenseClaimFragment
-//       }
-//     }
-//   }
-//   ${EXPENSE_CLAIM_FRAGMENT}
-// `;
+export const UPDATE_EXPENSE_CLAIM = gql`
+  mutation UpdateExpenseClaim($set: projectsUpdateInput!, $filter: projectsFilter, $atMost: Int!) {
+    updateexpense_claimsCollection(set: $set, filter: $filter, atMost: $atMost) {
+      records {
+        ...ExpenseClaimFragment
+      }
+    }
+  }
+  ${EXPENSE_CLAIM_FRAGMENT}
+`;

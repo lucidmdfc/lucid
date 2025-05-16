@@ -1833,8 +1833,7 @@ export type Expense_Claims = Node & {
   project_id: Scalars['Int']['output'];
   projects?: Maybe<Projects>;
   startDate: Scalars['Date']['output'];
-  status?: Maybe<Status>;
-  status_id: Scalars['Int']['output'];
+  status: Scalars['Boolean']['output'];
   transport_amount?: Maybe<Scalars['BigFloat']['output']>;
   transport_document?: Maybe<Scalars['String']['output']>;
   updated_at: Scalars['Datetime']['output'];
@@ -1884,7 +1883,7 @@ export type Expense_ClaimsFilter = {
   or?: InputMaybe<Array<Expense_ClaimsFilter>>;
   project_id?: InputMaybe<IntFilter>;
   startDate?: InputMaybe<DateFilter>;
-  status_id?: InputMaybe<IntFilter>;
+  status?: InputMaybe<BooleanFilter>;
   transport_amount?: InputMaybe<BigFloatFilter>;
   transport_document?: InputMaybe<StringFilter>;
   updated_at?: InputMaybe<DatetimeFilter>;
@@ -1906,7 +1905,7 @@ export type Expense_ClaimsInsertInput = {
   meals_document?: InputMaybe<Scalars['String']['input']>;
   project_id?: InputMaybe<Scalars['Int']['input']>;
   startDate?: InputMaybe<Scalars['Date']['input']>;
-  status_id?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<Scalars['Boolean']['input']>;
   transport_amount?: InputMaybe<Scalars['BigFloat']['input']>;
   transport_document?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['Datetime']['input']>;
@@ -1937,7 +1936,7 @@ export type Expense_ClaimsOrderBy = {
   meals_document?: InputMaybe<OrderByDirection>;
   project_id?: InputMaybe<OrderByDirection>;
   startDate?: InputMaybe<OrderByDirection>;
-  status_id?: InputMaybe<OrderByDirection>;
+  status?: InputMaybe<OrderByDirection>;
   transport_amount?: InputMaybe<OrderByDirection>;
   transport_document?: InputMaybe<OrderByDirection>;
   updated_at?: InputMaybe<OrderByDirection>;
@@ -1959,7 +1958,7 @@ export type Expense_ClaimsUpdateInput = {
   meals_document?: InputMaybe<Scalars['String']['input']>;
   project_id?: InputMaybe<Scalars['Int']['input']>;
   startDate?: InputMaybe<Scalars['Date']['input']>;
-  status_id?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<Scalars['Boolean']['input']>;
   transport_amount?: InputMaybe<Scalars['BigFloat']['input']>;
   transport_document?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['Datetime']['input']>;
@@ -3233,22 +3232,11 @@ export type Service_ProvidersUpdateResponse = {
 export type Status = Node & {
   __typename?: 'status';
   created_at: Scalars['Datetime']['output'];
-  expense_claimsCollection?: Maybe<Expense_ClaimsConnection>;
   id: Scalars['BigInt']['output'];
   name: Scalars['String']['output'];
   /** Globally Unique Record Identifier */
   nodeId: Scalars['ID']['output'];
   service_providersCollection?: Maybe<Service_ProvidersConnection>;
-};
-
-export type StatusExpense_ClaimsCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  filter?: InputMaybe<Expense_ClaimsFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<Expense_ClaimsOrderBy>>;
 };
 
 export type StatusService_ProvidersCollectionArgs = {
@@ -3593,6 +3581,8 @@ export type UpdateDonorMutation = {
       name: string;
       email?: string | null;
       phone: string;
+      created_at: any;
+      updated_at: any;
       note?: string | null;
     }>;
   };
@@ -3839,7 +3829,7 @@ export type ExpenseClaimFragmentFragment = {
   created_at: any;
   updated_at: any;
   comment?: string | null;
-  status_id: number;
+  status: boolean;
   transport_amount?: any | null;
   transport_document?: string | null;
   accommodation_amount?: any | null;
@@ -3903,7 +3893,7 @@ export type CreateExpenseClaimMutation = {
       created_at: any;
       updated_at: any;
       comment?: string | null;
-      status_id: number;
+      status: boolean;
       transport_amount?: any | null;
       transport_document?: string | null;
       accommodation_amount?: any | null;
@@ -3977,7 +3967,72 @@ export type GetExpenseClaimsQuery = {
         created_at: any;
         updated_at: any;
         comment?: string | null;
-        status_id: number;
+        status: boolean;
+        transport_amount?: any | null;
+        transport_document?: string | null;
+        accommodation_amount?: any | null;
+        accommodation_document?: string | null;
+        meals_amount?: any | null;
+        meals_document?: string | null;
+        gifts_and_entertainment_amount?: any | null;
+        gifts_and_entertainment_document?: string | null;
+        documentation_amount?: any | null;
+        documentation_document?: string | null;
+        projects?: {
+          __typename?: 'projects';
+          id: number;
+          name: string;
+          description?: string | null;
+          start_date: any;
+          end_date: any;
+          project_budget: any;
+          created_at: any;
+          updated_at: any;
+          status: boolean;
+          note?: string | null;
+          contact_person_email?: string | null;
+          contact_person_name?: string | null;
+        } | null;
+        employees?: {
+          __typename?: 'employees';
+          id: number;
+          salaryName: string;
+          salaryFunction: string;
+          email?: string | null;
+          phone: string;
+          grossSalary: any;
+          recruitmentDate?: any | null;
+          status: string;
+          created_at: any;
+          updated_at: any;
+        } | null;
+      };
+    }>;
+  } | null;
+};
+
+export type GetExpenceClaimByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+export type GetExpenceClaimByIdQuery = {
+  __typename?: 'Query';
+  expense_claimsCollection?: {
+    __typename?: 'expense_claimsConnection';
+    edges: Array<{
+      __typename?: 'expense_claimsEdge';
+      node: {
+        __typename?: 'expense_claims';
+        id: number;
+        employee_id: number;
+        project_id: number;
+        amount: any;
+        startDate: any;
+        endDate?: any | null;
+        created_at: any;
+        updated_at: any;
+        comment?: string | null;
+        status: boolean;
         transport_amount?: any | null;
         transport_document?: string | null;
         accommodation_amount?: any | null;

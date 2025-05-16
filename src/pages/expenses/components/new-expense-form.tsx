@@ -72,17 +72,15 @@ const NewExpenseForm: FC = () => {
       employee_id: 0,
       amount: Number(),
       startDate: new Date(),
-      endDate: new Date(),
+      endDate: null,
       created_at: new Date(),
       updated_at: new Date(),
-      status_id: 0,
+      status: false,
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
-        console.log('Form Submitted with values:', values); // Log form values
-
         const { project_id, employee_id, amount, startDate, endDate } = values;
         console.log(values);
         const response = await CreateExpenseClaim({
@@ -96,7 +94,7 @@ const NewExpenseForm: FC = () => {
         });
         console.log('response', response);
         toast.success('Nouveaux frais créés avec succès !');
-        router.replace(paths.dashboard.expenses.index);
+        // router.replace(paths.dashboard.expenses.index);
         resetForm();
       } catch (error) {
         toast.error('Erreur lors de la création des nouveaux frais!');

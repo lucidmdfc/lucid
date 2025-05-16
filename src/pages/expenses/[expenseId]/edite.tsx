@@ -22,13 +22,16 @@ const Page: NextPage = () => {
   usePageView();
   const router = useRouter();
   const { expenseId } = router.query;
-  console.log(expenseId);
+  // console.log(expenseId);
   const {
     loading: expenseClaimLoading,
     error: expenseClaimError,
     data: expenseClaimData,
     refetch: expenseClaimRefetch,
-  } = useQuery(GET_EXPENSE_CLAIM);
+  } = useQuery(GET_EXPENSE_CLAIM, {
+    variables: { id: Number(expenseId) },
+  });
+
   // console.log('expenseClaimData', expenseClaimData);
   const firstNode = expenseClaimData?.expense_claimsCollection?.edges[0]?.node;
 
@@ -53,7 +56,7 @@ const Page: NextPage = () => {
                   href={paths.expenses.index}
                   variant="subtitle2"
                 >
-                  Notes de frais{' '}
+                  Notes de frais
                 </Link>
               </Breadcrumbs>
             </Stack>

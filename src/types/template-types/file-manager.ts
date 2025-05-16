@@ -21,4 +21,5 @@ export interface Item {
   tags?: string[];
   type: ItemType;
   updatedAt?: number | null;
+  url?: string;
 }

@@ -18,7 +18,7 @@ interface FileUploaderProps {
 }
 
 const FileUploader: FC<FileUploaderProps> = (props) => {
-  const { onClose, open = false } = props;
+  const { onClose, open = false, onUpload } = props;
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const FileUploader: FC<FileUploaderProps> = (props) => {
           onDrop={handleDrop}
           onRemove={handleRemove}
           onRemoveAll={handleRemoveAll}
-          onUpload={onClose}
+          onUpload={() => onUpload?.(files)}
         />
       </DialogContent>
     </Dialog>
