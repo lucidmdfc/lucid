@@ -313,6 +313,7 @@ const Page: NextPage = () => {
                 <ItemList
                   count={itemsStore.itemsCount}
                   items={mapFilesToItems(filesData)}
+                  // items={itemsStore.items}
                   onDelete={handleDelete}
                   onFavorite={itemsStore.handleFavorite}
                   onOpen={detailsDialog.handleOpen}

@@ -1,6 +1,22 @@
 import { GraphQLUpload, FileUpload } from 'graphql-upload-minimal';
 import { supabase } from 'src/libs/supabaseClient';
 
+import { createClient } from '@supabase/supabase-js';
+
+export const createSupabaseClientWithAuth = (token: string) => {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, // or SERVICE_ROLE for trusted server-side ops
+    {
+      global: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    }
+  );
+};
+
 interface UploadedFileResponse {
   url: string;
   path: string;
@@ -23,7 +39,7 @@ async function streamToBuffer(
 
   for await (const chunk of stream) {
     const bufferChunk = typeof chunk === 'string' ? Buffer.from(chunk) : chunk;
-    console.log(chunk);
+    // console.log(chunk);
     totalLength += bufferChunk.length;
 
     if (totalLength > maxSizeInBytes) {
@@ -48,10 +64,10 @@ const resolvers = {
         expense_claim_category,
         expense_status,
         expense_claim_id,
-      }: UploadFileArgs
+      }: UploadFileArgs,
+      context: { token: string }
     ): Promise<UploadedFileResponse> => {
-      console.log('uploadFile resolver hit');
-
+      const supabase = createSupabaseClientWithAuth(context.token);
       const { createReadStream, filename, mimetype } = await file.then((f) => f);
 
       const allowedTypes = ['application/pdf', 'image/jpeg'];
@@ -105,7 +121,7 @@ const resolvers = {
           size_bytes: fileBuffer.length,
           storage_key: data.path,
           public_url: publicUrl,
-          bucket_name: 'files',
+          bucket_name: 'storage',
           document_category: documentCategory,
           metadata,
         },

@@ -1,41 +1,41 @@
-import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import { graphqlUploadExpress } from 'graphql-upload-minimal';
+import { ApolloServer } from '@apollo/server';
+import { startServerAndCreateNextHandler } from '@as-integrations/next';
+import type { NextApiRequest, NextApiResponse } from 'next/types';
 import typeDefs from '../../../graphql/typeDefs';
 import resolvers from '../../../graphql/resolvers';
-import { NextApiRequest, NextApiResponse } from 'next/types';
+import { processRequest } from 'graphql-upload-minimal';
 
-// Create Express app inside the handler to avoid issues with Next.js
-const initializeServer = async () => {
-  const app = express();
-  console.log('server hit! ');
-  // Enable file uploads
-  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
-
-  // Create Apollo Server
-  const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
-
-  await apolloServer.start();
-  // @ts-ignore
-  apolloServer.applyMiddleware({ app, path: '/api/graphql' });
-
-  return app;
-};
-
-// Initialize the server once and reuse it
-const appPromise = initializeServer();
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const app = await appPromise;
-  app(req, res);
-}
-
+// important for file uploads
 export const config = {
   api: {
     bodyParser: false,
-    externalResolver: true,
   },
 };
+
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
+const handler = startServerAndCreateNextHandler(apolloServer, {
+  context: async (req, res) => {
+    const authHeader = req.headers['authorization'] || '';
+    const token = authHeader.replace('Bearer ', '');
+
+    return { token };
+  },
+});
+
+export default async function wrappedHandler(req: NextApiRequest, res: NextApiResponse) {
+  // 👇 Check for multipart form data
+  if (req.method === 'POST' && req.headers['content-type']?.includes('multipart/form-data')) {
+    // Process multipart request for file uploads
+    // graphql-upload-minimal expects req to have a .body and .files
+    const processed = await processRequest(req, res);
+
+    // Replace the original request with a modified one that includes body/files
+    (req as any).body = processed;
+  }
+
+  return handler(req, res);
+}

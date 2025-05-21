@@ -30,6 +30,7 @@ import { ExpenseClaimFragmentFragment } from 'src/types/generatedTypes';
 import { useMutation } from '@apollo/client';
 import { UPDATE_EXPENSE_CLAIM } from 'src/graphql/entities/expenseClaims/mutations';
 import { UPLOAD_FILE } from 'src/graphql/operations/mutations';
+import { supabase } from 'src/libs/supabaseClient';
 
 const validationSchema = Yup.object().shape({
   project_id: Yup.string().required('Nom projet est requis'),
@@ -86,8 +87,8 @@ const EditExpense: FC<types> = (expenseClaim) => {
   const [uploadFile, { data: uploadFileData, loading: uploadFileLoading, error: uploadFileError }] =
     useMutation(UPLOAD_FILE);
 
-  console.log('uploadFileData :', uploadFileData);
-  console.log('uploadFileError :', uploadFileError);
+  // console.log('uploadFileData :', uploadFileData);
+  // console.log('uploadFileError :', uploadFileError);
   const mappedProjects = projectsData?.projectsCollection?.edges?.map((project) => ({
     text: project?.node?.name,
     value: project?.node?.id,
@@ -114,7 +115,8 @@ const EditExpense: FC<types> = (expenseClaim) => {
     },
   });
   // console.log(expenseDetailsState);
-  const [updateExpenseClaim] = useMutation(UPDATE_EXPENSE_CLAIM);
+  const [updateExpenseClaim, { loading: updateExpenseLoading, error }] =
+    useMutation(UPDATE_EXPENSE_CLAIM);
   const formik = useFormik<ExpenseClaimFragmentFragment>({
     initialValues: {
       id: 0,
@@ -138,8 +140,8 @@ const EditExpense: FC<types> = (expenseClaim) => {
     onSubmit: async (values: ExpenseClaimFragmentFragment, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
-        console.log(values);
-        console.log(expenseDetailsState);
+        // console.log(values);
+        // console.log(expenseDetailsState);
         const { data, errors } = await updateExpenseClaim({
           variables: {
             set: {
@@ -165,8 +167,8 @@ const EditExpense: FC<types> = (expenseClaim) => {
           },
         });
 
-        console.log(data);
-        console.log(errors);
+        // console.log(data);
+        // console.log(errors);
         toast.success('Nouveaux frais modifié avec succès !');
         router.replace(paths.dashboard.expenses.index);
         resetForm();
@@ -180,10 +182,16 @@ const EditExpense: FC<types> = (expenseClaim) => {
     },
   });
   const handleFileUpload = async (file: any) => {
-    console.log('file', file);
-    console.log('file', typeof file);
     if (!file) return;
     try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const accessToken = session?.access_token;
+      // console.log(accessToken);
+      await formikExpenseFile.setFieldValue('expense_category', '');
+
       const { data } = await uploadFile({
         variables: {
           file,
@@ -192,11 +200,20 @@ const EditExpense: FC<types> = (expenseClaim) => {
           expense_status: formik.values.status,
           expense_claim_id: String(expenseClaim?.expenseClaim?.id),
         },
+        context: {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
       });
-      console.log('data : ', data);
-      console.log('File uploaded successfully:', data.uploadFile);
+      // console.log('data : ', data);
+      toast.success('Fichier téléchargé avec succès!');
+
+      // console.log('File uploaded successfully:', data.uploadFile);
     } catch (err) {
-      console.error('Upload failed:', err);
+      toast.error('Échec du téléchargement!');
+
+      // console.error('Upload failed:', err);
     }
   };
 
@@ -511,6 +528,7 @@ const EditExpense: FC<types> = (expenseClaim) => {
                 <Button
                   type="submit"
                   variant="contained"
+                  disabled={updateExpenseLoading ? true : false}
                 >
                   Enregistrer
                 </Button>

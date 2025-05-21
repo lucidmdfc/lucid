@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import Star01Icon from '@untitled-ui/icons-react/build/esm/Star01';
@@ -22,6 +22,7 @@ import { bytesToSize } from 'src/utils/bytes-to-size';
 
 import { ItemIcon } from './item-icon';
 import { ItemMenu } from './item-menu';
+import PdfViewer from 'src/components/pdf-viewer/pdf-viewer';
 
 interface ItemListCardProps {
   item: Item;
@@ -33,6 +34,7 @@ interface ItemListCardProps {
 export const ItemListCard: FC<ItemListCardProps> = (props) => {
   const { item, onDelete, onFavorite, onOpen } = props;
   const popover = usePopover<HTMLButtonElement>();
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   const handleDelete = useCallback((): void => {
     popover.handleClose();
@@ -44,6 +46,7 @@ export const ItemListCard: FC<ItemListCardProps> = (props) => {
   if (item.type === 'folder') {
     size += `• ${item.itemsCount} items`;
   }
+  console.log(item);
   const createdAt = item.createdAt && format(item.createdAt, 'MMM dd, yyyy');
   const showShared = !item.isPublic && (item.shared || []).length > 0;
 
@@ -101,7 +104,11 @@ export const ItemListCard: FC<ItemListCardProps> = (props) => {
             }}
           >
             <Box
-              onClick={() => item.url && window.open(item.url, '_blank')}
+              onClick={() => {
+                if (item.type === 'file' && item.url) {
+                  setPdfUrl(item.url); // open the inline PDF viewer
+                }
+              }}
               sx={{
                 display: 'inline-flex',
                 cursor: 'pointer',
@@ -173,6 +180,13 @@ export const ItemListCard: FC<ItemListCardProps> = (props) => {
             Created at {createdAt}
           </Typography>
         </Box>
+        {pdfUrl && (
+          <PdfViewer
+            pdfUrl={pdfUrl}
+            open={true}
+            onClose={() => setPdfUrl(null)} // close viewer
+          />
+        )}
       </Card>
       <ItemMenu
         anchorEl={popover.anchorRef.current}

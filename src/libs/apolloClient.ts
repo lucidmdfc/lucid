@@ -3,15 +3,8 @@ import { setContext } from '@apollo/client/link/context';
 import { supabase } from './supabaseClient';
 import { createUploadLink } from 'apollo-upload-client';
 import { getMainDefinition } from '@apollo/client/utilities';
-import { DefinitionNode, OperationDefinitionNode } from 'graphql';
+import { OperationDefinitionNode } from 'graphql';
 
-// const httpLink = new HttpLink({
-//   uri: `${process.env.NEXT_PUBLIC_HASURA_GRAPHQL_URL}`,
-//   headers: {
-//     "x-hasura-admin-secret":
-//       "y7S1xhEHuUJMK4Fi4q7hQ8EHkGoQ821w2xjBVm2PhoYxzaDnxBbz4hyciUXGo6XL",
-//   },
-// });
 const httpLink = new HttpLink({
   uri: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/graphql/v1`,
   headers: {
@@ -32,7 +25,6 @@ const authLink = setContext(async (_, { headers }) => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  console.log(session);
   // Return the headers to the context so httpLink can read them
   const token = session ? `Bearer ${session.access_token}` : '';
 
@@ -58,7 +50,7 @@ const splitLink = ApolloLink.split(
 
     return isCustomOperation;
   },
-  customServerLink, // Routes uploadFile + sayHello to custom server
+  customServerLink, // Routes uploadFile
   httpLink // Routes everything else to Supabase
 );
 
