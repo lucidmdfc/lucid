@@ -13,5 +13,8 @@ export const SERVICE_PROVIDER_FRAGMENT = gql`
     dueDate
     amount
     status_id
+    project_id
+    payment_method
+    comment
   }
 `;

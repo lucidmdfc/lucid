@@ -19,6 +19,11 @@ import toast from 'react-hot-toast';
 import CreateConfirmation from './create-modal-confirmation';
 import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
+import { useMutation } from '@apollo/client';
+import { CREATE_SERVICE_PROVIDER } from 'src/graphql/entities/serviceProviders/mutations';
+import { useGetProjectsQuery, useGetStatusQuery } from 'src/hooks/generatedHook';
+import { PAYMENT_METHOD_OPTIONS } from 'src/graphql/shared/enums/paymentMethods';
+import * as Yup from 'yup';
 
 type Option = {
   text: string;
@@ -33,10 +38,47 @@ const projects: Option[] = [
   { text: 'project id 5', value: 5 },
 ];
 
+const validationSchema = Yup.object().shape({
+  projectId: Yup.number().typeError('Le projet est requis').required('Le projet est requis'),
+  nom: Yup.string().required('Le nom est requis'),
+  ice: Yup.string().required('ICE est requis'),
+  depositedDate: Yup.date()
+    .typeError('La date de dépôt est invalide')
+    .required('La date de dépôt est requise'),
+  dueDate: Yup.date()
+    .typeError("La date d'échéance est invalide")
+    .required("La date d'échéance est requise"),
+  amount: Yup.number()
+    .typeError('Le montant doit être un nombre')
+    .required('Le montant est requis')
+    .min(0, 'Le montant doit être supérieur ou égal à 0'),
+  status: Yup.number().typeError('Le statut est requis').required('Le statut est requis'),
+  method: Yup.string().required('Le moyen de paiement est requis'),
+  commentaire: Yup.string().required('Le commentaire est requis'),
+});
+
 const SupplierCreateForm: FC = () => {
   const dialog = useDialog();
   const uploadDialog = useDialog();
   const router = useRouter();
+  const {
+    loading: projectsLoading,
+    error: projectsError,
+    data: projectsData,
+    refetch: projectRefetch,
+  } = useGetProjectsQuery();
+  // console.log(projectsData);
+  const {
+    loading: statusLoading,
+    error: statusError,
+    data: statusData,
+    refetch: statusRefetch,
+  } = useGetStatusQuery();
+  // console.log(statusData);
+
+  const [createServiceProvider, { data, loading, error }] = useMutation(CREATE_SERVICE_PROVIDER);
+  console.log(data);
+  console.log(error);
 
   const formik = useFormik({
     initialValues: {
@@ -46,14 +88,30 @@ const SupplierCreateForm: FC = () => {
       depositedDate: null,
       dueDate: null,
       amount: null,
-      status: '',
+      status: null,
       method: '',
       commentaire: '',
     },
+    validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Handle form submission
         console.log(values);
+        const { data } = await createServiceProvider({
+          variables: {
+            project_id: Number(values.projectId),
+            name: values.nom,
+            email: '',
+            phone: '',
+            ice: values.ice,
+            depositedDate: values.depositedDate ?? null,
+            dueDate: values.dueDate ?? null,
+            amount: String(values.amount),
+            comment: String(values.commentaire),
+            payment_method: String(values.method),
+            status_id: Number(values.status) ?? null,
+          },
+        });
         toast.success('le prestataire créé avec succès !');
         dialog.handleClose();
         resetForm();
@@ -89,16 +147,27 @@ const SupplierCreateForm: FC = () => {
                       onChange={formik.handleChange}
                       value={formik.values.projectId}
                       select
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.projectId && Boolean(formik.errors.projectId)}
+                      helperText={formik.touched.projectId && formik.errors.projectId}
                     >
                       <MenuItem value="">--</MenuItem>
-                      {projects?.map((project) => (
+                      {projectsData?.projectsCollection?.edges?.map((project) => (
+                        <MenuItem
+                          value={project?.node?.id}
+                          key={project?.node?.id}
+                        >
+                          {project?.node?.name}
+                        </MenuItem>
+                      ))}
+                      {/* {projects?.map((project) => (
                         <MenuItem
                           value={project.value}
                           key={project.value}
                         >
                           {project.text}
                         </MenuItem>
-                      ))}
+                      ))} */}
                       <MenuItem value={0}>autre</MenuItem>
                     </TextField>
                   </Stack>
@@ -114,6 +183,9 @@ const SupplierCreateForm: FC = () => {
                       name="nom"
                       onChange={formik.handleChange}
                       value={formik.values.nom}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.nom && Boolean(formik.errors.nom)}
+                      helperText={formik.touched.nom && formik.errors.nom}
                     />
                   </Stack>
                 </Grid>
@@ -128,6 +200,9 @@ const SupplierCreateForm: FC = () => {
                       name="ice"
                       onChange={formik.handleChange}
                       value={formik.values.ice}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.ice && Boolean(formik.errors.ice)}
+                      helperText={formik.touched.ice && formik.errors.ice}
                     />
                   </Stack>
                 </Grid>
@@ -169,6 +244,9 @@ const SupplierCreateForm: FC = () => {
                       type="number"
                       onChange={formik.handleChange}
                       value={formik.values.amount}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.amount && Boolean(formik.errors.amount)}
+                      helperText={formik.touched.amount && formik.errors.amount}
                     />
                   </Stack>
                 </Grid>
@@ -184,11 +262,22 @@ const SupplierCreateForm: FC = () => {
                       onChange={formik.handleChange}
                       value={formik.values.method}
                       select
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.method && Boolean(formik.errors.method)}
+                      helperText={formik.touched.method && formik.errors.method}
                     >
-                      <MenuItem value={1}>Chèque</MenuItem>
-                      <MenuItem value={2}>Virement</MenuItem>
-                      <MenuItem value={3}>Carte</MenuItem>
-                      <MenuItem value={4}>Espèce</MenuItem>
+                      {PAYMENT_METHOD_OPTIONS.map((option) => (
+                        <MenuItem
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                      {/* <MenuItem value="Cheque">Chèque</MenuItem>
+                      <MenuItem value="Transfer">Virement</MenuItem>
+                      <MenuItem value="Carte">Carte</MenuItem>
+                      <MenuItem value="Cash">Espèce</MenuItem> */}
                     </TextField>
                   </Stack>
                 </Grid>
@@ -204,10 +293,21 @@ const SupplierCreateForm: FC = () => {
                       onChange={formik.handleChange}
                       value={formik.values.status}
                       select
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.status && Boolean(formik.errors.status)}
+                      helperText={formik.touched.status && formik.errors.status}
                     >
-                      <MenuItem value="paid">Reglé</MenuItem>
+                      {statusData?.statusCollection?.edges?.map((edge: any) => (
+                        <MenuItem
+                          value={edge.node?.id ?? ''}
+                          key={edge.node?.id ?? edge.node?.value}
+                        >
+                          {edge.node?.name ?? 'Statut'}
+                        </MenuItem>
+                      ))}
+                      {/* <MenuItem value="paid">Reglé</MenuItem>
                       <MenuItem value="canceld">Non reglé</MenuItem>
-                      <MenuItem value="pending">En cours</MenuItem>
+                      <MenuItem value="pending">En cours</MenuItem> */}
                     </TextField>
                   </Stack>
                 </Grid>
@@ -230,6 +330,7 @@ const SupplierCreateForm: FC = () => {
                       name="commentaire"
                       onChange={formik.handleChange}
                       value={formik.values.commentaire}
+                      onBlur={formik.handleBlur}
                     />
                   </Stack>
                 </Grid>
