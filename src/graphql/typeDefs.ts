@@ -11,9 +11,10 @@ const typeDefs = gql`
     uploadFile(
       file: Upload!
       documentCategory: String!
-      expense_claim_category: String!
-      expense_claim_id: String!
-      expense_status: Boolean!
+      expense_claim_category: String
+      expense_claim_id: String
+      expense_status: Boolean
+      service_provider_id: String
     ): UploadedFile!
   }
 

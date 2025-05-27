@@ -1,12 +1,11 @@
-import { GraphQLUpload, FileUpload } from 'graphql-upload-minimal';
-import { supabase } from 'src/libs/supabaseClient';
+import { FileUpload } from 'graphql-upload-minimal';
 
 import { createClient } from '@supabase/supabase-js';
 
 export const createSupabaseClientWithAuth = (token: string) => {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, // or SERVICE_ROLE for trusted server-side ops
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       global: {
         headers: {
@@ -25,10 +24,11 @@ interface UploadedFileResponse {
 
 interface UploadFileArgs {
   file: Promise<FileUpload>;
-  documentCategory: 'expense_claims' | 'agreements';
-  expense_claim_category: string;
-  expense_claim_id: string;
-  expense_status: boolean;
+  documentCategory: 'expense_claims' | 'agreements' | 'service_provider_file';
+  expense_claim_category?: string;
+  expense_claim_id?: string;
+  expense_status?: boolean;
+  service_provider_id?: string;
 }
 async function streamToBuffer(
   stream: NodeJS.ReadableStream,
@@ -64,19 +64,20 @@ const resolvers = {
         expense_claim_category,
         expense_status,
         expense_claim_id,
+        service_provider_id,
       }: UploadFileArgs,
       context: { token: string }
     ): Promise<UploadedFileResponse> => {
       const supabase = createSupabaseClientWithAuth(context.token);
       const { createReadStream, filename, mimetype } = await file.then((f) => f);
 
-      const allowedTypes = ['application/pdf', 'image/jpeg'];
+      const allowedTypes = ['application/pdf'];
       if (!allowedTypes.includes(mimetype)) {
         throw new Error('Unsupported file type');
       }
       const maxSizeByType: Record<string, number> = {
-        'application/pdf': 1 * 1024 * 1024, // 15MB
-        'image/jpeg': 1 * 1024 * 1024, // 2MB
+        'application/pdf': 15 * 1024 * 1024, // 15MB
+        // 'image/jpeg': 2 * 1024 * 1024, // 2MB
       };
       const maxSizeInBytes = maxSizeByType[mimetype] ?? 2 * 1024 * 1024; // Default to 2MB if unknown type
 
@@ -105,6 +106,11 @@ const resolvers = {
             expense_claim_id: expense_claim_id,
             expense_claim_category,
             expense_status,
+          },
+        }),
+        service_provider_file: () => ({
+          service_provider: {
+            service_provider_id,
           },
         }),
         agreements: () => ({

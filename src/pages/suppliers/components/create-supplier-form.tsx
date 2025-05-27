@@ -24,6 +24,8 @@ import { CREATE_SERVICE_PROVIDER } from 'src/graphql/entities/serviceProviders/m
 import { useGetProjectsQuery, useGetStatusQuery } from 'src/hooks/generatedHook';
 import { PAYMENT_METHOD_OPTIONS } from 'src/graphql/shared/enums/paymentMethods';
 import * as Yup from 'yup';
+import { UPLOAD_FILE } from 'src/graphql/operations/mutations';
+import { supabase } from 'src/libs/supabaseClient';
 
 type Option = {
   text: string;
@@ -41,7 +43,10 @@ const projects: Option[] = [
 const validationSchema = Yup.object().shape({
   projectId: Yup.number().typeError('Le projet est requis').required('Le projet est requis'),
   nom: Yup.string().required('Le nom est requis'),
-  ice: Yup.string().required('ICE est requis'),
+  ice: Yup.string()
+    .required('ICE est requis')
+    .max(15, 'ICE doit contenir au maximum 15 caractères'),
+
   depositedDate: Yup.date()
     .typeError('La date de dépôt est invalide')
     .required('La date de dépôt est requise'),
@@ -55,6 +60,18 @@ const validationSchema = Yup.object().shape({
   status: Yup.number().typeError('Le statut est requis').required('Le statut est requis'),
   method: Yup.string().required('Le moyen de paiement est requis'),
   commentaire: Yup.string().required('Le commentaire est requis'),
+  file: Yup.mixed()
+    .required('Le fichier est requis')
+    .test('fileFormat', 'Seuls les fichiers PDF sont autorisés', (value) => {
+      const file = value as File;
+
+      return file && file.type === 'application/pdf';
+    })
+    .test('fileSize', 'Le fichier doit être inférieur à 5 Mo', (value) => {
+      const file = value as File;
+
+      return file && file.size <= 15 * 1024 * 1024; //15MB
+    }),
 });
 
 const SupplierCreateForm: FC = () => {
@@ -77,8 +94,10 @@ const SupplierCreateForm: FC = () => {
   // console.log(statusData);
 
   const [createServiceProvider, { data, loading, error }] = useMutation(CREATE_SERVICE_PROVIDER);
-  console.log(data);
-  console.log(error);
+  const [uploadFile, { data: uploadFileData, loading: uploadFileLoading, error: uploadFileError }] =
+    useMutation(UPLOAD_FILE);
+  console.log(uploadFileData);
+  console.log(uploadFileError);
 
   const formik = useFormik({
     initialValues: {
@@ -91,6 +110,7 @@ const SupplierCreateForm: FC = () => {
       status: null,
       method: '',
       commentaire: '',
+      file: null,
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -104,18 +124,43 @@ const SupplierCreateForm: FC = () => {
             email: '',
             phone: '',
             ice: values.ice,
-            depositedDate: values.depositedDate ?? null,
-            dueDate: values.dueDate ?? null,
+            depositedDate: values.depositedDate,
+            dueDate: values.dueDate,
             amount: String(values.amount),
             comment: String(values.commentaire),
             payment_method: String(values.method),
-            status_id: Number(values.status) ?? null,
+            status_id: Number(values.status),
           },
         });
+        const service_provider_id = data?.insertIntoservice_providersCollection?.records[0]?.id;
+        // console.log(service_provider_id);
+
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        const accessToken = session?.access_token;
+
+        console.log(values.file);
+        // console.log(service_provider_id);
+        if (values.file && service_provider_id) {
+          const { data: fileData, errors } = await uploadFile({
+            variables: {
+              file: values.file,
+              documentCategory: 'service_provider_file',
+              service_provider_id: String(service_provider_id),
+            },
+            context: {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            },
+          });
+        }
         toast.success('le prestataire créé avec succès !');
         dialog.handleClose();
         resetForm();
-        router.push(paths.suppliers.search);
+        // router.push(paths.suppliers.search);
       } catch (error) {
         toast.error('Erreur lors de la création du prestataire!');
         console.error('Erreur lors de la création du prestataire!: ', error);
@@ -151,7 +196,7 @@ const SupplierCreateForm: FC = () => {
                       error={formik.touched.projectId && Boolean(formik.errors.projectId)}
                       helperText={formik.touched.projectId && formik.errors.projectId}
                     >
-                      <MenuItem value="">--</MenuItem>
+                      {/* <MenuItem value="">--</MenuItem> */}
                       {projectsData?.projectsCollection?.edges?.map((project) => (
                         <MenuItem
                           value={project?.node?.id}
@@ -168,7 +213,7 @@ const SupplierCreateForm: FC = () => {
                           {project.text}
                         </MenuItem>
                       ))} */}
-                      <MenuItem value={0}>autre</MenuItem>
+                      {/* <MenuItem value={0}>autre</MenuItem> */}
                     </TextField>
                   </Stack>
                 </Grid>
@@ -211,12 +256,23 @@ const SupplierCreateForm: FC = () => {
                   md={6}
                 >
                   <Stack spacing={2}>
-                    <DatePicker
+                    <TextField
+                      fullWidth
+                      label="Déposée le"
+                      name="depositedDate"
+                      type="date"
+                      onChange={formik.handleChange}
+                      value={formik.values.depositedDate}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.depositedDate && Boolean(formik.errors.depositedDate)}
+                      helperText={formik.touched.depositedDate && formik.errors.depositedDate}
+                    />
+                    {/* <DatePicker
                       format="dd/MM/yyyy"
                       label="Déposée le"
                       onChange={(newDate) => formik.setFieldValue('depositedDate', newDate)}
                       value={formik.values.depositedDate}
-                    />
+                    /> */}
                   </Stack>
                 </Grid>
                 <Grid
@@ -224,12 +280,23 @@ const SupplierCreateForm: FC = () => {
                   md={6}
                 >
                   <Stack spacing={2}>
-                    <DatePicker
+                    <TextField
+                      fullWidth
+                      label="Due le"
+                      name="dueDate"
+                      type="date"
+                      onChange={formik.handleChange}
+                      value={formik.values.dueDate}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.dueDate && Boolean(formik.errors.dueDate)}
+                      helperText={formik.touched.dueDate && formik.errors.dueDate}
+                    />
+                    {/* <DatePicker
                       format="dd/MM/yyyy"
                       label="Due le"
                       onChange={(newDate) => formik.setFieldValue('dueDate', newDate)}
                       value={formik.values.dueDate}
-                    />
+                    /> */}
                   </Stack>
                 </Grid>
                 <Grid
@@ -323,7 +390,19 @@ const SupplierCreateForm: FC = () => {
                     >
                       Commentaire
                     </Typography>
-                    <OutlinedInput
+                    <TextField
+                      fullWidth
+                      rows={4}
+                      multiline
+                      label="Commentaire"
+                      name="commentaire"
+                      onChange={formik.handleChange}
+                      value={formik.values.commentaire}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.commentaire && Boolean(formik.errors.commentaire)}
+                      helperText={formik.touched.commentaire && formik.errors.commentaire}
+                    />
+                    {/* <OutlinedInput
                       fullWidth
                       multiline
                       rows={6}
@@ -331,7 +410,74 @@ const SupplierCreateForm: FC = () => {
                       onChange={formik.handleChange}
                       value={formik.values.commentaire}
                       onBlur={formik.handleBlur}
-                    />
+                    /> */}
+                  </Stack>
+                </Grid>
+                <Grid
+                  xs={12}
+                  md={12}
+                >
+                  <Stack spacing={1}>
+                    <Typography variant="subtitle2">Fichier (PDF)</Typography>
+                    {!formik.values.file ? (
+                      <Button
+                        variant="outlined"
+                        component="label"
+                      >
+                        Sélectionner un fichier
+                        <input
+                          hidden
+                          type="file"
+                          name="file"
+                          accept="application/pdf"
+                          onChange={(event) => {
+                            const file = event.currentTarget.files?.[0];
+                            if (file) {
+                              formik.setFieldValue('file', file);
+                            }
+                          }}
+                        />
+                      </Button>
+                    ) : (
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        alignItems="center"
+                      >
+                        <Typography variant="body2">{(formik.values.file as File).name}</Typography>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => formik.setFieldValue('file', null)}
+                        >
+                          Supprimer
+                        </Button>
+                      </Stack>
+                    )}
+                    {formik.touched.file && formik.errors.file && (
+                      <Typography
+                        variant="caption"
+                        color="error"
+                      >
+                        {formik.errors.file}
+                      </Typography>
+                    )}
+                    {/* <Button
+                      variant="outlined"
+                      component="label"
+                    >
+                      Sélectionner un fichier
+
+                      <input
+                        hidden
+                        type="file"
+                        name="file"
+                        onChange={(event) => {
+                          const file = event.currentTarget.files?.[0];
+                          formik.setFieldValue('file', file);
+                        }}
+                      />
+                    </Button> */}
                   </Stack>
                 </Grid>
                 <Divider />
@@ -344,7 +490,7 @@ const SupplierCreateForm: FC = () => {
               spacing={1}
               m={3}
             >
-              <Button
+              {/* <Button
                 onClick={uploadDialog.handleOpen}
                 startIcon={
                   <SvgIcon>
@@ -355,7 +501,8 @@ const SupplierCreateForm: FC = () => {
                 variant="contained"
               >
                 Télécharger
-              </Button>
+              </Button> */}
+
               <Button
                 variant="contained"
                 onClick={dialog.handleOpen}
@@ -366,10 +513,11 @@ const SupplierCreateForm: FC = () => {
           </Card>
         </Box>
       </Stack>
-      <FileUploader
+      {/* <FileUploader
         onClose={uploadDialog.handleClose}
         open={uploadDialog.open}
-      />
+      /> */}
+
       <CreateConfirmation
         isOpen={dialog.open}
         onConfirm={formik.handleSubmit}
