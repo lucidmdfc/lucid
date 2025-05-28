@@ -16,8 +16,8 @@ import toast from 'react-hot-toast';
 import DeleteConfirmationModal from './delete-modal-confirmation';
 
 const statusColorsMap: Record<ProviderStatus, SeverityPillColor> = {
-  canceled: 'error',
-  paid: 'success',
+  rejected: 'error',
+  accepted: 'success',
   pending: 'warning',
 };
 
@@ -106,9 +106,9 @@ const SupplierRow: FC<SupplierRowProps> = (props) => {
       </TableCell>
       <TableCell align="right">
         <SeverityPill color={statusColor}>
-          {supplier.status == 'canceled'
+          {supplier.status == 'rejected'
             ? 'Impayée'
-            : supplier.status == 'paid'
+            : supplier.status == 'accepted'
             ? 'payé'
             : 'en attente'}
         </SeverityPill>

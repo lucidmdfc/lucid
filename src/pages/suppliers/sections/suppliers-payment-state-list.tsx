@@ -86,7 +86,11 @@ const PaymentStateList: FC<PaymentStateListProps> = (props) => {
                 color="text.secondary"
                 variant="h6"
               >
-                {groupTitle == 'Paid' ? 'Payés' : groupTitle == 'Pending' ? 'En cours' : 'Impayées'}{' '}
+                {groupTitle == 'Accepted'
+                  ? 'Payés'
+                  : groupTitle == 'Pending'
+                  ? 'En cours'
+                  : 'Impayées'}{' '}
                 ({count})
               </Typography>
               {hasInvoices && (

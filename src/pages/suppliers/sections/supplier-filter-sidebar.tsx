@@ -23,8 +23,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Scrollbar } from 'src/components/scrollbar';
 import { InvoiceStatus } from 'src/types/invoice';
 import { dummySuppliers } from 'src/api/suppliers/data';
+import { useQuery } from '@apollo/client';
+import { GET_SERVICE_PROVIDERS } from 'src/graphql/entities/serviceProviders/queries';
+import { status } from 'src/graphql/shared/enums/status';
 
-const providerNames: string[] = dummySuppliers.map((supplier) => supplier.nom);
+// const providerNames: string[] = dummySuppliers.map((supplier) => supplier.nom);
 
 export interface Filters {
   query?: string;
@@ -32,7 +35,7 @@ export interface Filters {
   endDate?: Date;
   providerNames?: string[];
   dummyProviders?: string[];
-  status?: InvoiceStatus;
+  status?: status;
 }
 
 interface SupplierFilterSidebarProps {
@@ -56,10 +59,16 @@ const SupplierFilterSidebar: FC<SupplierFilterSidebarProps> = (props) => {
     open,
     ...other
   } = props;
-  console.log(props);
+  // console.log(props);
 
   const queryRef = useRef<HTMLInputElement | null>(null);
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
+  const { data, loading, error } = useQuery(GET_SERVICE_PROVIDERS);
+  // console.log(data);
+  const providerNames: string[] = data?.service_providersCollection?.edges.map(
+    (supplier: any) => supplier.node.name
+  );
+  // console.log(providerNames);
 
   const handleQueryChange = useCallback(
     (event: FormEvent<HTMLFormElement>): void => {
@@ -130,7 +139,7 @@ const SupplierFilterSidebar: FC<SupplierFilterSidebarProps> = (props) => {
     (event: ChangeEvent<HTMLInputElement>): void => {
       onFiltersChange?.({
         ...filters,
-        status: event.target.checked ? InvoiceStatus.Paid : undefined,
+        status: event.target.checked ? status.Paid : undefined,
       });
     },
     [filters, onFiltersChange]
@@ -222,14 +231,14 @@ const SupplierFilterSidebar: FC<SupplierFilterSidebarProps> = (props) => {
                   px: 1.5,
                 }}
               >
-                {providerNames.map((provider) => {
-                  const isChecked = filters.dummyProviders?.includes(provider);
+                {(providerNames ?? []).map((provider) => {
+                  // const isChecked = filters.dummyProviders?.includes(provider);
 
                   return (
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={isChecked}
+                          // checked={isChecked}
                           onChange={handleCustomerToggle}
                         />
                       }
@@ -246,7 +255,7 @@ const SupplierFilterSidebar: FC<SupplierFilterSidebarProps> = (props) => {
         <FormControlLabel
           control={
             <Switch
-              checked={filters.status === 'paid'}
+              checked={filters.status === 'accepted'}
               onChange={handleStatusChange}
             />
           }

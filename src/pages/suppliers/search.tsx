@@ -24,13 +24,16 @@ import { Supplier } from 'src/types/supplier';
 import { suppliersApi } from 'src/api/suppliers';
 import SupplierFilterSidebar from './sections/supplier-filter-sidebar';
 import SupplierAmountSummary from './sections/supplier-amount-summary';
+import { useQuery } from '@apollo/client';
+import { SERVICE_PROVIDERS_FILE } from 'src/graphql/entities/files/queries';
+import { status } from 'src/graphql/shared/enums/status';
 
 interface Filters {
   providerNames?: string[];
   endDate?: Date;
   query?: string;
   startDate?: Date;
-  status?: InvoiceStatus;
+  status?: status;
 }
 
 interface SuppliersSearchState {
@@ -131,8 +134,63 @@ const Page: NextPage = () => {
   const suppliersStore = useSuppliersStore(suppliersSearch.state);
   const [group, setGroup] = useState<boolean>(true);
   const [openSidebar, setOpenSidebar] = useState<boolean>(lgUp);
-
   usePageView();
+  const mapFiltersToGraphQL = (filters: Filters) => {
+    const gqlFilter: any = {};
+    if (filters.query) {
+      gqlFilter.original_filename = { ilike: `%${filters.query}%` };
+    }
+
+    if (filters.providerNames && filters.providerNames.length > 0) {
+      gqlFilter.service_provider_name = { in: filters.providerNames };
+    }
+
+    if (filters.status) {
+      gqlFilter.service_provider_status = { eq: filters.status };
+    }
+
+    // Use startDate for depositeddate.gte
+    if (filters.startDate) {
+      gqlFilter.depositeddate = { gte: filters.startDate.toISOString() };
+    }
+
+    // Use endDate for duedate.lte
+    if (filters.endDate) {
+      gqlFilter.duedate = { lte: filters.endDate.toISOString() };
+    }
+
+    return gqlFilter;
+  };
+  const gqlFilters = mapFiltersToGraphQL(suppliersSearch.state.filters);
+  // console.log(gqlFilters);
+  const { data, loading, error } = useQuery(SERVICE_PROVIDERS_FILE, {
+    variables: { filter: Object.keys(gqlFilters).length ? gqlFilters : undefined },
+  });
+  // console.log('data :', data);
+  const mapGraphQLToUI = (data: any): Supplier[] => {
+    if (!data?.service_provider_files_viewCollection?.edges) return [];
+
+    return data.service_provider_files_viewCollection.edges.map((edge: any) => {
+      const node = edge.node;
+      const metadata = node.metadata || {};
+
+      return {
+        id: node.id,
+        projectId: metadata.project_id ?? 0,
+        nom: node.service_provider_name ?? '',
+        ice: metadata.ice ?? '',
+        depositedDate: node.depositeddate ? new Date(node.depositeddate) : null,
+        dueDate: node.duedate ? new Date(node.duedate) : null,
+        amount: node.amount ?? 0,
+        status: node.service_provider_status, // Assuming 'unpaid' as default
+        method: metadata.payment_method ?? 'virement', // Default to 'virement' if not specified
+        commentaire: metadata.commentaire ?? '',
+      };
+    });
+  };
+  const uiData = mapGraphQLToUI(data);
+  // console.log('UI Mapped Data:', uiData);
+
   const { t } = useTranslation();
 
   const handleGroupChange = useCallback((event: ChangeEvent<HTMLInputElement>): void => {
@@ -216,7 +274,7 @@ const Page: NextPage = () => {
               />
               <PurchaseListTable
                 count={suppliersStore.suppliersCount}
-                items={suppliersStore.supplier}
+                items={uiData}
                 group={group}
                 onPageChange={suppliersSearch.handlePageChange}
                 onRowsPerPageChange={suppliersSearch.handleRowsPerPageChange}

@@ -160,7 +160,7 @@ const SupplierCreateForm: FC = () => {
         toast.success('le prestataire créé avec succès !');
         dialog.handleClose();
         resetForm();
-        // router.push(paths.suppliers.search);
+        router.push(paths.suppliers.search);
       } catch (error) {
         toast.error('Erreur lors de la création du prestataire!');
         console.error('Erreur lors de la création du prestataire!: ', error);

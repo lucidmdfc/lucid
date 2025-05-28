@@ -1,6 +1,6 @@
 export enum ProviderStatus {
-  Canceled = 'canceled',
-  Paid = 'paid',
+  Canceled = 'rejected',
+  Paid = 'accepted',
   Pending = 'pending',
 }
 export enum PaymentMethod {
