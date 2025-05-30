@@ -20,9 +20,13 @@ import DeleteConfirmationModal from '../components/delete-modal-confirmation';
 import toast from 'react-hot-toast';
 import { useDialog } from 'src/hooks/use-dialog';
 import { expense } from 'src/types/expense';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_EXPENSE_CLAIM } from 'src/graphql/entities/expenseClaims/mutations';
 import { ExpenseClaimFragmentFragment } from 'src/types/generatedTypes';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { FileDrawer } from '../components/file-drawer';
+import { GET_FILES_BY_EXPENSE_CLAIM } from 'src/graphql/entities/files/queries';
+import { Item } from '../components/file-drawer';
 
 interface ExpenseListTableProps {
   count?: number;
@@ -47,7 +51,20 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
     expensesRefetch,
   } = props;
   const dialog = useDialog();
+  const fileDialog = useDialog<string>();
+  const [selectedExpenseId, setSelectedExpenseId] = useState<number | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<Item[] | undefined>(undefined);
+
   const [deleteExpenseClaim] = useMutation(DELETE_EXPENSE_CLAIM);
+
+  const {
+    data: filesData,
+    loading: filesLoading,
+    refetch: refetchFiles,
+  } = useQuery(GET_FILES_BY_EXPENSE_CLAIM, {
+    variables: { expenseClaimId: selectedExpenseId },
+    skip: !selectedExpenseId,
+  });
   // Replace this with your actual delete function
   const handleDelete = async (projectId: string | undefined) => {
     // Implement the delete logic here
@@ -64,9 +81,34 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
       toast.error('Échec de la suppression du frais. Veuillez réessayer.');
     }
   };
+  const handleOpenFiles = async (expenseId: number) => {
+    setSelectedExpenseId(expenseId);
 
+    try {
+      const { data } = await refetchFiles({ expenseClaimId: Number(expenseId) });
+
+      const files = data?.filesCollection?.edges?.map((edge: any) => edge.node) || [];
+
+      const mappedItems: Item[] = files.map((file: any) => ({
+        id: file.id,
+        name: file.original_filename,
+        extension: file.mime_type?.split('/')[1] || '',
+        type: file.mime_type,
+        size: Number(file.size_bytes),
+        createdAt: new Date(file.uploaded_at),
+        updatedAt: new Date(file.uploaded_at),
+        secondaryText: `Catégorie : ${file.expense_claim_category}`,
+        url: file.public_url,
+      }));
+
+      setSelectedFiles(mappedItems);
+      fileDialog.handleOpen();
+    } catch (err) {
+      toast.error('Erreur lors du chargement des fichiers du frais.');
+      console.error(err);
+    }
+  };
   console.log(items);
-
   return (
     <div>
       <Table>
@@ -84,7 +126,6 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
           {items.map((expense) => {
             const totalAmount = numeral(expense.amount).format(`0,0.00`);
             const date = expense.startDate ? format(new Date(expense.startDate), 'dd/MM/yyyy') : '';
-            console.log('expense', expense);
             return (
               <TableRow
                 hover
@@ -128,6 +169,14 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
                       <Edit02 />
                     </SvgIcon>
                   </IconButton>
+                  <IconButton
+                    onClick={() => handleOpenFiles(expense.id)}
+                    color="warning"
+                  >
+                    <SvgIcon>
+                      <AttachFileIcon />
+                    </SvgIcon>
+                  </IconButton>
                 </TableCell>
                 <DeleteConfirmationModal
                   isOpen={dialog.open}
@@ -140,6 +189,13 @@ const ExpenseListTable: FC<ExpenseListTableProps> = (props) => {
           })}
         </TableBody>
       </Table>
+      <FileDrawer
+        items={selectedFiles}
+        onClose={fileDialog.handleClose}
+        onDelete={handleDelete}
+        open={fileDialog.open}
+        secondary={true}
+      />
       <TablePagination
         component="div"
         count={count}

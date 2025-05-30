@@ -64,7 +64,8 @@ export const paths = {
   },
   suppliers: {
     index: '/suppliers',
-    search: '/suppliers/search',
+    search: '/suppliers',
+    create: '/suppliers/create',
     edit: '/suppliers/edit',
     details: '/suppliers/:achatId/',
   },

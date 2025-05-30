@@ -205,7 +205,7 @@ const SupplierFilterSidebar: FC<SupplierFilterSidebarProps> = (props) => {
             />
           </Stack>
         </div>
-        <div>
+        {/* <div>
           <FormLabel
             sx={{
               display: 'block',
@@ -251,7 +251,7 @@ const SupplierFilterSidebar: FC<SupplierFilterSidebarProps> = (props) => {
               </FormGroup>
             </Scrollbar>
           </Box>
-        </div>
+        </div> */}
         <FormControlLabel
           control={
             <Switch

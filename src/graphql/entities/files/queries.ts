@@ -13,6 +13,23 @@ export const GET_FILES = gql`
   }
   ${FILES_FRAGMENT}
 `;
+export const GET_FILES_BY_EXPENSE_CLAIM = gql`
+  query GetFilesByExpenseClaim($expenseClaimId: Int!) {
+    filesCollection(
+      filter: {
+        document_category: { eq: "expense_claims" }
+        expense_claim_id: { eq: $expenseClaimId }
+      }
+    ) {
+      edges {
+        node {
+          ...FilesFragment
+        }
+      }
+    }
+  }
+  ${FILES_FRAGMENT}
+`;
 
 export const SERVICE_PROVIDERS_FILE = gql`
   query GetServiceProvidersFiles(
