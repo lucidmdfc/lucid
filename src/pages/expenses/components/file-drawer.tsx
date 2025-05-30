@@ -25,7 +25,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 
 import { bytesToSize } from 'src/utils/bytes-to-size';
 
-import { ItemIcon } from './item-icon';
+import ItemIcon from './item-icon';
 import { ListItem } from '@mui/material';
 import PdfViewer from 'src/components/pdf-viewer/pdf-viewer';
 // import { ItemTags } from './item-tags';
@@ -67,7 +67,7 @@ interface ItemDrawerProps {
   secondary?: boolean;
 }
 
-export const FileDrawer: FC<ItemDrawerProps> = (props) => {
+const FileDrawer: FC<ItemDrawerProps> = (props) => {
   const { items, onClose, onDelete, onTagsChange, open = false, secondary } = props;
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
 
@@ -238,3 +238,4 @@ FileDrawer.propTypes = {
   onTagsChange: PropTypes.func,
   open: PropTypes.bool,
 };
+export default FileDrawer;

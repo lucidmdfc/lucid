@@ -9,7 +9,7 @@ interface ItemIconProps {
   type: ItemType;
 }
 
-export const ItemIcon: FC<ItemIconProps> = (props) => {
+ const ItemIcon: FC<ItemIconProps> = (props) => {
   const { type, extension } = props;
 
   return type === 'folder' ? (
@@ -23,3 +23,4 @@ ItemIcon.propTypes = {
   extension: PropTypes.string,
   type: PropTypes.oneOf<ItemType>(['file', 'folder']).isRequired,
 };
+export default ItemIcon;
