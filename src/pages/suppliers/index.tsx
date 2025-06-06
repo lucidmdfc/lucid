@@ -277,7 +277,19 @@ const Page: NextPage = () => {
                       </SvgIcon>
                     }
                   >
-                    nouveau supplier
+                    Nouveau prestataire
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    href={paths.suppliers.createInvoice}
+                    startIcon={
+                      <SvgIcon>
+                        <FilterFunnel01Icon />
+                      </SvgIcon>
+                    }
+                  >
+                    Nouvelle facture
                   </Button>
                 </Stack>
               </Stack>

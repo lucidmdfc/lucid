@@ -5,15 +5,10 @@ export const CREATE_SERVICE_PROVIDER = gql`
   mutation CreateServiceProvider(
     $name: String!
     $email: String
-    $phone: String
-    $ice: String
-    $depositedDate: timestamptz
-    $dueDate: timestamptz
-    $amount: numeric
-    $status_id: Int
-    $project_id: Int
-    $payment_method: Int
-    $comment: Int
+    $phone: String!
+    $ice: String!
+    $address: String
+    $contact_person: String
   ) {
     insertIntoservice_providersCollection(
       objects: {
@@ -21,13 +16,8 @@ export const CREATE_SERVICE_PROVIDER = gql`
         email: $email
         phone: $phone
         ice: $ice
-        depositedDate: $depositedDate
-        dueDate: $dueDate
-        amount: $amount
-        status_id: $status_id
-        project_id: $project_id
-        payment_method: $payment_method
-        comment: $comment
+        address: $address
+        contact_person: $contact_person
       }
     ) {
       records {

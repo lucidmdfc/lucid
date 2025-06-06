@@ -41,76 +41,34 @@ const projects: Option[] = [
 ];
 
 const validationSchema = Yup.object().shape({
-  projectId: Yup.number().typeError('Le projet est requis').required('Le projet est requis'),
   nom: Yup.string().required('Le nom est requis'),
   ice: Yup.string()
     .required('ICE est requis')
     .max(15, 'ICE doit contenir au maximum 15 caractères'),
-
-  depositedDate: Yup.date()
-    .typeError('La date de dépôt est invalide')
-    .required('La date de dépôt est requise'),
-  dueDate: Yup.date()
-    .typeError("La date d'échéance est invalide")
-    .required("La date d'échéance est requise"),
-  amount: Yup.number()
-    .typeError('Le montant doit être un nombre')
-    .required('Le montant est requis')
-    .min(0, 'Le montant doit être supérieur ou égal à 0'),
-  status: Yup.number().typeError('Le statut est requis').required('Le statut est requis'),
-  method: Yup.string().required('Le moyen de paiement est requis'),
-  commentaire: Yup.string().required('Le commentaire est requis'),
-  file: Yup.mixed()
-    .required('Le fichier est requis')
-    .test('fileFormat', 'Seuls les fichiers PDF sont autorisés', (value) => {
-      const file = value as File;
-
-      return file && file.type === 'application/pdf';
-    })
-    .test('fileSize', 'Le fichier doit être inférieur à 5 Mo', (value) => {
-      const file = value as File;
-
-      return file && file.size <= 15 * 1024 * 1024; //15MB
-    }),
+  phone: Yup.string()
+    .required('Le numéro de téléphone est requis')
+    .matches(/^[0-9+\-() ]{6,20}$/, 'Numéro de téléphone invalide'),
+  email: Yup.string().email('Email invalide').optional(),
+  address: Yup.string().optional(),
+  contact_person: Yup.string().optional(),
 });
 
 const SupplierCreateForm: FC = () => {
   const dialog = useDialog();
   const uploadDialog = useDialog();
   const router = useRouter();
-  const {
-    loading: projectsLoading,
-    error: projectsError,
-    data: projectsData,
-    refetch: projectRefetch,
-  } = useGetProjectsQuery();
-  // console.log(projectsData);
-  const {
-    loading: statusLoading,
-    error: statusError,
-    data: statusData,
-    refetch: statusRefetch,
-  } = useGetStatusQuery();
-  // console.log(statusData);
 
   const [createServiceProvider, { data, loading, error }] = useMutation(CREATE_SERVICE_PROVIDER);
-  const [uploadFile, { data: uploadFileData, loading: uploadFileLoading, error: uploadFileError }] =
-    useMutation(UPLOAD_FILE);
-  console.log(uploadFileData);
-  console.log(uploadFileError);
+
 
   const formik = useFormik({
     initialValues: {
-      projectId: null,
       nom: '',
       ice: '',
-      depositedDate: null,
-      dueDate: null,
-      amount: null,
-      status: null,
-      method: '',
-      commentaire: '',
-      file: null,
+      address: '',
+      phone: '',
+      email: '',
+      contact_person: '',
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -119,44 +77,14 @@ const SupplierCreateForm: FC = () => {
         console.log(values);
         const { data } = await createServiceProvider({
           variables: {
-            project_id: Number(values.projectId),
             name: values.nom,
-            email: '',
-            phone: '',
             ice: values.ice,
-            depositedDate: values.depositedDate,
-            dueDate: values.dueDate,
-            amount: String(values.amount),
-            comment: String(values.commentaire),
-            payment_method: String(values.method),
-            status_id: Number(values.status),
+            email: values.email,
+            phone: values.phone,
+            contact_person: values.contact_person,
+            address: values.address,
           },
         });
-        const service_provider_id = data?.insertIntoservice_providersCollection?.records[0]?.id;
-        // console.log(service_provider_id);
-
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        const accessToken = session?.access_token;
-
-        console.log(values.file);
-        // console.log(service_provider_id);
-        if (values.file && service_provider_id) {
-          const { data: fileData, errors } = await uploadFile({
-            variables: {
-              file: values.file,
-              documentCategory: 'service_provider_file',
-              service_provider_id: String(service_provider_id),
-            },
-            context: {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            },
-          });
-        }
         toast.success('le prestataire créé avec succès !');
         dialog.handleClose();
         resetForm();
@@ -180,43 +108,6 @@ const SupplierCreateForm: FC = () => {
                 container
                 spacing={3}
               >
-                <Grid
-                  xs={12}
-                  md={12}
-                >
-                  <Stack spacing={3}>
-                    <TextField
-                      fullWidth
-                      label="Id Projet"
-                      name="projectId"
-                      onChange={formik.handleChange}
-                      value={formik.values.projectId}
-                      select
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.projectId && Boolean(formik.errors.projectId)}
-                      helperText={formik.touched.projectId && formik.errors.projectId}
-                    >
-                      {/* <MenuItem value="">--</MenuItem> */}
-                      {projectsData?.projectsCollection?.edges?.map((project) => (
-                        <MenuItem
-                          value={project?.node?.id}
-                          key={project?.node?.id}
-                        >
-                          {project?.node?.name}
-                        </MenuItem>
-                      ))}
-                      {/* {projects?.map((project) => (
-                        <MenuItem
-                          value={project.value}
-                          key={project.value}
-                        >
-                          {project.text}
-                        </MenuItem>
-                      ))} */}
-                      {/* <MenuItem value={0}>autre</MenuItem> */}
-                    </TextField>
-                  </Stack>
-                </Grid>
                 <Grid
                   xs={12}
                   md={12}
@@ -253,50 +144,19 @@ const SupplierCreateForm: FC = () => {
                 </Grid>
                 <Grid
                   xs={12}
-                  md={6}
+                  md={12}
                 >
-                  <Stack spacing={2}>
+                  <Stack spacing={3}>
                     <TextField
                       fullWidth
-                      label="Déposée le"
-                      name="depositedDate"
-                      type="date"
+                      label="Phone"
+                      name="phone"
                       onChange={formik.handleChange}
-                      value={formik.values.depositedDate}
+                      value={formik.values.phone}
                       onBlur={formik.handleBlur}
-                      error={formik.touched.depositedDate && Boolean(formik.errors.depositedDate)}
-                      helperText={formik.touched.depositedDate && formik.errors.depositedDate}
+                      error={formik.touched.phone && Boolean(formik.errors.phone)}
+                      helperText={formik.touched.phone && formik.errors.phone}
                     />
-                    {/* <DatePicker
-                      format="dd/MM/yyyy"
-                      label="Déposée le"
-                      onChange={(newDate) => formik.setFieldValue('depositedDate', newDate)}
-                      value={formik.values.depositedDate}
-                    /> */}
-                  </Stack>
-                </Grid>
-                <Grid
-                  xs={12}
-                  md={6}
-                >
-                  <Stack spacing={2}>
-                    <TextField
-                      fullWidth
-                      label="Due le"
-                      name="dueDate"
-                      type="date"
-                      onChange={formik.handleChange}
-                      value={formik.values.dueDate}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.dueDate && Boolean(formik.errors.dueDate)}
-                      helperText={formik.touched.dueDate && formik.errors.dueDate}
-                    />
-                    {/* <DatePicker
-                      format="dd/MM/yyyy"
-                      label="Due le"
-                      onChange={(newDate) => formik.setFieldValue('dueDate', newDate)}
-                      value={formik.values.dueDate}
-                    /> */}
                   </Stack>
                 </Grid>
                 <Grid
@@ -306,114 +166,51 @@ const SupplierCreateForm: FC = () => {
                   <Stack spacing={3}>
                     <TextField
                       fullWidth
-                      label="Montant"
-                      name="amount"
-                      type="number"
+                      label="Contact Person"
+                      name="contact_person"
                       onChange={formik.handleChange}
-                      value={formik.values.amount}
+                      value={formik.values.contact_person}
                       onBlur={formik.handleBlur}
-                      error={formik.touched.amount && Boolean(formik.errors.amount)}
-                      helperText={formik.touched.amount && formik.errors.amount}
+                      error={formik.touched.contact_person && Boolean(formik.errors.contact_person)}
+                      helperText={formik.touched.contact_person && formik.errors.contact_person}
                     />
                   </Stack>
                 </Grid>
                 <Grid
                   xs={12}
-                  md={6}
+                  md={12}
                 >
-                  <Stack spacing={0}>
+                  <Stack spacing={3}>
                     <TextField
                       fullWidth
-                      label="Moyen de paiement"
-                      name="method"
+                      label="Email"
+                      name="email"
                       onChange={formik.handleChange}
-                      value={formik.values.method}
-                      select
+                      value={formik.values.email}
                       onBlur={formik.handleBlur}
-                      error={formik.touched.method && Boolean(formik.errors.method)}
-                      helperText={formik.touched.method && formik.errors.method}
-                    >
-                      {PAYMENT_METHOD_OPTIONS.map((option) => (
-                        <MenuItem
-                          key={option.value}
-                          value={option.value}
-                        >
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                      {/* <MenuItem value="Cheque">Chèque</MenuItem>
-                      <MenuItem value="Transfer">Virement</MenuItem>
-                      <MenuItem value="Carte">Carte</MenuItem>
-                      <MenuItem value="Cash">Espèce</MenuItem> */}
-                    </TextField>
-                  </Stack>
-                </Grid>
-                <Grid
-                  xs={12}
-                  md={6}
-                >
-                  <Stack spacing={0}>
-                    <TextField
-                      fullWidth
-                      label="Statut"
-                      name="status"
-                      onChange={formik.handleChange}
-                      value={formik.values.status}
-                      select
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.status && Boolean(formik.errors.status)}
-                      helperText={formik.touched.status && formik.errors.status}
-                    >
-                      {statusData?.statusCollection?.edges?.map((edge: any) => (
-                        <MenuItem
-                          value={edge.node?.id ?? ''}
-                          key={edge.node?.id ?? edge.node?.value}
-                        >
-                          {edge.node?.name ?? 'Statut'}
-                        </MenuItem>
-                      ))}
-                      {/* <MenuItem value="paid">Reglé</MenuItem>
-                      <MenuItem value="canceld">Non reglé</MenuItem>
-                      <MenuItem value="pending">En cours</MenuItem> */}
-                    </TextField>
-                  </Stack>
-                </Grid>
-
-                <Grid
-                  xs={12}
-                  md={8}
-                >
-                  <Stack spacing={0}>
-                    <Typography
-                      sx={{ mb: 1 }}
-                      variant="subtitle2"
-                    >
-                      Commentaire
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      rows={4}
-                      multiline
-                      label="Commentaire"
-                      name="commentaire"
-                      onChange={formik.handleChange}
-                      value={formik.values.commentaire}
-                      onBlur={formik.handleBlur}
-                      error={formik.touched.commentaire && Boolean(formik.errors.commentaire)}
-                      helperText={formik.touched.commentaire && formik.errors.commentaire}
+                      error={formik.touched.email && Boolean(formik.errors.email)}
+                      helperText={formik.touched.email && formik.errors.email}
                     />
-                    {/* <OutlinedInput
-                      fullWidth
-                      multiline
-                      rows={6}
-                      name="commentaire"
-                      onChange={formik.handleChange}
-                      value={formik.values.commentaire}
-                      onBlur={formik.handleBlur}
-                    /> */}
                   </Stack>
                 </Grid>
                 <Grid
+                  xs={12}
+                  md={12}
+                >
+                  <Stack spacing={3}>
+                    <TextField
+                      fullWidth
+                      label="Address"
+                      name="address"
+                      onChange={formik.handleChange}
+                      value={formik.values.address}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.address && Boolean(formik.errors.address)}
+                      helperText={formik.touched.address && formik.errors.address}
+                    />
+                  </Stack>
+                </Grid>
+                {/* <Grid
                   xs={12}
                   md={12}
                 >
@@ -477,9 +274,9 @@ const SupplierCreateForm: FC = () => {
                           formik.setFieldValue('file', file);
                         }}
                       />
-                    </Button> */}
+                    </Button> 
                   </Stack>
-                </Grid>
+                </Grid> */}
                 <Divider />
               </Grid>
             </CardContent>

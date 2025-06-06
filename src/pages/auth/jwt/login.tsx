@@ -35,17 +35,24 @@ interface Values {
   submit: null;
 }
 
+// const initialValues: Values = {
+//   email: 'demo@devias.io',
+//   password: 'Password123!',
+//   submit: null,
+// };
 const initialValues: Values = {
-  email: 'demo@devias.io',
-  password: 'Password123!',
+  email: '',
+  password: '',
   submit: null,
 };
 
 const validationSchema = Yup.object({
-  email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-  password: Yup.string().max(255).required('Password is required'),
+  email: Yup.string()
+    .email('Doit être une adresse email valide')
+    .max(255)
+    .required("L'email est requis"),
+  password: Yup.string().max(255).required('Le mot de passe est requis'),
 });
-
 const Page: NextPage = () => {
   const isMounted = useMounted();
   const router = useRouter();
@@ -73,8 +80,8 @@ const Page: NextPage = () => {
       signIn('demo@devias.io', 'Password123!');
       if (isMounted()) {
         router.push(returnTo || paths.dashboard.index);
-        console.log('Login successful, redirecting...');
-        console.log('paths.dashboard.index:', paths.dashboard.index);
+        // console.log('Login successful, redirecting...');
+        // console.log('paths.dashboard.index:', paths.dashboard.index);
       }
 
       // try {
@@ -109,14 +116,14 @@ const Page: NextPage = () => {
                 color="text.secondary"
                 variant="body2"
               >
-                Don&apos;t have an account? &nbsp;
+                Vous n'avez pas de compte ?
                 <Link
                   component={RouterLink}
                   href={paths.auth.jwt.register}
                   underline="hover"
                   variant="subtitle2"
                 >
-                  Register
+                  Inscrivez-vous
                 </Link>
               </Typography>
             }
@@ -134,7 +141,7 @@ const Page: NextPage = () => {
                   error={!!(formik.touched.email && formik.errors.email)}
                   fullWidth
                   helperText={formik.touched.email && formik.errors.email}
-                  label="Email Address"
+                  label="Adresse e-mail"
                   name="email"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -145,7 +152,7 @@ const Page: NextPage = () => {
                   error={!!(formik.touched.password && formik.errors.password)}
                   fullWidth
                   helperText={formik.touched.password && formik.errors.password}
-                  label="Password"
+                  label="Mot de passe"
                   name="password"
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -180,10 +187,10 @@ const Page: NextPage = () => {
         >
           <Alert severity="error">
             <div>
-              You can use <b>demo@devias.io</b> and password <b>Password123!</b>
+              Vous pouvez utiliser <b>user@gmail.com</b> et le mot de passe <b>123456</b>
             </div>
           </Alert>
-          <AuthIssuer issuer={issuer} />
+          {/* <AuthIssuer issuer={issuer} /> */}
         </Stack>
       </div>
     </>

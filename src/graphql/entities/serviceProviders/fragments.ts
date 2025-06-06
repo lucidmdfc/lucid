@@ -3,18 +3,13 @@ import { gql } from '@apollo/client';
 export const SERVICE_PROVIDER_FRAGMENT = gql`
   fragment ServiceProviderFragment on service_providers {
     id
+    phone
+    address
+    contact_person
+    ice
     name
     email
-    phone
     created_at
     updated_at
-    ice
-    depositedDate
-    dueDate
-    amount
-    status_id
-    project_id
-    payment_method
-    comment
   }
 `;
