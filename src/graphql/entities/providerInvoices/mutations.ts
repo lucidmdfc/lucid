@@ -45,3 +45,11 @@ export const CREATE_PROVIDER_INVOICE = gql`
   }
   ${PROVIDER_INVOICE_FRAGMENT}
 `;
+
+export const DELETE_PROVIDER_INVOICE = gql`
+  mutation DeleteProviderInvoice($id: Int!) {
+    deleteFromprovider_invoicesCollection(filter: { id: { eq: $id } }) {
+      affectedCount
+    }
+  }
+`;

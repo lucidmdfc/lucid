@@ -168,7 +168,12 @@ const Page: NextPage = () => {
   const gqlFilters = mapFiltersToGraphQL(suppliersSearch.state.filters);
   console.log(gqlFilters);
 
-  const { data, loading, error } = useQuery(GET_PROVIDER_INVOICES, {
+  const {
+    data,
+    loading,
+    error,
+    refetch: refetchProviderInvoices,
+  } = useQuery(GET_PROVIDER_INVOICES, {
     variables: { filter: Object.keys(gqlFilters).length ? gqlFilters : undefined },
   });
 
@@ -309,6 +314,7 @@ const Page: NextPage = () => {
                 onRowsPerPageChange={suppliersSearch.handleRowsPerPageChange}
                 page={suppliersSearch.state.page}
                 rowsPerPage={suppliersSearch.state.rowsPerPage}
+                refetchProviderInvoices={refetchProviderInvoices}
               />
             </Stack>
           </SupplierListContainer>

@@ -49,6 +49,7 @@ interface PaymentStateListProps {
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   page?: number;
   rowsPerPage?: number;
+  refetchProviderInvoices?: any;
 }
 
 const PaymentStateList: FC<PaymentStateListProps> = (props) => {
@@ -60,6 +61,7 @@ const PaymentStateList: FC<PaymentStateListProps> = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
+    refetchProviderInvoices,
   } = props;
 
   let content: JSX.Element;
@@ -68,7 +70,6 @@ const PaymentStateList: FC<PaymentStateListProps> = (props) => {
     const groupedSuppliers = groupSuppliers(items);
 
     const statuses = Object.keys(groupedSuppliers) as ProviderStatus[];
-
     content = (
       <Stack spacing={6}>
         {statuses.map((status) => {
@@ -102,6 +103,7 @@ const PaymentStateList: FC<PaymentStateListProps> = (props) => {
                           <SupplierRow
                             key={i}
                             supplier={supplier}
+                            refetchProviderInvoices={refetchProviderInvoices}
                           />
                         ))}
                       </TableBody>

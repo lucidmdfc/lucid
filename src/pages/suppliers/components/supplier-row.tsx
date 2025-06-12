@@ -15,9 +15,10 @@ import { useDialog } from 'src/hooks/use-dialog';
 import toast from 'react-hot-toast';
 import DeleteConfirmationModal from './delete-modal-confirmation';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { GET_FILES_BY_PROVIDER_INVOICE } from 'src/graphql/entities/files/queries';
 import FileDrawer, { Item } from 'src/components/file-drawer/file-drawer';
+import { DELETE_PROVIDER_INVOICE } from 'src/graphql/entities/providerInvoices/mutations';
 
 const statusColorsMap: Record<ProviderStatus, SeverityPillColor> = {
   rejected: 'error',
@@ -27,10 +28,14 @@ const statusColorsMap: Record<ProviderStatus, SeverityPillColor> = {
 
 interface SupplierRowProps {
   supplier: Supplier;
+  // This prop is used to refetch the provider invoices after deletion
+  // It's type should be changed to the actual type of the refetch function if available (i will searsh about it)
+  // Those messages are just to avoid ts errors and this is a temporary solution the deployment required
+  refetchProviderInvoices?: any;
 }
 
 const SupplierRow: FC<SupplierRowProps> = (props) => {
-  const { supplier, ...other } = props;
+  const { supplier, refetchProviderInvoices, ...other } = props;
   const dialog = useDialog();
   const fileDialog = useDialog();
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -39,10 +44,17 @@ const SupplierRow: FC<SupplierRowProps> = (props) => {
   const totalAmount = numeral(supplier.amount).format('0,0.00');
   const issueDate = supplier.depositedDate && format(supplier.depositedDate, 'dd/MM/yyyy');
   const dueDate = supplier.dueDate && format(supplier.dueDate, 'dd/MM/yyyy');
+  const [deleteProviderInvoice] = useMutation(DELETE_PROVIDER_INVOICE);
 
   const handleDelete = async (supplierId: string | undefined) => {
     try {
       // Implement the delete logic here
+      const response = await deleteProviderInvoice({
+        variables: {
+          id: Number(supplier.id),
+        },
+      });
+      refetchProviderInvoices();
       toast.success('Le Prestataire a été supprimée avec succès!');
       dialog.handleClose();
     } catch (error) {
