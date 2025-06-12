@@ -590,7 +590,7 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
           disabled={activeStep === 0}
           onClick={back}
         >
-          Dos
+          Retour
         </Button>
         {activeStep === steps.length - 1 ? (
           <Button

@@ -60,7 +60,7 @@ const CashStats: FC = () => (
               </SeverityPill> */}
             </Stack>
           </Stack>
-          <Avatar
+          {/* <Avatar
             sx={{
               backgroundColor: 'primary.contrastText',
               color: 'primary.main',
@@ -71,7 +71,7 @@ const CashStats: FC = () => (
             <SvgIcon>
               <CurrencyDollarIcon />
             </SvgIcon>
-          </Avatar>
+          </Avatar> */}
         </Stack>
       </Card>
     </Grid>
@@ -106,7 +106,7 @@ const CashStats: FC = () => (
               <Typography variant="h5">MAD 24,000</Typography>
             </Stack>
           </Stack>
-          <Avatar
+          {/* <Avatar
             sx={{
               backgroundColor: 'primary.main',
               color: 'primary.contrastText',
@@ -117,7 +117,7 @@ const CashStats: FC = () => (
             <SvgIcon>
               <CurrencyDollarIcon />
             </SvgIcon>
-          </Avatar>
+          </Avatar> */}
         </Stack>
       </Card>
     </Grid>
@@ -151,7 +151,7 @@ const CashStats: FC = () => (
               <Typography variant="h5">MAD 24,000</Typography>
             </Stack>
           </Stack>
-          <Avatar
+          {/* <Avatar
             sx={{
               backgroundColor: 'primary.main',
               color: 'primary.contrastText',
@@ -162,7 +162,7 @@ const CashStats: FC = () => (
             <SvgIcon>
               <CurrencyDollarIcon />
             </SvgIcon>
-          </Avatar>
+          </Avatar> */}
         </Stack>
       </Card>
     </Grid>

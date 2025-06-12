@@ -1,7 +1,8 @@
 import type { NextPage } from 'next';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { useRouter } from 'next/router';
-import { Grid } from '@mui/material';
+import { Breadcrumbs, Grid, Typography } from '@mui/material';
+import Link from '@mui/material/Link';
 import GrantDetails from '../components/grants-details';
 import ProjectDetails from '../../components/project-details';
 import { getProjectsWithDonorsByProjectId } from 'src/graphql/entities/projects/queries';
@@ -13,8 +14,14 @@ import DonorstDetails from '../../donors/components/donors-details';
 import AnalyticsGrantDonors from '../../donors/components/analytics-grant-donors';
 import { DELETE_DONOR } from 'src/graphql/entities/donors/mutations';
 import { useDeleteDonorMutation, useGetGrantsByProjectIdQuery } from 'src/hooks/generatedHook';
+import { BreadcrumbsSeparator } from 'src/components/breadcrumbs-separator';
+import { RouterLink } from 'src/components/router-link';
+import { paths } from 'src/paths';
+import { tokens } from 'src/locales/tokens';
+import { useTranslation } from 'react-i18next';
 const Page: NextPage = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const { projectID } = router.query;
   const [donorInProject, setDonorInProject] = useState<any[]>([]);
   const {
@@ -27,8 +34,7 @@ const Page: NextPage = () => {
       projectId: projectID ? Number(projectID) : 0,
     },
   });
-  
-  
+
   // const [deleteDonorSlice, { loading: deleteDonorLoading, error: deleteDonorError }] =
   //   useDeleteDonorMutation({
   //     variables: { id: donorInProject[0]?.donors?.[0].id },
@@ -68,6 +74,23 @@ const Page: NextPage = () => {
           xs={12}
           md={6}
         >
+          {' '}
+          <Breadcrumbs separator={<BreadcrumbsSeparator />}>
+            <Link
+              color="text.primary"
+              component={RouterLink}
+              href={paths.projets.index}
+              variant="subtitle2"
+            >
+              {t(tokens.nav.project)}
+            </Link>
+            <Typography
+              color="text.secondary"
+              variant="subtitle2"
+            >
+              détails du projet
+            </Typography>
+          </Breadcrumbs>
           {donorInProject.map((item, idx) => (
             <ProjectDetails
               key={item?.id || idx}

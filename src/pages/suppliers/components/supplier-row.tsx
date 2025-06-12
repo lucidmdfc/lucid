@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { IconButton, Stack, SvgIcon, TableCell, TableRow, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import numeral from 'numeral';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { RouterLink } from 'src/components/router-link';
 import { SeverityPill } from 'src/components/severity-pill';
 import type { SeverityPillColor } from 'src/components/severity-pill';
@@ -14,6 +14,10 @@ import Trash02 from '@untitled-ui/icons-react/build/esm/Trash02';
 import { useDialog } from 'src/hooks/use-dialog';
 import toast from 'react-hot-toast';
 import DeleteConfirmationModal from './delete-modal-confirmation';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { useQuery } from '@apollo/client';
+import { GET_FILES_BY_PROVIDER_INVOICE } from 'src/graphql/entities/files/queries';
+import FileDrawer, { Item } from 'src/components/file-drawer/file-drawer';
 
 const statusColorsMap: Record<ProviderStatus, SeverityPillColor> = {
   rejected: 'error',
@@ -28,9 +32,10 @@ interface SupplierRowProps {
 const SupplierRow: FC<SupplierRowProps> = (props) => {
   const { supplier, ...other } = props;
   const dialog = useDialog();
-
+  const fileDialog = useDialog();
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<Item[] | undefined>(undefined);
   const statusColor = statusColorsMap[supplier.status];
-
   const totalAmount = numeral(supplier.amount).format('0,0.00');
   const issueDate = supplier.depositedDate && format(supplier.depositedDate, 'dd/MM/yyyy');
   const dueDate = supplier.dueDate && format(supplier.dueDate, 'dd/MM/yyyy');
@@ -45,6 +50,41 @@ const SupplierRow: FC<SupplierRowProps> = (props) => {
       toast.error('Échec de la suppression. Veuillez réessayer.');
     }
   };
+  const {
+    data: filesData,
+    loading: filesLoading,
+    refetch: refetchFiles,
+  } = useQuery(GET_FILES_BY_PROVIDER_INVOICE, {
+    variables: { providerInvoiceId: selectedId },
+    skip: !selectedId,
+  });
+  const handleOpenFiles = async (expenseId: number) => {
+    setSelectedId(expenseId);
+
+    try {
+      const { data } = await refetchFiles({ providerInvoiceId: Number(expenseId) });
+      const files = data?.filesCollection?.edges?.map((edge: any) => edge.node) || [];
+
+      const mappedItems: Item[] = files.map((file: any) => ({
+        id: file.id,
+        name: file.original_filename,
+        extension: file.mime_type?.split('/')[1] || '',
+        type: file.mime_type,
+        size: Number(file.size_bytes),
+        createdAt: new Date(file.uploaded_at),
+        updatedAt: new Date(file.uploaded_at),
+        secondaryText: `Catégorie : ${file.provider_invoice_file_category}`,
+        url: file.public_url,
+      }));
+
+      setSelectedFiles(mappedItems);
+      fileDialog.handleOpen();
+    } catch (err) {
+      toast.error('Erreur lors du chargement des fichiers du frais.');
+      console.error(err);
+    }
+  };
+
   return (
     <TableRow
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -131,7 +171,22 @@ const SupplierRow: FC<SupplierRowProps> = (props) => {
             <Trash02 />
           </SvgIcon>
         </IconButton>
+        <IconButton
+          onClick={() => handleOpenFiles(Number(supplier.id))}
+          color="warning"
+        >
+          <SvgIcon>
+            <AttachFileIcon />
+          </SvgIcon>
+        </IconButton>
       </TableCell>
+      <FileDrawer
+        items={selectedFiles}
+        onClose={fileDialog.handleClose}
+        onDelete={handleDelete}
+        open={fileDialog.open}
+        secondary={true}
+      />
     </TableRow>
   );
 };

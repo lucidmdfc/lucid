@@ -17,5 +17,7 @@ export const FILES_FRAGMENT = gql`
     expense_status
     expense_claim_id
     expense_claim_category
+    provider_invoice_file_category
+    provider_invoice_id
   }
 `;

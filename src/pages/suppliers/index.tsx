@@ -139,9 +139,9 @@ const Page: NextPage = () => {
   usePageView();
   const mapFiltersToGraphQL = (filters: Filters) => {
     const gqlFilter: any = {};
-    if (filters.query) {
-      gqlFilter.original_filename = { ilike: `%${filters.query}%` };
-    }
+    // if (filters.query) {
+    //   gqlFilter.original_filename = { ilike: `%${filters.query}%` };
+    // }
 
     if (filters.providerNames && filters.providerNames.length > 0) {
       gqlFilter.service_providers = {
@@ -178,7 +178,7 @@ const Page: NextPage = () => {
     return data.provider_invoicesCollection.edges.map((edge: any) => {
       const node = edge.node;
       const metadata = node.metadata || {};
-
+      console.log('node :', node);
       return {
         id: node.id,
         projectId: metadata.project_id ?? 0,
@@ -186,7 +186,7 @@ const Page: NextPage = () => {
         ice: metadata.ice ?? '',
         depositedDate: node.issue_date ? new Date(node.issue_date) : null,
         dueDate: node.due_date ? new Date(node.due_date) : null,
-        amount: node.amount ?? 0,
+        amount: node.amount_ttc ?? 0,
         status: node.status.name,
         method: metadata.payment_method ?? null,
         commentaire: metadata.commentaire ?? '',

@@ -24,9 +24,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_EXPENSE_CLAIM } from 'src/graphql/entities/expenseClaims/mutations';
 import { ExpenseClaimFragmentFragment } from 'src/types/generatedTypes';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import FileDrawer from '../components/file-drawer';
 import { GET_FILES_BY_EXPENSE_CLAIM } from 'src/graphql/entities/files/queries';
-import { Item } from '../components/file-drawer';
+import FileDrawer, { Item } from 'src/components/file-drawer/file-drawer';
 
 interface ExpenseListTableProps {
   count?: number;

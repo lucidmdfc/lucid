@@ -30,6 +30,23 @@ export const GET_FILES_BY_EXPENSE_CLAIM = gql`
   }
   ${FILES_FRAGMENT}
 `;
+export const GET_FILES_BY_PROVIDER_INVOICE = gql`
+  query GetFilesByExpenseClaim($providerInvoiceId: Int!) {
+    filesCollection(
+      filter: {
+        document_category: { eq: "provider_invoice_file" }
+        provider_invoice_id: { eq: $providerInvoiceId }
+      }
+    ) {
+      edges {
+        node {
+          ...FilesFragment
+        }
+      }
+    }
+  }
+  ${FILES_FRAGMENT}
+`;
 
 export const SERVICE_PROVIDERS_FILE = gql`
   query GetServiceProvidersFiles(
