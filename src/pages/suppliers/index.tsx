@@ -28,6 +28,7 @@ import { useQuery } from '@apollo/client';
 import { SERVICE_PROVIDERS_FILE } from 'src/graphql/entities/files/queries';
 import { status } from 'src/graphql/shared/enums/status';
 import { paths } from 'src/paths';
+import { GET_PROVIDER_INVOICES } from 'src/graphql/entities/providerInvoices/queries';
 
 interface Filters {
   providerNames?: string[];
@@ -143,48 +144,51 @@ const Page: NextPage = () => {
     }
 
     if (filters.providerNames && filters.providerNames.length > 0) {
-      gqlFilter.service_provider_name = { in: filters.providerNames };
+      gqlFilter.service_providers = {
+        name: { in: filters.providerNames },
+      };
     }
 
     if (filters.status) {
-      gqlFilter.service_provider_status = { eq: filters.status };
+      gqlFilter.status_id = { eq: 3 };
     }
 
     // Use startDate for depositeddate.gte
     if (filters.startDate) {
-      gqlFilter.depositeddate = { gte: filters.startDate.toISOString() };
+      gqlFilter.issue_date = { gte: filters.startDate.toISOString() };
     }
 
     // Use endDate for duedate.lte
     if (filters.endDate) {
-      gqlFilter.duedate = { lte: filters.endDate.toISOString() };
+      gqlFilter.due_date = { lte: filters.endDate.toISOString() };
     }
 
     return gqlFilter;
   };
   const gqlFilters = mapFiltersToGraphQL(suppliersSearch.state.filters);
-  // console.log(gqlFilters);
-  const { data, loading, error } = useQuery(SERVICE_PROVIDERS_FILE, {
+  console.log(gqlFilters);
+
+  const { data, loading, error } = useQuery(GET_PROVIDER_INVOICES, {
     variables: { filter: Object.keys(gqlFilters).length ? gqlFilters : undefined },
   });
-  // console.log('data :', data);
-  const mapGraphQLToUI = (data: any): Supplier[] => {
-    if (!data?.service_provider_files_viewCollection?.edges) return [];
 
-    return data.service_provider_files_viewCollection.edges.map((edge: any) => {
+  console.log('data :', data);
+  const mapGraphQLToUI = (data: any): Supplier[] => {
+    if (!data?.provider_invoicesCollection?.edges) return [];
+    return data.provider_invoicesCollection.edges.map((edge: any) => {
       const node = edge.node;
       const metadata = node.metadata || {};
 
       return {
         id: node.id,
         projectId: metadata.project_id ?? 0,
-        nom: node.service_provider_name ?? '',
+        nom: node.service_providers.name ?? '',
         ice: metadata.ice ?? '',
-        depositedDate: node.depositeddate ? new Date(node.depositeddate) : null,
-        dueDate: node.duedate ? new Date(node.duedate) : null,
+        depositedDate: node.issue_date ? new Date(node.issue_date) : null,
+        dueDate: node.due_date ? new Date(node.due_date) : null,
         amount: node.amount ?? 0,
-        status: node.service_provider_status, // Assuming 'unpaid' as default
-        method: metadata.payment_method ?? 'virement', // Default to 'virement' if not specified
+        status: node.status.name,
+        method: metadata.payment_method ?? null,
         commentaire: metadata.commentaire ?? '',
       };
     });

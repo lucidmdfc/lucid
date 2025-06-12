@@ -14,7 +14,8 @@ const typeDefs = gql`
       expense_claim_category: String
       expense_claim_id: String
       expense_status: Boolean
-      service_provider_id: String
+      provider_invoice_id: String
+      provider_invoice_file_category: String
     ): UploadedFile!
   }
 

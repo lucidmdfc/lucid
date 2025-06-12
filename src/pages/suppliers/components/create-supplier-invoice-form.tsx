@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Upload01Icon from '@untitled-ui/icons-react/build/esm/Upload01';
-import { Autocomplete, Divider, ListItemText, OutlinedInput, SvgIcon } from '@mui/material';
+import { Autocomplete, Divider, ListItemText, OutlinedInput, Select, SvgIcon } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useDialog } from 'src/hooks/use-dialog';
 import { number } from 'prop-types';
@@ -28,6 +28,7 @@ import { UPLOAD_FILE } from 'src/graphql/operations/mutations';
 import { supabase } from 'src/libs/supabaseClient';
 import { CREATE_PROVIDER_INVOICE } from 'src/graphql/entities/providerInvoices/mutations';
 import { GET_SERVICE_PROVIDERS } from 'src/graphql/entities/serviceProviders/queries';
+import { Add, Delete } from '@mui/icons-material';
 
 type Option = {
   text: string;
@@ -57,9 +58,25 @@ const validationSchema = Yup.object().shape({
   payment_date: Yup.date().typeError('Date de paiement invalide').nullable(),
   payment_method: Yup.string().required('Méthode de paiement requise'),
   status_id: Yup.number().typeError('Statut requis').required('Statut requis'),
-  storage_key: Yup.string().nullable(),
-  file_url: Yup.string().url('URL invalide').nullable(),
   notes: Yup.string().nullable(),
+  files: Yup.array().of(
+    Yup.object().shape({
+      file: Yup.mixed()
+        .nullable()
+        .test('fileType', 'Seuls les fichiers PDF sont autorisés', (value) => {
+          if (!value) return true;
+          if (value instanceof File) {
+            return value.type === 'application/pdf';
+          }
+          return false;
+        }),
+      category: Yup.string().when('file', {
+        is: (file: File) => !!file,
+        then: (schema) => schema.required('Catégorie requise pour chaque fichier ajouté'),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+    })
+  ),
 });
 
 const SupplierInvoiceCreateForm: FC = () => {
@@ -87,10 +104,11 @@ const SupplierInvoiceCreateForm: FC = () => {
   } = useQuery(GET_SERVICE_PROVIDERS);
 
   const [createProviderInvoice, { data, loading, error }] = useMutation(CREATE_PROVIDER_INVOICE);
-  // const [uploadFile, { data: uploadFileData, loading: uploadFileLoading, error: uploadFileError }] =
-  //   useMutation(UPLOAD_FILE);
-  console.log(loading);
-  console.log(error);
+  const [uploadFile, { data: uploadFileData, loading: uploadFileLoading, error: uploadFileError }] =
+    useMutation(UPLOAD_FILE);
+  console.log(data);
+  console.log('file data :', uploadFileData);
+  console.log('file error :', uploadFileError);
 
   const formik = useFormik({
     initialValues: {
@@ -106,9 +124,8 @@ const SupplierInvoiceCreateForm: FC = () => {
       payment_date: '',
       payment_method: '',
       status_id: '',
-      storage_key: '',
-      file_url: '',
       notes: '',
+      files: [] as { file: File; category: String }[],
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -129,36 +146,39 @@ const SupplierInvoiceCreateForm: FC = () => {
             payment_date: values.payment_date || null,
             payment_method: values.payment_method,
             status_id: Number(values.status_id),
-            storage_key: values.storage_key || '',
-            file_url: values.file_url || '',
             notes: values.notes || '',
           },
         });
-        // const service_provider_id = data?.insertIntoservice_providersCollection?.records[0]?.id;
-        // console.log(service_provider_id);
+        console.log(data);
+        const provider_invoice_id = data?.insertIntoprovider_invoicesCollection?.records[0]?.id;
+        console.log(provider_invoice_id);
 
-        // const {
-        //   data: { session },
-        // } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-        // const accessToken = session?.access_token;
+        const accessToken = session?.access_token;
 
-        // console.log(values.file);
-        // // console.log(service_provider_id);
-        // if (values.file && service_provider_id) {
-        //   const { data: fileData, errors } = await uploadFile({
-        //     variables: {
-        //       file: values.file,
-        //       documentCategory: 'service_provider_file',
-        //       service_provider_id: String(service_provider_id),
-        //     },
-        //     context: {
-        //       headers: {
-        //         Authorization: `Bearer ${accessToken}`,
-        //       },
-        //     },
-        //   });
-        // }
+        // console.log(accessToken);
+        if (provider_invoice_id && values.files?.length > 0) {
+          for (const item of values.files) {
+            if (item.file && item.category) {
+              await uploadFile({
+                variables: {
+                  file: item.file,
+                  documentCategory: 'provider_invoice_file',
+                  provider_invoice_id: String(provider_invoice_id),
+                  provider_invoice_file_category: item.category,
+                },
+                context: {
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                },
+              });
+            }
+          }
+        }
         toast.success('La facture du prestataire a été créée avec succès !');
         dialog.handleClose();
         resetForm();
@@ -172,6 +192,7 @@ const SupplierInvoiceCreateForm: FC = () => {
       }
     },
   });
+
   return (
     <form>
       <Stack spacing={4}>
@@ -488,73 +509,122 @@ const SupplierInvoiceCreateForm: FC = () => {
                   </Stack>
                 </Grid>
 
-                {/* <Grid
+                <Grid
                   xs={12}
                   md={12}
                 >
                   <Stack spacing={1}>
-                    <Typography variant="subtitle2">Fichier (PDF)</Typography>
-                    {!formik.values.file ? (
-                      <Button
-                        variant="outlined"
-                        component="label"
-                      >
-                        Sélectionner un fichier
-                        <input
-                          hidden
-                          type="file"
-                          name="file"
-                          accept="application/pdf"
-                          onChange={(event) => {
-                            const file = event.currentTarget.files?.[0];
-                            if (file) {
-                              formik.setFieldValue('file', file);
-                            }
-                          }}
-                        />
-                      </Button>
-                    ) : (
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
-                      >
-                        <Typography variant="body2">{(formik.values.file as File).name}</Typography>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          onClick={() => formik.setFieldValue('file', null)}
-                        >
-                          Supprimer
-                        </Button>
-                      </Stack>
-                    )}
-                    {formik.touched.file && formik.errors.file && (
-                      <Typography
-                        variant="caption"
-                        color="error"
-                      >
-                        {formik.errors.file}
-                      </Typography>
-                    )}
-                    {/* <Button
+                    <Typography variant="subtitle2">Fichiers (PDF)</Typography>
+                    <Button
                       variant="outlined"
                       component="label"
                     >
-                      Sélectionner un fichier
-
+                      Ajouter un fichier
                       <input
                         hidden
                         type="file"
-                        name="file"
+                        multiple
+                        accept="application/pdf"
                         onChange={(event) => {
-                          const file = event.currentTarget.files?.[0];
-                          formik.setFieldValue('file', file);
+                          const newFiles = Array.from(event.currentTarget.files || []);
+                          if (newFiles.length > 0) {
+                            // Add new files to the existing files array
+                            const currentFiles = formik.values.files || [];
+                            const updatedFiles = [
+                              ...currentFiles,
+                              ...newFiles.map((file) => ({ file, category: '' })),
+                            ];
+                            formik.setFieldValue('files', updatedFiles);
+                          }
                         }}
                       />
-                    </Button> 
+                    </Button>
+                    {formik.values.files?.length > 0 && (
+                      <Stack
+                        spacing={2}
+                        sx={{ mt: 2 }}
+                      >
+                        {formik.values.files.map((fileItem, index) => {
+                          const fileError =
+                            Array.isArray(formik.errors.files) &&
+                            formik.errors.files[index] &&
+                            typeof formik.errors.files[index] === 'object'
+                              ? (formik.errors.files[index] as { category?: string; file?: string })
+                              : {};
+
+                          return (
+                            <Stack
+                              key={index}
+                              direction="column"
+                              spacing={1}
+                            >
+                              <Stack
+                                direction="row"
+                                spacing={2}
+                                alignItems="center"
+                              >
+                                <Typography variant="body2">{fileItem.file.name}</Typography>
+
+                                <Select
+                                  value={fileItem.category}
+                                  onChange={(e) => {
+                                    const updatedFiles = [...formik.values.files];
+                                    updatedFiles[index].category = e.target.value;
+                                    formik.setFieldValue('files', updatedFiles);
+                                  }}
+                                  displayEmpty
+                                  size="small"
+                                  error={!!fileError?.category}
+                                >
+                                  <MenuItem
+                                    value=""
+                                    disabled
+                                  >
+                                    Sélectionner une catégorie
+                                  </MenuItem>
+                                  <MenuItem value="invoice">Facture</MenuItem>
+                                  <MenuItem value="cheque">Chèque</MenuItem>
+                                </Select>
+
+                                <Button
+                                  variant="outlined"
+                                  color="error"
+                                  onClick={() => {
+                                    const updatedFiles = formik.values.files.filter(
+                                      (_, i) => i !== index
+                                    );
+                                    formik.setFieldValue('files', updatedFiles);
+                                  }}
+                                >
+                                  Supprimer
+                                </Button>
+                              </Stack>
+
+                              {fileError?.category && (
+                                <Typography
+                                  variant="caption"
+                                  color="error"
+                                  sx={{ ml: 2 }}
+                                >
+                                  {fileError.category}
+                                </Typography>
+                              )}
+                              {fileError?.file && (
+                                <Typography
+                                  variant="caption"
+                                  color="error"
+                                  sx={{ ml: 2 }}
+                                >
+                                  {fileError.file}
+                                </Typography>
+                              )}
+                            </Stack>
+                          );
+                        })}
+                      </Stack>
+                    )}
                   </Stack>
-                </Grid> */}
+                </Grid>
                 <Divider />
               </Grid>
             </CardContent>

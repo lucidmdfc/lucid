@@ -32,7 +32,7 @@ export default async function wrappedHandler(req: NextApiRequest, res: NextApiRe
     // Process multipart request for file uploads
     // graphql-upload-minimal expects req to have a .body and .files
     const processed = await processRequest(req, res);
-
+    console.log('Processed request:', processed);
     // Replace the original request with a modified one that includes body/files
     (req as any).body = processed;
   }
