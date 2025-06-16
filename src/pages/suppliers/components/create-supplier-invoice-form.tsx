@@ -29,6 +29,7 @@ import { supabase } from 'src/libs/supabaseClient';
 import { CREATE_PROVIDER_INVOICE } from 'src/graphql/entities/providerInvoices/mutations';
 import { GET_SERVICE_PROVIDERS } from 'src/graphql/entities/serviceProviders/queries';
 import { Add, Delete } from '@mui/icons-material';
+import LoadingBackdrop from 'src/components/loadingBackdrop';
 
 type Option = {
   text: string;
@@ -106,6 +107,8 @@ const SupplierInvoiceCreateForm: FC = () => {
   const [createProviderInvoice, { data, loading, error }] = useMutation(CREATE_PROVIDER_INVOICE);
   const [uploadFile, { data: uploadFileData, loading: uploadFileLoading, error: uploadFileError }] =
     useMutation(UPLOAD_FILE);
+  const [globalLoading, setGlobalLoading] = useState(false);
+
   console.log(data);
   console.log('file data :', uploadFileData);
   console.log('file error :', uploadFileError);
@@ -132,6 +135,7 @@ const SupplierInvoiceCreateForm: FC = () => {
       try {
         // Handle form submission
         console.log('values :', values);
+        setGlobalLoading(true);
         const { data } = await createProviderInvoice({
           variables: {
             service_provider_id: Number(values.service_provider_id),
@@ -179,6 +183,8 @@ const SupplierInvoiceCreateForm: FC = () => {
             }
           }
         }
+        setGlobalLoading(false);
+
         toast.success('La facture du prestataire a été créée avec succès !');
         dialog.handleClose();
         resetForm();
@@ -188,6 +194,7 @@ const SupplierInvoiceCreateForm: FC = () => {
         console.error('Erreur lors de la création de la facture du prestataire !: ', error);
       } finally {
         // Set isSubmitting back to false after the submission is complete
+        setGlobalLoading(false);
         setSubmitting(false);
       }
     },
@@ -662,12 +669,14 @@ const SupplierInvoiceCreateForm: FC = () => {
         onClose={uploadDialog.handleClose}
         open={uploadDialog.open}
       /> */}
-
-      <CreateConfirmation
-        isOpen={dialog.open}
-        onConfirm={formik.handleSubmit}
-        onCancel={dialog.handleClose}
-      />
+      <LoadingBackdrop open={globalLoading} />
+      {!globalLoading && (
+        <CreateConfirmation
+          isOpen={dialog.open}
+          onConfirm={formik.handleSubmit}
+          onCancel={dialog.handleClose}
+        />
+      )}
     </form>
   );
 };

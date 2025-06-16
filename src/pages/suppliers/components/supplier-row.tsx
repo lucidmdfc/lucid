@@ -19,6 +19,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_FILES_BY_PROVIDER_INVOICE } from 'src/graphql/entities/files/queries';
 import FileDrawer, { Item } from 'src/components/file-drawer/file-drawer';
 import { DELETE_PROVIDER_INVOICE } from 'src/graphql/entities/providerInvoices/mutations';
+import LoadingBackdrop from 'src/components/loadingBackdrop';
 
 const statusColorsMap: Record<ProviderStatus, SeverityPillColor> = {
   rejected: 'error',
@@ -44,7 +45,7 @@ const SupplierRow: FC<SupplierRowProps> = (props) => {
   const totalAmount = numeral(supplier.amount).format('0,0.00');
   const issueDate = supplier.depositedDate && format(supplier.depositedDate, 'dd/MM/yyyy');
   const dueDate = supplier.dueDate && format(supplier.dueDate, 'dd/MM/yyyy');
-  const [deleteProviderInvoice] = useMutation(DELETE_PROVIDER_INVOICE);
+  const [deleteProviderInvoice, { loading }] = useMutation(DELETE_PROVIDER_INVOICE);
 
   const handleDelete = async (supplierId: string | undefined) => {
     try {
@@ -102,12 +103,15 @@ const SupplierRow: FC<SupplierRowProps> = (props) => {
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       {...other}
     >
-      <DeleteConfirmationModal
-        isOpen={dialog.open}
-        onConfirm={handleDelete}
-        onCancel={dialog.handleClose}
-        message="Êtes-vous sûr de vouloir supprimer? Cette action sera irréversible."
-      />{' '}
+      <LoadingBackdrop open={loading} />
+      {!loading && (
+        <DeleteConfirmationModal
+          isOpen={dialog.open}
+          onConfirm={handleDelete}
+          onCancel={dialog.handleClose}
+          message="Êtes-vous sûr de vouloir supprimer? Cette action sera irréversible."
+        />
+      )}
       <TableCell width="25%">
         <Stack
           alignItems="center"

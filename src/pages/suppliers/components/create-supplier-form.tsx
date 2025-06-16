@@ -26,6 +26,7 @@ import { PAYMENT_METHOD_OPTIONS } from 'src/graphql/shared/enums/paymentMethods'
 import * as Yup from 'yup';
 import { UPLOAD_FILE } from 'src/graphql/operations/mutations';
 import { supabase } from 'src/libs/supabaseClient';
+import LoadingBackdrop from 'src/components/loadingBackdrop';
 
 type Option = {
   text: string;
@@ -59,7 +60,6 @@ const SupplierCreateForm: FC = () => {
   const router = useRouter();
 
   const [createServiceProvider, { data, loading, error }] = useMutation(CREATE_SERVICE_PROVIDER);
-
 
   const formik = useFormik({
     initialValues: {
@@ -314,12 +314,14 @@ const SupplierCreateForm: FC = () => {
         onClose={uploadDialog.handleClose}
         open={uploadDialog.open}
       /> */}
-
-      <CreateConfirmation
-        isOpen={dialog.open}
-        onConfirm={formik.handleSubmit}
-        onCancel={dialog.handleClose}
-      />
+      <LoadingBackdrop open={loading} />
+      {!loading && (
+        <CreateConfirmation
+          isOpen={dialog.open}
+          onConfirm={formik.handleSubmit}
+          onCancel={dialog.handleClose}
+        />
+      )}
     </form>
   );
 };
