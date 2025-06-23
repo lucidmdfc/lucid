@@ -12,6 +12,10 @@ import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
 import CreateConfirmation from './create-modal-confirmation';
 import { useDialog } from 'src/hooks/use-dialog';
+import { useMutation } from '@apollo/client';
+import { CREATE_MEMBER } from 'src/graphql/entities/members/mutations';
+import { PAYMENT_METHOD_OPTIONS } from 'src/graphql/shared/enums/paymentMethods';
+import LoadingBackdrop from 'src/components/loadingBackdrop';
 
 type PaymentMethod = {
   text: string;
@@ -42,18 +46,23 @@ const validationSchema = yup.object({
   email: yup.string().required('Email est requis').email('Format email invalide'),
   rc_cin: yup.string().required('CIN/Registre de Commerce est requis'),
   status: yup.string().required('Statut est requis'),
+  phone: yup
+    .string()
+    .required('Le numéro de téléphone est requis')
+    .matches(/^[0-9+\-() ]{6,20}$/, 'Numéro de téléphone invalide'),
 });
 
 const NewMemberForm = () => {
   const router = useRouter();
   const dialog = useDialog();
-
+  const [createMember, { loading, error }] = useMutation(CREATE_MEMBER);
   const formik = useFormik({
     initialValues: {
       full_name: '',
       email: '',
       rc_cin: '',
       status: '',
+      phone: '',
       payment_method: null,
       amount: Number(),
       payment_date: new Date(),
@@ -69,13 +78,34 @@ const NewMemberForm = () => {
       }
       try {
         // Handle form submission
+        const { data, errors } = await createMember({
+          variables: {
+            full_name: formik.values.full_name,
+            email: formik.values.email,
+            phone: formik.values.phone,
+            rc_cin: formik.values.rc_cin,
+            status: formik.values.status === 'paid' ? true : false,
+            amount: String(formik.values.amount),
+            payment_method: formik.values.payment_method,
+            payment_date: formik.values.payment_date,
+          },
+        });
+        console.log(errors);
         console.log(values);
         toast.success('Membre créé avec succès !');
         router.replace(paths.membres.index);
         resetForm();
       } catch (error) {
-        toast.error('Erreur lors de la création du membre!');
+        // toast.error('Erreur lors de la création du membre!');
         console.error('Erreur lors de la création du membre!: ', error);
+        if (
+          error.graphQLErrors &&
+          error.graphQLErrors[0]?.message.includes('duplicate key value')
+        ) {
+          toast.error('Un membre avec cet RC/CIN existe déjà.');
+        } else {
+          toast.error('Erreur lors de la création du membre!');
+        }
       } finally {
         // Set isSubmitting back to false after the submission is complete
         setSubmitting(false);
@@ -85,11 +115,14 @@ const NewMemberForm = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <CreateConfirmation
-        isOpen={dialog.open}
-        onCancel={dialog.handleClose}
-        onConfirm={formik.handleSubmit}
-      />
+      <LoadingBackdrop open={loading} />
+      {!loading && (
+        <CreateConfirmation
+          isOpen={dialog.open}
+          onCancel={dialog.handleClose}
+          onConfirm={formik.handleSubmit}
+        />
+      )}
       <form>
         <Grid
           container
@@ -129,6 +162,24 @@ const NewMemberForm = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={12}
+          >
+            <TextField
+              fullWidth
+              label="Phone"
+              name="phone"
+              type="string"
+              size="small"
+              value={formik.values.phone}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.phone && Boolean(formik.errors.phone)}
+              helperText={formik.touched.phone && formik.errors.phone}
             />
           </Grid>
           <Grid
@@ -209,12 +260,12 @@ const NewMemberForm = () => {
                   select
                   size="small"
                 >
-                  {methods.map((method) => (
+                  {PAYMENT_METHOD_OPTIONS.map((option) => (
                     <MenuItem
-                      key={method.value}
-                      value={method.value}
+                      key={option.value}
+                      value={option.value}
                     >
-                      {method.text}
+                      {option.label}
                     </MenuItem>
                   ))}
                 </TextField>

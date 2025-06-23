@@ -17,7 +17,7 @@ for (let i = 1; i <= 20; i++) {
 
   const member: Member = {
     id: `ID-${i}`,
-    status: i % 2 === 0 ? 'paid' : 'unpaid',
+    status: i % 2 === 0 ? true : false,
     payment_method: paymentMethod,
     rc_cin: `RC_CIN_${i}`,
     updated_at: new Date(Date.now() - i * 1000 * 60 * 60 * 24), // Varying dates

@@ -23,6 +23,8 @@ import MemberListContainer from './sections/member-list-container';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 import { membersApi } from 'src/api/members';
+import { useQuery } from '@apollo/client';
+import { GET_MEMBER, GET_MEMBERS } from 'src/graphql/entities/members/queries';
 interface Filters {
   query?: string;
 }
@@ -140,6 +142,18 @@ const Page: NextPage = () => {
   const currentMember = useCurrentMember(membersStore.members, dialog.data);
   const { t } = useTranslation();
   usePageView();
+  const { loading, error, data } = useQuery(GET_MEMBERS);
+  
+  const {
+    loading: singleMemberLoading,
+    error: singleMemberError,
+    data: singleMemberData,
+  } = useQuery(GET_MEMBER, { variables: { id: dialog.data } });
+
+  // console.log(singleMemberData?.membersCollection?.edges[0]?.node);
+  // console.log(currentMember);
+
+  const members = data?.membersCollection?.edges?.map((edge: { node: any }) => edge.node) || [];
 
   const handleMemberOpen = useCallback(
     (memberId: string): void => {
@@ -213,7 +227,8 @@ const Page: NextPage = () => {
             <Divider />
             <MemberListTable
               count={membersStore.membersCount}
-              members={membersStore.members}
+              // members={membersStore.members}
+              members={members}
               onPageChange={membersSearch.handlePageChange}
               onRowsPerPageChange={membersSearch.handleRowsPerPageChange}
               onSelect={handleMemberOpen}
@@ -226,7 +241,7 @@ const Page: NextPage = () => {
             container={rootRef.current}
             onClose={dialog.handleClose}
             open={dialog.open}
-            member={currentMember}
+            member={singleMemberData?.membersCollection?.edges[0]?.node}
             onUpdateMember={membersStore.onUpdateMember}
           />
         </Box>

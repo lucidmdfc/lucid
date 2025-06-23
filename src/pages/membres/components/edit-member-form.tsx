@@ -11,6 +11,11 @@ import { MenuItem } from '@mui/material';
 import { Member, PaymentMethod } from 'src/types/member';
 import UpdateConfirmation from './edit-modal-confimration';
 import { useDialog } from 'src/hooks/use-dialog';
+import { useMutation } from '@apollo/client';
+import { UPDATE_MEMBER } from 'src/graphql/entities/members/mutations';
+import { PAYMENT_METHOD_OPTIONS } from 'src/graphql/shared/enums/paymentMethods';
+import LoadingBackdrop from 'src/components/loadingBackdrop';
+import toast from 'react-hot-toast';
 
 interface MemberEditProps {
   onCancel?: () => void;
@@ -20,6 +25,7 @@ interface MemberEditProps {
 
 const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => {
   const dialog = useDialog();
+  const [updateMember, { data, error, loading }] = useMutation(UPDATE_MEMBER);
   const { values, handleChange, handleSubmit, setFieldValue, touched, errors } = useFormik({
     initialValues: {
       id: member.id,
@@ -29,7 +35,7 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
       payment_method: member.payment_method,
       amount: member.amount,
       payment_date:
-        member.status === 'paid' ? member.payment_date && member.payment_date : new Date(),
+        member.status === true ? member.payment_date && member.payment_date : new Date(),
       status: member.status,
       updated_at: new Date(),
     },
@@ -37,11 +43,34 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
       full_name: Yup.string().required('Required'),
       email: Yup.string().email('Invalid email').required('Required'),
     }),
-    onSubmit: (formValues) => {
-      if (formValues.status == 'unpaid') {
+    onSubmit: async (formValues) => {
+      if (formValues.status == false) {
         formValues.payment_date = new Date(0);
         formValues.amount = 0;
       }
+      try {
+        const { data } = await updateMember({
+          variables: {
+            filter: { id: { eq: values.id } },
+            set: {
+              full_name: String(values.full_name),
+              email: String(values.email),
+              rc_cin: String(values.rc_cin),
+              status: values.status,
+              payment_method: String(values.payment_method),
+              payment_date: values.payment_date,
+              amount: String(values.amount),
+              updated_at: new Date().toISOString(),
+            },
+            atMost: 1,
+          },
+        });
+        toast.success('Membre modifié avec succès !');
+      } catch (error) {
+        toast.error('Erreur lors de la modification du membre!');
+        console.error('Erreur lors de la modification du membre!: ', error);
+      }
+
       if (onSave) {
         onSave(formValues.id, formValues);
       }
@@ -58,18 +87,21 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
     setFieldValue(
       'payment_date',
       // member.status === 'paid' ? member.payment_date && member.payment_date.toDate() : new Date()
-      member.status === 'paid' ? member.payment_date && member.payment_date : new Date()
+      member.status === true ? member.payment_date && member.payment_date : new Date()
     );
     setFieldValue('status', member.status);
   }, [member, setFieldValue]);
 
   return (
     <>
-      <UpdateConfirmation
-        isOpen={dialog.open}
-        onCancel={dialog.handleClose}
-        onConfirm={handleSubmit}
-      />
+      <LoadingBackdrop open={loading} />
+      {!loading && (
+        <UpdateConfirmation
+          isOpen={dialog.open}
+          onCancel={dialog.handleClose}
+          onConfirm={handleSubmit}
+        />
+      )}
       <form>
         <Stack spacing={6}>
           <Stack spacing={3}>
@@ -102,7 +134,7 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
                 error={touched.rc_cin && Boolean(errors.rc_cin)}
                 helperText={touched.rc_cin && errors.rc_cin}
               />
-              <TextField
+              {/* <TextField
                 fullWidth
                 label="Status"
                 name="status"
@@ -111,7 +143,9 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
                 value={values.status}
                 onChange={handleChange}
                 error={touched.status && Boolean(errors.status)}
-                helperText={touched.status && errors.status}
+                helperText={
+                  touched.status && typeof errors.status === 'string' ? errors.status : ''
+                }
               >
                 {['paid', 'unpaid'].map((statusOption) => (
                   <option
@@ -121,8 +155,24 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
                     {statusOption === 'paid' ? 'Payée' : 'Impayée'}
                   </option>
                 ))}
+              </TextField> */}
+              <TextField
+                fullWidth
+                label="Status"
+                name="status"
+                select
+                SelectProps={{ native: true }}
+                value={values.status}
+                onChange={(e) => setFieldValue('status', e.target.value === 'true')} // convert string to boolean
+                error={touched.status && Boolean(errors.status)}
+                helperText={
+                  touched.status && typeof errors.status === 'string' ? errors.status : ''
+                }
+              >
+                <option value="true">Payée</option>
+                <option value="false">Impayée</option>
               </TextField>
-              {values.status === 'paid' && (
+              {values.status === true && (
                 <>
                   <TextField
                     fullWidth
@@ -137,13 +187,21 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
                     error={touched.payment_method && Boolean(errors.payment_method)}
                     helperText={touched.payment_method && errors.payment_method}
                   >
-                    <option value={''}>--</option>
-                    {Object.values(PaymentMethod).map((method) => (
+                    {/* <option value={''}>--</option> */}
+                    {/* {Object.values(PaymentMethod).map((method) => (
                       <option
                         key={method}
                         value={method}
                       >
                         {method}
+                      </option>
+                    ))} */}
+                    {PAYMENT_METHOD_OPTIONS.map((option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
                       </option>
                     ))}
                   </TextField>
@@ -159,7 +217,7 @@ const MemberEdit: React.FC<MemberEditProps> = ({ onCancel, onSave, member }) => 
                   <MobileDatePicker
                     label="Date de paiement"
                     onChange={(newDate) => setFieldValue('payment_date', newDate)}
-                    value={values.payment_date}
+                    value={values.payment_date ? new Date(values.payment_date) : null}
                   />
                 </>
               )}

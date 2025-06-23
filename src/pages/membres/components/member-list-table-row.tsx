@@ -23,8 +23,8 @@ const MemberListTableRow: FC<MemberListTableRowProps> = ({ member, onSelect }) =
         <Typography variant="body2">{member.payment_method ?? '--'}</Typography>
       </TableCell>
       <TableCell>
-        <SeverityPill color={member?.status == 'paid' ? 'success' : 'error'}>
-          {member?.status == 'paid' ? 'payée' : 'impayée'}
+        <SeverityPill color={member?.status == true ? 'success' : 'error'}>
+          {member?.status == false ? 'payée' : 'impayée'}
         </SeverityPill>
       </TableCell>
       <TableCell>

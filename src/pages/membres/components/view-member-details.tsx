@@ -58,8 +58,9 @@ const MemeberDetails: FC<MemeberDetailsProps> = (props) => {
   const align = lgUp ? 'horizontal' : 'vertical';
 
   // const date = member.payment_date && format(member.payment_date?.toDate(), 'dd/MM/yyyy');
-  const date = member.payment_date!.toLocaleDateString('en-GB');
-
+  // const date = member.payment_date!.toLocaleDateString('en-GB') ;
+  // const date = member.payment_date!.toLocaleDateString('en-GB') ;
+  const date = member.payment_date ? new Date(member.payment_date).toLocaleDateString('en-GB') : '';
   return (
     <Stack spacing={6}>
       <DeleteConfirmationModal
@@ -138,7 +139,7 @@ const MemeberDetails: FC<MemeberDetailsProps> = (props) => {
               disableGutters
               divider
               label="Reçu le"
-              value={member.status == 'paid' ? date ?? '' : '--'}
+              value={member.status == true ? date ?? '' : '--'}
             />
             <PropertyListItem
               align={align}
@@ -146,8 +147,8 @@ const MemeberDetails: FC<MemeberDetailsProps> = (props) => {
               divider
               label="Statut"
             >
-              <SeverityPill color={member.status == 'paid' ? 'success' : 'error'}>
-                {member.status == 'paid' ? 'Payée' : 'Impayée'}
+              <SeverityPill color={member.status == true ? 'success' : 'error'}>
+                {member.status == true ? 'Payée' : 'Impayée'}
               </SeverityPill>
             </PropertyListItem>
           </PropertyList>

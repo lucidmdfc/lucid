@@ -39,13 +39,13 @@ const MemberDrawer: FC<MemberDrawerProps> = (props) => {
       try {
         console.log(id, values, onUpdateMember);
 
-        toast.success('Membre modifié avec succès !');
+        // toast.success('Membre modifié avec succès !');
         handleEditCancel();
         if (onClose) {
           onClose();
         }
       } catch (error) {
-        toast.error('Erreur lors de la modification du membre!');
+        // toast.error('Erreur lors de la modification du membre!');
         console.error('Erreur lors de la modification du membre!: ', error);
       }
     },
