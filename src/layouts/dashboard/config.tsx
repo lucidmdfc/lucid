@@ -66,6 +66,14 @@ export const useSections = () => {
                 title: t(tokens.nav.projects_management),
                 path: paths.projets.index,
               },
+              {
+                title: t(tokens.nav.donors_management),
+                path: paths.donors.index,
+              },
+              {
+                title: t(tokens.nav.grants_management),
+                path: paths.grants.index,
+              },
 
               {
                 title: t(tokens.nav.members_management),

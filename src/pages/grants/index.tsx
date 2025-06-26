@@ -1,5 +1,5 @@
 import type { ChangeEvent, MouseEvent } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { NextPage } from 'next';
 import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 import Box from '@mui/material/Box';
@@ -24,10 +24,10 @@ import { Project } from 'src/types/project';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
 import { projectsApi } from 'src/api/projects';
-import { useGetProjectByIdQuery, useGetProjectsQuery } from 'src/hooks/generatedHook';
-import ProjectDrawer from './sections/project-drawer';
-import { useDialog } from 'src/hooks/use-dialog';
-import MemberListContainer from '../membres/sections/member-list-container';
+import { GET_PROJECTS, getProjectsWithDonors } from 'src/graphql/entities/projects/queries';
+// import { useQuery } from '@apollo/client';
+import OverviewProjectFromGrants from './components/overview-projects-from-grants';
+import { Grid } from '@mui/material';
 
 interface Filters {
   query?: string;
@@ -40,7 +40,18 @@ interface ProjectsSearchState {
   sortBy: string;
   sortDir: 'asc' | 'desc';
 }
-
+export const mapProjectData = (raw: any[]): Project[] =>
+  raw.map((item) => ({
+    id: item.id,
+    project_name: item.name || '--',
+    email: item.contactEmail || '--', // fallback in case it's not provided
+    amount: Number(item.project_budget) || 0,
+    totalSliceAmount: item.totalSliceAmount || 0,
+    financial_backer: item.funders || [],
+    beneficiaries: item.recipients || [],
+    created_at: item.created_at ? new Date(item.created_at) : undefined,
+    updated_at: item.updated_at ? new Date(item.updated_at) : undefined,
+  }));
 const useProjectsSearch = () => {
   const [state, setState] = useState<ProjectsSearchState>({
     filters: {
@@ -144,72 +155,56 @@ const useProjectIds = (projects: Project[] = []) => {
 };
 
 const Page: NextPage = () => {
-  const rootRef = useRef<HTMLDivElement | null>(null);
   const projectsSearch = useProjectsSearch();
-  const projectsStore = useProjectsStore(projectsSearch.state);
+  // const projectsStore = useProjectsStore(projectsSearch.state);
   // const projectsIds = useProjectIds(projectsStore.projects);
-  const dialog = useDialog<string>();
-
   const settings = useSettings();
   const { t } = useTranslation();
   usePageView();
-  const {
-    loading: projectsLoading,
-    error: projectsError,
-    data: projectsData,
-    refetch: projectsRefetsh,
-  } = useGetProjectsQuery();
+  const [donorsInProject, setDonorsInProject] = useState<any[]>([]);
 
-  const {
-    loading: projectLoading,
-    error: projectError,
-    data: projectData,
-    refetch: projectRefetsh,
-  } = useGetProjectByIdQuery({
-    variables: {
-      id: Number(dialog.data),
-    },
-  });
-
-  const projectsNode = projectData?.projectsCollection?.edges?.map((edge) => edge.node) ?? [];
-  const project = projectsNode[0] || null;
-
-  const handleMemberOpen = useCallback(
-    (memberId: string): void => {
-      // Close drawer if is the same order
-
-      if (dialog.open && dialog.data === memberId) {
-        dialog.handleClose();
-        return;
+  // const {
+  //   loading: projectsLoading,
+  //   error: projectsError,
+  //   data: projectsData,
+  //   refetch: projectRefetsh,
+  // } = useQuery(GET_PROJECTS);
+  // console.log(projectsData?.projectsCollection?.edges);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getProjectsWithDonors();
+        // console.log(data);
+        setDonorsInProject(data);
+      } catch (error) {
+        console.error('Error fetching projects with donors', error);
       }
+    };
 
-      dialog.handleOpen(memberId);
-    },
-    [dialog]
-  );
-  console.log(dialog);
-  const projects = projectsData?.projectsCollection?.edges?.map((edge) => edge.node) ?? [];
+    fetchData();
+  }, []);
+  // console.log(donorsInProject);
+  // const nodes = projectsData?.projectsCollection?.edges?.map((edge: any) => edge.node) || [];
+  // const mappedData = mapProjectData(nodes);
+  // const projectsStore = {
+  //   projects: mappedData,
+  //   projectsCount: mappedData.length,
+  // };
 
+  // console.log(nodes);
+  // console.log(mappedData);
   return (
     <>
       <Seo title="Revenus: Gestion projets" />
       <Box
         component="main"
-        // sx={{
-        //   flexGrow: 1,
-        //   py: 8,
-        // }}
         sx={{
-          display: 'flex',
-          flex: '1 1 auto',
-          overflow: 'hidden',
-          position: 'relative',
+          flexGrow: 1,
+          py: 8,
         }}
       >
-        {/* <Container maxWidth={settings.stretch ? false : 'xl'}> */}
-        <MemberListContainer open={dialog.open}>
-          {/* <Stack spacing={4}> */}
-          <Box sx={{ p: 3 }}>
+        <Container maxWidth={settings.stretch ? false : 'xl'}>
+          <Stack spacing={4}>
             <Stack
               direction="row"
               justifyContent="space-between"
@@ -225,7 +220,7 @@ const Page: NextPage = () => {
               >
                 <Button
                   component={RouterLink}
-                  href={paths.projets.create}
+                  href={paths.grants.create}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />
@@ -233,38 +228,45 @@ const Page: NextPage = () => {
                   }
                   variant="contained"
                 >
-                  Nouveau Projet
+                  Nouveau Grant
                 </Button>
               </Stack>
             </Stack>
-          </Box>
 
-          <ProjectListSearch onFiltersChange={projectsSearch.handleFiltersChange} />
-          <ProjectListTable
-            count={projectsStore.projectsCount}
-            // items={projectsStore.projects}
-            items={projects}
-            onSelect={handleMemberOpen}
-            onPageChange={projectsSearch.handlePageChange}
-            onRowsPerPageChange={projectsSearch.handleRowsPerPageChange}
-            page={projectsSearch.state.page}
-            rowsPerPage={projectsSearch.state.rowsPerPage}
-          />
-          {/* <Card></Card> */}
-          {/* </Stack> */}
-        </MemberListContainer>
-
-        {/* </Container> */}
-        <ProjectDrawer
-          container={rootRef.current}
-          onClose={dialog.handleClose}
-          open={dialog.open}
-          // member={singleMemberData?.membersCollection?.edges[0]?.node}
-          project={projectData?.projectsCollection?.edges[0]?.node}
-          onUpdateMember={function (): void {
-            throw new Error('Function not implemented.');
-          }}
-        />
+            <Grid
+              container
+              spacing={3}
+            >
+              {donorsInProject?.map((grant, index) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  key={index}
+                >
+                  <OverviewProjectFromGrants
+                    amount={grant.project_budget}
+                    name={grant.project_name}
+                    id={grant.project_id}
+                    donors={grant.donors.length}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            {/* <Card>
+              <ProjectListSearch onFiltersChange={projectsSearch.handleFiltersChange} />
+              <ProjectListTable
+                count={projectsStore.projectsCount}
+                items={projectsStore.projects}
+                onPageChange={projectsSearch.handlePageChange}
+                onRowsPerPageChange={projectsSearch.handleRowsPerPageChange}
+                page={projectsSearch.state.page}
+                rowsPerPage={projectsSearch.state.rowsPerPage}
+              />
+            </Card> */}
+          </Stack>
+        </Container>
       </Box>
     </>
   );

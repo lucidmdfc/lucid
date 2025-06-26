@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import SvgIcon from '@mui/material/SvgIcon';
 import PlusIcon from '@untitled-ui/icons-react/build/esm/Plus';
 import Chip from '@mui/material/Chip';
-import { Grid, Stack, Typography } from '@mui/material';
+import { Grid, MenuItem, Stack, Typography } from '@mui/material';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { Project } from 'src/types/project';
@@ -15,9 +15,27 @@ import { paths } from 'src/paths';
 import { useRouter } from 'next/router';
 import CreateConfirmation from './create-confirmation-modal';
 import { useDialog } from 'src/hooks/use-dialog';
+import { useCreateProjectMutation } from 'src/hooks/generatedHook';
+import LoadingBackdrop from 'src/components/loadingBackdrop';
 
 const validationSchema = yup.object({
-  project_name: yup.string().required('Nom projet est requis'),
+  name: yup.string().required('Le nom du projet est requis'),
+  description: yup.string().required('La description est requise'),
+  start_date: yup.date().required('La date de début est requise'),
+  end_date: yup
+    .date()
+    .required('La date de fin est requise')
+    .min(yup.ref('start_date'), 'La date de fin doit être après la date de début'),
+  project_budget: yup
+    .number()
+    .typeError('Le budget doit être un nombre')
+    .required('Le budget est requis')
+    .positive('Le budget doit être positif'),
+  contact_person_email: yup
+    .string()
+    .email('Email invalide')
+    .required("L'email de contact est requis"),
+  contact_person_name: yup.string().required('Le nom de contact est requis'),
 });
 const NewProjectForm = () => {
   const [financialBackersInput, setFinancialBackersInput] = useState<string>('');
@@ -61,42 +79,55 @@ const NewProjectForm = () => {
 
   const router = useRouter();
   const dialog = useDialog();
+  const [CreateProject, { loading }] = useCreateProjectMutation();
+
   const formik = useFormik({
     initialValues: {
-      id: '', // Add id field to store the generated ID
-      project_name: '',
-      amount: 0,
-      email: '',
-      beneficiaries: beneficiaryList,
-      financial_backer: financialBackersList,
-      created_at: new Date(),
+      name: '',
+      description: '',
+      start_date: '',
+      end_date: '',
+      project_budget: '',
+      contact_person_email: '',
+      contact_person_name: '',
+      note: '',
+      status: false,
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
-      formik.values.beneficiaries = beneficiaryList;
-      formik.values.financial_backer = financialBackersList;
-
       try {
         // Generate unique ID for the project
-        const projectId = Math.random().toString(36).substring(7);
+        // const projectId = Math.random().toString(36).substring(7);
         // Assign the generated ID to the project
-        values.id = projectId;
 
         // Handle form submission
-        const storedProjects = localStorage.getItem('projects');
-        const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
+        // const storedProjects = localStorage.getItem('projects');
+        // const existingProjects = storedProjects ? JSON.parse(storedProjects) : [];
 
         // Add the new project to the array
-        const updatedProjects = [...existingProjects, values];
+        // const updatedProjects = [...existingProjects, values];
 
         // Store the updated projects array in local storage
-        localStorage.setItem('projects', JSON.stringify(updatedProjects));
-        console.log(values as unknown as Project);
+        // localStorage.setItem('projects', JSON.stringify(updatedProjects));
+        // console.log(values as unknown as Project);
+        const { data } = await CreateProject({
+          variables: {
+            name: values.name,
+            description: values.description,
+            start_date: values.start_date,
+            end_date: values.end_date,
+            project_budget: values.project_budget.toString(),
+            contact_person_email: values.contact_person_email,
+            contact_person_name: values.contact_person_name,
+            status: values.status,
+            note: values.note,
+          },
+        });
         toast.success('Projet créé avec succès !');
         router.replace(paths.projets.index);
         resetForm();
-        setBeneficiaryList([]);
-        setFinancialBackersList([]);
+        // setBeneficiaryList([]);
+        // setFinancialBackersList([]);
       } catch (error) {
         toast.error('Erreur lors de la création du projet!');
         console.error('Erreur lors de la création du projet!: ', error);
@@ -107,11 +138,14 @@ const NewProjectForm = () => {
   });
   return (
     <Box sx={{ p: 3 }}>
-      <CreateConfirmation
-        isOpen={dialog.open}
-        onConfirm={formik.handleSubmit}
-        onCancel={dialog.handleClose}
-      />
+      <LoadingBackdrop open={loading} />
+      {!loading && (
+        <CreateConfirmation
+          isOpen={dialog.open}
+          onConfirm={formik.handleSubmit}
+          onCancel={dialog.handleClose}
+        />
+      )}
       <form>
         <Grid
           container
@@ -120,35 +154,18 @@ const NewProjectForm = () => {
           <Grid
             item
             xs={12}
-            md={6}
+            md={12}
           >
             <TextField
               fullWidth
-              label="Nom Projet"
-              name="project_name"
-              required
-              size="small"
-              value={formik.values.project_name}
+              label="Nom"
+              name="name"
+              value={formik.values.name}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.project_name && Boolean(formik.errors.project_name)}
-              helperText={formik.touched.project_name && formik.errors.project_name}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            md={6}
-          >
-            <TextField
-              fullWidth
-              label="Email de contact"
-              name="email"
-              type="email"
-              size="small"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              helperText={formik.touched.name && formik.errors.name}
+              sx={{ mt: 2 }}
             />
           </Grid>
           <Grid
@@ -163,19 +180,19 @@ const NewProjectForm = () => {
             >
               <TextField
                 fullWidth
-                label="Bailleur de fond"
-                name="financial_backer"
-                size="small"
-                value={financialBackersInput}
-                onChange={handleFinancialBackersInputChange}
+                label="Date de début"
+                type="date"
+                name="start_date"
+                InputLabelProps={{ shrink: true }}
+                value={formik.values.start_date}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.start_date && Boolean(formik.errors.start_date)}
+                helperText={formik.touched.start_date && formik.errors.start_date}
+                sx={{ mt: 2 }}
               />
-              <IconButton onClick={handleAddFinancialBacker}>
-                <SvgIcon>
-                  <PlusIcon />
-                </SvgIcon>
-              </IconButton>
             </Stack>
-            <Stack
+            {/* <Stack
               alignItems="center"
               direction="row"
               flexWrap="wrap"
@@ -193,7 +210,7 @@ const NewProjectForm = () => {
                   variant="outlined"
                 />
               ))}
-            </Stack>
+            </Stack> */}
           </Grid>
           <Grid
             item
@@ -207,19 +224,24 @@ const NewProjectForm = () => {
             >
               <TextField
                 fullWidth
-                label="Bénéficiare"
-                name="beneficiaries"
-                size="small"
-                value={beneficiaryInput}
-                onChange={handleBeneficiaryInputChange}
+                label="Date de fin"
+                name="end_date"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                value={formik.values.end_date}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.end_date && Boolean(formik.errors.end_date)}
+                helperText={formik.touched.end_date && formik.errors.end_date}
+                sx={{ mt: 2 }}
               />
-              <IconButton onClick={handleAddBeneficiary}>
+              {/* <IconButton onClick={handleAddBeneficiary}>
                 <SvgIcon>
                   <PlusIcon />
                 </SvgIcon>
-              </IconButton>
+              </IconButton> */}
             </Stack>
-            <Stack
+            {/* <Stack
               alignItems="center"
               direction="row"
               flexWrap="wrap"
@@ -237,7 +259,7 @@ const NewProjectForm = () => {
                   variant="outlined"
                 />
               ))}
-            </Stack>
+            </Stack> */}
           </Grid>
           <Grid
             item
@@ -246,13 +268,93 @@ const NewProjectForm = () => {
           >
             <TextField
               fullWidth
-              label="Montant Global"
-              name="amount"
+              label="Budget du projet"
+              name="project_budget"
               type="number"
-              size="small"
-              value={formik.values.amount}
+              value={formik.values.project_budget}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              error={formik.touched.project_budget && Boolean(formik.errors.project_budget)}
+              helperText={formik.touched.project_budget && formik.errors.project_budget}
+              sx={{ mt: 2 }}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={12}
+          >
+            <TextField
+              fullWidth
+              label="Contact Personne Email"
+              name="contact_person_email"
+              value={formik.values.contact_person_email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.contact_person_email && Boolean(formik.errors.contact_person_email)
+              }
+              helperText={formik.touched.contact_person_email && formik.errors.contact_person_email}
+              sx={{ mt: 2 }}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={12}
+          >
+            <TextField
+              fullWidth
+              label="Contact Personne nom"
+              name="contact_person_name"
+              value={formik.values.contact_person_name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.contact_person_name && Boolean(formik.errors.contact_person_name)
+              }
+              helperText={formik.touched.contact_person_name && formik.errors.contact_person_name}
+              sx={{ mt: 2 }}
+            />
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            md={12}
+          >
+            <TextField
+              fullWidth
+              label="Status"
+              name="status"
+              select
+              value={formik.values.status.toString()}
+              onChange={(e) => {
+                formik.setFieldValue('status', e.target.value === 'true');
+              }}
+              sx={{ mt: 2 }}
+            >
+              <MenuItem value="true">Active</MenuItem>
+              <MenuItem value="false">Inactive</MenuItem>
+            </TextField>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={12}
+          >
+            <TextField
+              fullWidth
+              label="Description"
+              name="description"
+              multiline
+              rows={2}
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.description && Boolean(formik.errors.description)}
+              helperText={formik.touched.description && formik.errors.description}
+              sx={{ mt: 2 }}
             />
           </Grid>
         </Grid>

@@ -2,17 +2,21 @@ import { IconButton, Link, Stack, SvgIcon, TableCell, TableRow, Typography } fro
 import ArrowRight from '@untitled-ui/icons-react/build/esm/ArrowRight';
 import React, { FC } from 'react';
 import { RouterLink } from 'src/components/router-link';
+import { SeverityPill } from 'src/components/severity-pill';
 import { paths } from 'src/paths';
-import { Project } from 'src/types/project';
+import { GetProjectsQuery } from 'src/types/generatedTypes';
+// import { Project } from 'src/types/project';
+type Project = NonNullable<
+  NonNullable<GetProjectsQuery['projectsCollection']>['edges']
+>[number]['node'];
 
 interface ProjectListTableRowProps {
   project: Project;
   totalAmount: string;
+  onSelect?: (projectId: string) => void;
 }
 
-const ProjectListTableRow: FC<ProjectListTableRowProps> = ({ project, totalAmount }) => {
-  console.log(project);
-
+const ProjectListTableRow: FC<ProjectListTableRowProps> = ({ project, totalAmount, onSelect }) => {
   return (
     <TableRow
       hover
@@ -28,17 +32,21 @@ const ProjectListTableRow: FC<ProjectListTableRowProps> = ({ project, totalAmoun
             <Link
               color="inherit"
               component={RouterLink}
-              href={paths.projets.details.replace(':projetId', project?.id)}
+              href={paths.projets.details.replace(':projetId', String(project?.id))}
               variant="subtitle2"
             >
-              {project.project_name}
+              {project.name}
             </Link>
           </div>
         </Stack>
       </TableCell>
-      <TableCell> {project.email}</TableCell>
       <TableCell>
-        {project?.financial_backer?.slice(-2).map((financial, i) => {
+        <Typography variant="body2">{project.contact_person_email}</Typography>
+      </TableCell>
+      <TableCell>
+        <Typography variant="body2">{project.contact_person_name}</Typography>
+        {/* Uncomment if you want to display financial backers */}
+        {/* {project?.financial_backer?.slice(-2).map((financial, i) => {
           return (
             <Typography
               key={i}
@@ -48,18 +56,32 @@ const ProjectListTableRow: FC<ProjectListTableRowProps> = ({ project, totalAmoun
               - {financial}
             </Typography>
           );
-        })}
-        {project?.financial_backer.length <= 0 && (
+        })} */}
+        {/* {project?.financial_backer?.slice(-2).map((financial, i) => {
+          return (
+            <Typography
+              key={i}
+              color="text.secondary"
+              variant="body2"
+            >
+              - {financial}
+            </Typography>
+          );
+        })} */}
+        {/* {project?.financial_backer.length <= 0 && (
           <Typography
             color="text.secondary"
             variant="body2"
           >
             --
           </Typography>
-        )}
+        )} */}
       </TableCell>
       <TableCell>
-        {project?.beneficiaries?.slice(-2).map((beneficary, i) => {
+        <SeverityPill color={project?.status == true ? 'success' : 'error'}>
+          {project?.status == true ? 'active' : 'inactif'}
+        </SeverityPill>
+        {/* {project?.beneficiaries?.slice(-2).map((beneficary, i) => {
           return (
             <Typography
               key={i}
@@ -77,22 +99,25 @@ const ProjectListTableRow: FC<ProjectListTableRowProps> = ({ project, totalAmoun
           >
             --
           </Typography>
-        )}
+        )} */}
       </TableCell>
       <TableCell>
         <Typography variant="body2">MAD {totalAmount}</Typography>
       </TableCell>
       <TableCell align="right">
-        <Link
+        {/* <Link
           component={RouterLink}
-          href={paths.projets.details.replace(':projetId', project?.id)}
+          href={paths.projets.details.replace(':projetId', String(project?.id))}
+        > */}
+        <IconButton
+          color="info"
+          onClick={() => onSelect?.(String(project.id))}
         >
-          <IconButton color="info">
-            <SvgIcon>
-              <ArrowRight />
-            </SvgIcon>
-          </IconButton>
-        </Link>
+          <SvgIcon>
+            <ArrowRight />
+          </SvgIcon>
+        </IconButton>
+        {/* </Link> */}
       </TableCell>
     </TableRow>
   );

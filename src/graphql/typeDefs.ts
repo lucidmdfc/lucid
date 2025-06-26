@@ -13,6 +13,7 @@ const typeDefs = gql`
       documentCategory: String!
       expense_claim_category: String
       expense_claim_id: String
+      grant_id: String
       expense_status: Boolean
       provider_invoice_id: String
       provider_invoice_file_category: String

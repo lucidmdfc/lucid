@@ -35,7 +35,11 @@ export const DELETE_EXPENSE_CLAIM = gql`
 `;
 
 export const UPDATE_EXPENSE_CLAIM = gql`
-  mutation UpdateExpenseClaim($set: projectsUpdateInput!, $filter: projectsFilter, $atMost: Int!) {
+  mutation UpdateExpenseClaim(
+    $set: expense_claimsUpdateInput!
+    $filter: expense_claimsFilter
+    $atMost: Int!
+  ) {
     updateexpense_claimsCollection(set: $set, filter: $filter, atMost: $atMost) {
       records {
         ...ExpenseClaimFragment

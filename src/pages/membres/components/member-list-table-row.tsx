@@ -24,7 +24,7 @@ const MemberListTableRow: FC<MemberListTableRowProps> = ({ member, onSelect }) =
       </TableCell>
       <TableCell>
         <SeverityPill color={member?.status == true ? 'success' : 'error'}>
-          {member?.status == false ? 'payée' : 'impayée'}
+          {member?.status == false ? 'impayée' : 'payée'}
         </SeverityPill>
       </TableCell>
       <TableCell>

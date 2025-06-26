@@ -25,7 +25,7 @@ const OverviewProjectFromGrants: FC<OverviewDoneTasksProps> = (props) => {
   // console.log(donors);
 
   const handleClick = () => {
-    router.push(`/projets/grants/${id}`);
+    router.push(`/grants/grants/${id}`);
   };
   return (
     <Card>

@@ -3,10 +3,10 @@ import { MEMBER_FRAGMENT } from './fragments';
 export const CREATE_MEMBER = gql`
   mutation CreateMember(
     $amount: BigFloat!
-    $payment_date: Date!
+    $payment_date: Datetime!
     $rc_cin: String
     $status: Boolean
-    $full_name: full_name
+    $full_name: String
     $phone: String
     $email: String
     $address: String
@@ -21,7 +21,6 @@ export const CREATE_MEMBER = gql`
           full_name: $full_name
           address: $address
           email: $email
-          address: $address
           phone: $phone
         }
       ]

@@ -105,18 +105,34 @@ export const ExpenseClaimFragmentFragmentDoc = gql`
   comment
   status
   transport_amount
-  transport_document
   accommodation_amount
-  accommodation_document
   meals_amount
-  meals_document
   gifts_and_entertainment_amount
-  gifts_and_entertainment_document
   documentation_amount
-  documentation_document
 }
     ${ProjectFragmentFragmentDoc}
 ${EmployeeFragmentFragmentDoc}`;
+export const FilesFragmentFragmentDoc = gql`
+    fragment FilesFragment on files {
+  id
+  storage_provider
+  bucket_name
+  storage_key
+  original_filename
+  mime_type
+  size_bytes
+  document_category
+  created_at
+  uploaded_at
+  metadata
+  public_url
+  expense_status
+  expense_claim_id
+  expense_claim_category
+  provider_invoice_file_category
+  provider_invoice_id
+}
+    `;
 export const GrantProjectAgreementFragmentFragmentDoc = gql`
     fragment GrantProjectAgreementFragment on grant_project_agreement {
   id
@@ -196,12 +212,23 @@ export const ProviderInvoiceFragmentFragmentDoc = gql`
   id
   service_provider_id
   project_id
+  service_providers {
+    name
+  }
+  status {
+    name
+  }
   invoice_number
-  amount
+  amount_ht
+  tax_rate
+  amount_ttc
+  currency
   issue_date
   due_date
   payment_date
-  status
+  payment_method
+  status_id
+  notes
   created_at
   updated_at
 }
@@ -218,16 +245,14 @@ export const ProvidersInvoiceProjectFragmentFragmentDoc = gql`
 export const ServiceProviderFragmentFragmentDoc = gql`
     fragment ServiceProviderFragment on service_providers {
   id
+  phone
+  address
+  contact_person
+  ice
   name
   email
-  phone
   created_at
   updated_at
-  ice
-  depositedDate
-  dueDate
-  amount
-  status_id
 }
     `;
 export const StatusFragmentFragmentDoc = gql`
@@ -745,6 +770,43 @@ export function useDeleteExpenseClaimMutation(baseOptions?: Apollo.MutationHookO
 export type DeleteExpenseClaimMutationHookResult = ReturnType<typeof useDeleteExpenseClaimMutation>;
 export type DeleteExpenseClaimMutationResult = Apollo.MutationResult<Types.DeleteExpenseClaimMutation>;
 export type DeleteExpenseClaimMutationOptions = Apollo.BaseMutationOptions<Types.DeleteExpenseClaimMutation, Types.DeleteExpenseClaimMutationVariables>;
+export const UpdateExpenseClaimDocument = gql`
+    mutation UpdateExpenseClaim($set: expense_claimsUpdateInput!, $filter: expense_claimsFilter, $atMost: Int!) {
+  updateexpense_claimsCollection(set: $set, filter: $filter, atMost: $atMost) {
+    records {
+      ...ExpenseClaimFragment
+    }
+  }
+}
+    ${ExpenseClaimFragmentFragmentDoc}`;
+export type UpdateExpenseClaimMutationFn = Apollo.MutationFunction<Types.UpdateExpenseClaimMutation, Types.UpdateExpenseClaimMutationVariables>;
+
+/**
+ * __useUpdateExpenseClaimMutation__
+ *
+ * To run a mutation, you first call `useUpdateExpenseClaimMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateExpenseClaimMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateExpenseClaimMutation, { data, loading, error }] = useUpdateExpenseClaimMutation({
+ *   variables: {
+ *      set: // value for 'set'
+ *      filter: // value for 'filter'
+ *      atMost: // value for 'atMost'
+ *   },
+ * });
+ */
+export function useUpdateExpenseClaimMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateExpenseClaimMutation, Types.UpdateExpenseClaimMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdateExpenseClaimMutation, Types.UpdateExpenseClaimMutationVariables>(UpdateExpenseClaimDocument, options);
+      }
+export type UpdateExpenseClaimMutationHookResult = ReturnType<typeof useUpdateExpenseClaimMutation>;
+export type UpdateExpenseClaimMutationResult = Apollo.MutationResult<Types.UpdateExpenseClaimMutation>;
+export type UpdateExpenseClaimMutationOptions = Apollo.BaseMutationOptions<Types.UpdateExpenseClaimMutation, Types.UpdateExpenseClaimMutationVariables>;
 export const GetExpenseClaimsDocument = gql`
     query GetExpenseClaims {
   expense_claimsCollection {
@@ -832,6 +894,141 @@ export type GetExpenceClaimByIdQueryHookResult = ReturnType<typeof useGetExpence
 export type GetExpenceClaimByIdLazyQueryHookResult = ReturnType<typeof useGetExpenceClaimByIdLazyQuery>;
 export type GetExpenceClaimByIdSuspenseQueryHookResult = ReturnType<typeof useGetExpenceClaimByIdSuspenseQuery>;
 export type GetExpenceClaimByIdQueryResult = Apollo.QueryResult<Types.GetExpenceClaimByIdQuery, Types.GetExpenceClaimByIdQueryVariables>;
+export const GetFilesDocument = gql`
+    query GetFiles {
+  filesCollection {
+    edges {
+      node {
+        ...FilesFragment
+      }
+    }
+  }
+}
+    ${FilesFragmentFragmentDoc}`;
+
+/**
+ * __useGetFilesQuery__
+ *
+ * To run a query within a React component, call `useGetFilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFilesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFilesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetFilesQuery(baseOptions?: Apollo.QueryHookOptions<Types.GetFilesQuery, Types.GetFilesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetFilesQuery, Types.GetFilesQueryVariables>(GetFilesDocument, options);
+      }
+export function useGetFilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetFilesQuery, Types.GetFilesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetFilesQuery, Types.GetFilesQueryVariables>(GetFilesDocument, options);
+        }
+export function useGetFilesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetFilesQuery, Types.GetFilesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetFilesQuery, Types.GetFilesQueryVariables>(GetFilesDocument, options);
+        }
+export type GetFilesQueryHookResult = ReturnType<typeof useGetFilesQuery>;
+export type GetFilesLazyQueryHookResult = ReturnType<typeof useGetFilesLazyQuery>;
+export type GetFilesSuspenseQueryHookResult = ReturnType<typeof useGetFilesSuspenseQuery>;
+export type GetFilesQueryResult = Apollo.QueryResult<Types.GetFilesQuery, Types.GetFilesQueryVariables>;
+export const GetFilesByExpenseClaimDocument = gql`
+    query GetFilesByExpenseClaim($expenseClaimId: Int!) {
+  filesCollection(
+    filter: {document_category: {eq: "expense_claims"}, expense_claim_id: {eq: $expenseClaimId}}
+  ) {
+    edges {
+      node {
+        ...FilesFragment
+      }
+    }
+  }
+}
+    ${FilesFragmentFragmentDoc}`;
+
+/**
+ * __useGetFilesByExpenseClaimQuery__
+ *
+ * To run a query within a React component, call `useGetFilesByExpenseClaimQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFilesByExpenseClaimQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFilesByExpenseClaimQuery({
+ *   variables: {
+ *      expenseClaimId: // value for 'expenseClaimId'
+ *   },
+ * });
+ */
+export function useGetFilesByExpenseClaimQuery(baseOptions: Apollo.QueryHookOptions<Types.GetFilesByExpenseClaimQuery, Types.GetFilesByExpenseClaimQueryVariables> & ({ variables: Types.GetFilesByExpenseClaimQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetFilesByExpenseClaimQuery, Types.GetFilesByExpenseClaimQueryVariables>(GetFilesByExpenseClaimDocument, options);
+      }
+export function useGetFilesByExpenseClaimLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetFilesByExpenseClaimQuery, Types.GetFilesByExpenseClaimQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetFilesByExpenseClaimQuery, Types.GetFilesByExpenseClaimQueryVariables>(GetFilesByExpenseClaimDocument, options);
+        }
+export function useGetFilesByExpenseClaimSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetFilesByExpenseClaimQuery, Types.GetFilesByExpenseClaimQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetFilesByExpenseClaimQuery, Types.GetFilesByExpenseClaimQueryVariables>(GetFilesByExpenseClaimDocument, options);
+        }
+export type GetFilesByExpenseClaimQueryHookResult = ReturnType<typeof useGetFilesByExpenseClaimQuery>;
+export type GetFilesByExpenseClaimLazyQueryHookResult = ReturnType<typeof useGetFilesByExpenseClaimLazyQuery>;
+export type GetFilesByExpenseClaimSuspenseQueryHookResult = ReturnType<typeof useGetFilesByExpenseClaimSuspenseQuery>;
+export type GetFilesByExpenseClaimQueryResult = Apollo.QueryResult<Types.GetFilesByExpenseClaimQuery, Types.GetFilesByExpenseClaimQueryVariables>;
+export const GetFilesByProviderDocument = gql`
+    query GetFilesByProvider($providerInvoiceId: Int!) {
+  filesCollection(
+    filter: {document_category: {eq: "provider_invoice_file"}, provider_invoice_id: {eq: $providerInvoiceId}}
+  ) {
+    edges {
+      node {
+        ...FilesFragment
+      }
+    }
+  }
+}
+    ${FilesFragmentFragmentDoc}`;
+
+/**
+ * __useGetFilesByProviderQuery__
+ *
+ * To run a query within a React component, call `useGetFilesByProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFilesByProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFilesByProviderQuery({
+ *   variables: {
+ *      providerInvoiceId: // value for 'providerInvoiceId'
+ *   },
+ * });
+ */
+export function useGetFilesByProviderQuery(baseOptions: Apollo.QueryHookOptions<Types.GetFilesByProviderQuery, Types.GetFilesByProviderQueryVariables> & ({ variables: Types.GetFilesByProviderQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetFilesByProviderQuery, Types.GetFilesByProviderQueryVariables>(GetFilesByProviderDocument, options);
+      }
+export function useGetFilesByProviderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetFilesByProviderQuery, Types.GetFilesByProviderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetFilesByProviderQuery, Types.GetFilesByProviderQueryVariables>(GetFilesByProviderDocument, options);
+        }
+export function useGetFilesByProviderSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetFilesByProviderQuery, Types.GetFilesByProviderQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetFilesByProviderQuery, Types.GetFilesByProviderQueryVariables>(GetFilesByProviderDocument, options);
+        }
+export type GetFilesByProviderQueryHookResult = ReturnType<typeof useGetFilesByProviderQuery>;
+export type GetFilesByProviderLazyQueryHookResult = ReturnType<typeof useGetFilesByProviderLazyQuery>;
+export type GetFilesByProviderSuspenseQueryHookResult = ReturnType<typeof useGetFilesByProviderSuspenseQuery>;
+export type GetFilesByProviderQueryResult = Apollo.QueryResult<Types.GetFilesByProviderQuery, Types.GetFilesByProviderQueryVariables>;
 export const CreateGrantAgreementDocument = gql`
     mutation CreateGrantAgreement($donor_id: Int!, $project_id: Int!, $grant: BigFloat!, $agreement_date: Date!) {
   insertIntogrant_project_agreementCollection(
@@ -1079,6 +1276,174 @@ export type GetGrantsByProjectIdQueryHookResult = ReturnType<typeof useGetGrants
 export type GetGrantsByProjectIdLazyQueryHookResult = ReturnType<typeof useGetGrantsByProjectIdLazyQuery>;
 export type GetGrantsByProjectIdSuspenseQueryHookResult = ReturnType<typeof useGetGrantsByProjectIdSuspenseQuery>;
 export type GetGrantsByProjectIdQueryResult = Apollo.QueryResult<Types.GetGrantsByProjectIdQuery, Types.GetGrantsByProjectIdQueryVariables>;
+export const CreateMemberDocument = gql`
+    mutation CreateMember($amount: BigFloat!, $payment_date: Datetime!, $rc_cin: String, $status: Boolean, $full_name: String, $phone: String, $email: String, $address: String) {
+  insertIntomembersCollection(
+    objects: [{amount: $amount, payment_date: $payment_date, rc_cin: $rc_cin, status: $status, full_name: $full_name, address: $address, email: $email, phone: $phone}]
+  ) {
+    records {
+      ...MemberFragment
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}`;
+export type CreateMemberMutationFn = Apollo.MutationFunction<Types.CreateMemberMutation, Types.CreateMemberMutationVariables>;
+
+/**
+ * __useCreateMemberMutation__
+ *
+ * To run a mutation, you first call `useCreateMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMemberMutation, { data, loading, error }] = useCreateMemberMutation({
+ *   variables: {
+ *      amount: // value for 'amount'
+ *      payment_date: // value for 'payment_date'
+ *      rc_cin: // value for 'rc_cin'
+ *      status: // value for 'status'
+ *      full_name: // value for 'full_name'
+ *      phone: // value for 'phone'
+ *      email: // value for 'email'
+ *      address: // value for 'address'
+ *   },
+ * });
+ */
+export function useCreateMemberMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreateMemberMutation, Types.CreateMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.CreateMemberMutation, Types.CreateMemberMutationVariables>(CreateMemberDocument, options);
+      }
+export type CreateMemberMutationHookResult = ReturnType<typeof useCreateMemberMutation>;
+export type CreateMemberMutationResult = Apollo.MutationResult<Types.CreateMemberMutation>;
+export type CreateMemberMutationOptions = Apollo.BaseMutationOptions<Types.CreateMemberMutation, Types.CreateMemberMutationVariables>;
+export const UpdateMemberDocument = gql`
+    mutation UpdateMember($filter: membersFilter, $set: membersUpdateInput!, $atMost: Int = 1) {
+  updatemembersCollection(filter: $filter, set: $set, atMost: $atMost) {
+    records {
+      ...MemberFragment
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}`;
+export type UpdateMemberMutationFn = Apollo.MutationFunction<Types.UpdateMemberMutation, Types.UpdateMemberMutationVariables>;
+
+/**
+ * __useUpdateMemberMutation__
+ *
+ * To run a mutation, you first call `useUpdateMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMemberMutation, { data, loading, error }] = useUpdateMemberMutation({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      set: // value for 'set'
+ *      atMost: // value for 'atMost'
+ *   },
+ * });
+ */
+export function useUpdateMemberMutation(baseOptions?: Apollo.MutationHookOptions<Types.UpdateMemberMutation, Types.UpdateMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.UpdateMemberMutation, Types.UpdateMemberMutationVariables>(UpdateMemberDocument, options);
+      }
+export type UpdateMemberMutationHookResult = ReturnType<typeof useUpdateMemberMutation>;
+export type UpdateMemberMutationResult = Apollo.MutationResult<Types.UpdateMemberMutation>;
+export type UpdateMemberMutationOptions = Apollo.BaseMutationOptions<Types.UpdateMemberMutation, Types.UpdateMemberMutationVariables>;
+export const GetMembersDocument = gql`
+    query GetMembers {
+  membersCollection {
+    edges {
+      node {
+        ...MemberFragment
+      }
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}`;
+
+/**
+ * __useGetMembersQuery__
+ *
+ * To run a query within a React component, call `useGetMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMembersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMembersQuery(baseOptions?: Apollo.QueryHookOptions<Types.GetMembersQuery, Types.GetMembersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetMembersQuery, Types.GetMembersQueryVariables>(GetMembersDocument, options);
+      }
+export function useGetMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetMembersQuery, Types.GetMembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetMembersQuery, Types.GetMembersQueryVariables>(GetMembersDocument, options);
+        }
+export function useGetMembersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetMembersQuery, Types.GetMembersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetMembersQuery, Types.GetMembersQueryVariables>(GetMembersDocument, options);
+        }
+export type GetMembersQueryHookResult = ReturnType<typeof useGetMembersQuery>;
+export type GetMembersLazyQueryHookResult = ReturnType<typeof useGetMembersLazyQuery>;
+export type GetMembersSuspenseQueryHookResult = ReturnType<typeof useGetMembersSuspenseQuery>;
+export type GetMembersQueryResult = Apollo.QueryResult<Types.GetMembersQuery, Types.GetMembersQueryVariables>;
+export const GetMemberDocument = gql`
+    query GetMember($id: Int!) {
+  membersCollection(filter: {id: {eq: $id}}, first: 1) {
+    edges {
+      node {
+        ...MemberFragment
+      }
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}`;
+
+/**
+ * __useGetMemberQuery__
+ *
+ * To run a query within a React component, call `useGetMemberQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMemberQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMemberQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetMemberQuery(baseOptions: Apollo.QueryHookOptions<Types.GetMemberQuery, Types.GetMemberQueryVariables> & ({ variables: Types.GetMemberQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetMemberQuery, Types.GetMemberQueryVariables>(GetMemberDocument, options);
+      }
+export function useGetMemberLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetMemberQuery, Types.GetMemberQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetMemberQuery, Types.GetMemberQueryVariables>(GetMemberDocument, options);
+        }
+export function useGetMemberSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetMemberQuery, Types.GetMemberQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetMemberQuery, Types.GetMemberQueryVariables>(GetMemberDocument, options);
+        }
+export type GetMemberQueryHookResult = ReturnType<typeof useGetMemberQuery>;
+export type GetMemberLazyQueryHookResult = ReturnType<typeof useGetMemberLazyQuery>;
+export type GetMemberSuspenseQueryHookResult = ReturnType<typeof useGetMemberSuspenseQuery>;
+export type GetMemberQueryResult = Apollo.QueryResult<Types.GetMemberQuery, Types.GetMemberQueryVariables>;
 export const CreateProjectDocument = gql`
     mutation CreateProject($name: String!, $description: String, $start_date: Date!, $end_date: Date!, $project_budget: BigFloat!, $status: Boolean, $note: String, $contact_person_email: String, $contact_person_name: String) {
   insertIntoprojectsCollection(
@@ -1290,6 +1655,233 @@ export type GetProjectByIdQueryHookResult = ReturnType<typeof useGetProjectByIdQ
 export type GetProjectByIdLazyQueryHookResult = ReturnType<typeof useGetProjectByIdLazyQuery>;
 export type GetProjectByIdSuspenseQueryHookResult = ReturnType<typeof useGetProjectByIdSuspenseQuery>;
 export type GetProjectByIdQueryResult = Apollo.QueryResult<Types.GetProjectByIdQuery, Types.GetProjectByIdQueryVariables>;
+export const CreateProviderInvoiceDocument = gql`
+    mutation CreateProviderInvoice($service_provider_id: Int!, $project_id: Int!, $invoice_number: String!, $amount_ht: BigFloat!, $tax_rate: BigFloat!, $amount_ttc: BigFloat!, $currency: String!, $issue_date: Date!, $due_date: Date, $payment_date: Date, $payment_method: payment_method_enum!, $status_id: Int!, $storage_key: String, $file_url: String, $notes: String) {
+  insertIntoprovider_invoicesCollection(
+    objects: {service_provider_id: $service_provider_id, project_id: $project_id, invoice_number: $invoice_number, amount_ht: $amount_ht, tax_rate: $tax_rate, amount_ttc: $amount_ttc, currency: $currency, issue_date: $issue_date, due_date: $due_date, payment_date: $payment_date, payment_method: $payment_method, status_id: $status_id, storage_key: $storage_key, file_url: $file_url, notes: $notes}
+  ) {
+    records {
+      ...ProviderInvoiceFragment
+    }
+  }
+}
+    ${ProviderInvoiceFragmentFragmentDoc}`;
+export type CreateProviderInvoiceMutationFn = Apollo.MutationFunction<Types.CreateProviderInvoiceMutation, Types.CreateProviderInvoiceMutationVariables>;
+
+/**
+ * __useCreateProviderInvoiceMutation__
+ *
+ * To run a mutation, you first call `useCreateProviderInvoiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProviderInvoiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProviderInvoiceMutation, { data, loading, error }] = useCreateProviderInvoiceMutation({
+ *   variables: {
+ *      service_provider_id: // value for 'service_provider_id'
+ *      project_id: // value for 'project_id'
+ *      invoice_number: // value for 'invoice_number'
+ *      amount_ht: // value for 'amount_ht'
+ *      tax_rate: // value for 'tax_rate'
+ *      amount_ttc: // value for 'amount_ttc'
+ *      currency: // value for 'currency'
+ *      issue_date: // value for 'issue_date'
+ *      due_date: // value for 'due_date'
+ *      payment_date: // value for 'payment_date'
+ *      payment_method: // value for 'payment_method'
+ *      status_id: // value for 'status_id'
+ *      storage_key: // value for 'storage_key'
+ *      file_url: // value for 'file_url'
+ *      notes: // value for 'notes'
+ *   },
+ * });
+ */
+export function useCreateProviderInvoiceMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreateProviderInvoiceMutation, Types.CreateProviderInvoiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.CreateProviderInvoiceMutation, Types.CreateProviderInvoiceMutationVariables>(CreateProviderInvoiceDocument, options);
+      }
+export type CreateProviderInvoiceMutationHookResult = ReturnType<typeof useCreateProviderInvoiceMutation>;
+export type CreateProviderInvoiceMutationResult = Apollo.MutationResult<Types.CreateProviderInvoiceMutation>;
+export type CreateProviderInvoiceMutationOptions = Apollo.BaseMutationOptions<Types.CreateProviderInvoiceMutation, Types.CreateProviderInvoiceMutationVariables>;
+export const DeleteProviderInvoiceDocument = gql`
+    mutation DeleteProviderInvoice($id: Int!) {
+  deleteFromprovider_invoicesCollection(filter: {id: {eq: $id}}) {
+    affectedCount
+  }
+}
+    `;
+export type DeleteProviderInvoiceMutationFn = Apollo.MutationFunction<Types.DeleteProviderInvoiceMutation, Types.DeleteProviderInvoiceMutationVariables>;
+
+/**
+ * __useDeleteProviderInvoiceMutation__
+ *
+ * To run a mutation, you first call `useDeleteProviderInvoiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProviderInvoiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProviderInvoiceMutation, { data, loading, error }] = useDeleteProviderInvoiceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteProviderInvoiceMutation(baseOptions?: Apollo.MutationHookOptions<Types.DeleteProviderInvoiceMutation, Types.DeleteProviderInvoiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.DeleteProviderInvoiceMutation, Types.DeleteProviderInvoiceMutationVariables>(DeleteProviderInvoiceDocument, options);
+      }
+export type DeleteProviderInvoiceMutationHookResult = ReturnType<typeof useDeleteProviderInvoiceMutation>;
+export type DeleteProviderInvoiceMutationResult = Apollo.MutationResult<Types.DeleteProviderInvoiceMutation>;
+export type DeleteProviderInvoiceMutationOptions = Apollo.BaseMutationOptions<Types.DeleteProviderInvoiceMutation, Types.DeleteProviderInvoiceMutationVariables>;
+export const GetProvidersInvoicesDocument = gql`
+    query GetProvidersInvoices($filter: provider_invoicesFilter, $orderBy: [provider_invoicesOrderBy!], $first: Int, $last: Int, $before: Cursor, $after: Cursor, $offset: Int) {
+  provider_invoicesCollection(
+    filter: $filter
+    orderBy: $orderBy
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+    offset: $offset
+  ) {
+    edges {
+      node {
+        ...ProviderInvoiceFragment
+      }
+    }
+  }
+}
+    ${ProviderInvoiceFragmentFragmentDoc}`;
+
+/**
+ * __useGetProvidersInvoicesQuery__
+ *
+ * To run a query within a React component, call `useGetProvidersInvoicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProvidersInvoicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProvidersInvoicesQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      orderBy: // value for 'orderBy'
+ *      first: // value for 'first'
+ *      last: // value for 'last'
+ *      before: // value for 'before'
+ *      after: // value for 'after'
+ *      offset: // value for 'offset'
+ *   },
+ * });
+ */
+export function useGetProvidersInvoicesQuery(baseOptions?: Apollo.QueryHookOptions<Types.GetProvidersInvoicesQuery, Types.GetProvidersInvoicesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetProvidersInvoicesQuery, Types.GetProvidersInvoicesQueryVariables>(GetProvidersInvoicesDocument, options);
+      }
+export function useGetProvidersInvoicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetProvidersInvoicesQuery, Types.GetProvidersInvoicesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetProvidersInvoicesQuery, Types.GetProvidersInvoicesQueryVariables>(GetProvidersInvoicesDocument, options);
+        }
+export function useGetProvidersInvoicesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetProvidersInvoicesQuery, Types.GetProvidersInvoicesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetProvidersInvoicesQuery, Types.GetProvidersInvoicesQueryVariables>(GetProvidersInvoicesDocument, options);
+        }
+export type GetProvidersInvoicesQueryHookResult = ReturnType<typeof useGetProvidersInvoicesQuery>;
+export type GetProvidersInvoicesLazyQueryHookResult = ReturnType<typeof useGetProvidersInvoicesLazyQuery>;
+export type GetProvidersInvoicesSuspenseQueryHookResult = ReturnType<typeof useGetProvidersInvoicesSuspenseQuery>;
+export type GetProvidersInvoicesQueryResult = Apollo.QueryResult<Types.GetProvidersInvoicesQuery, Types.GetProvidersInvoicesQueryVariables>;
+export const CreateServiceProviderDocument = gql`
+    mutation CreateServiceProvider($name: String!, $email: String, $phone: String!, $ice: String!, $address: String, $contact_person: String) {
+  insertIntoservice_providersCollection(
+    objects: {name: $name, email: $email, phone: $phone, ice: $ice, address: $address, contact_person: $contact_person}
+  ) {
+    records {
+      ...ServiceProviderFragment
+    }
+  }
+}
+    ${ServiceProviderFragmentFragmentDoc}`;
+export type CreateServiceProviderMutationFn = Apollo.MutationFunction<Types.CreateServiceProviderMutation, Types.CreateServiceProviderMutationVariables>;
+
+/**
+ * __useCreateServiceProviderMutation__
+ *
+ * To run a mutation, you first call `useCreateServiceProviderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateServiceProviderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createServiceProviderMutation, { data, loading, error }] = useCreateServiceProviderMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      email: // value for 'email'
+ *      phone: // value for 'phone'
+ *      ice: // value for 'ice'
+ *      address: // value for 'address'
+ *      contact_person: // value for 'contact_person'
+ *   },
+ * });
+ */
+export function useCreateServiceProviderMutation(baseOptions?: Apollo.MutationHookOptions<Types.CreateServiceProviderMutation, Types.CreateServiceProviderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Types.CreateServiceProviderMutation, Types.CreateServiceProviderMutationVariables>(CreateServiceProviderDocument, options);
+      }
+export type CreateServiceProviderMutationHookResult = ReturnType<typeof useCreateServiceProviderMutation>;
+export type CreateServiceProviderMutationResult = Apollo.MutationResult<Types.CreateServiceProviderMutation>;
+export type CreateServiceProviderMutationOptions = Apollo.BaseMutationOptions<Types.CreateServiceProviderMutation, Types.CreateServiceProviderMutationVariables>;
+export const GetServiceProvidersDocument = gql`
+    query GetServiceProviders {
+  service_providersCollection {
+    edges {
+      node {
+        ...ServiceProviderFragment
+      }
+    }
+  }
+}
+    ${ServiceProviderFragmentFragmentDoc}`;
+
+/**
+ * __useGetServiceProvidersQuery__
+ *
+ * To run a query within a React component, call `useGetServiceProvidersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServiceProvidersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServiceProvidersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetServiceProvidersQuery(baseOptions?: Apollo.QueryHookOptions<Types.GetServiceProvidersQuery, Types.GetServiceProvidersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetServiceProvidersQuery, Types.GetServiceProvidersQueryVariables>(GetServiceProvidersDocument, options);
+      }
+export function useGetServiceProvidersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetServiceProvidersQuery, Types.GetServiceProvidersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetServiceProvidersQuery, Types.GetServiceProvidersQueryVariables>(GetServiceProvidersDocument, options);
+        }
+export function useGetServiceProvidersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetServiceProvidersQuery, Types.GetServiceProvidersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetServiceProvidersQuery, Types.GetServiceProvidersQueryVariables>(GetServiceProvidersDocument, options);
+        }
+export type GetServiceProvidersQueryHookResult = ReturnType<typeof useGetServiceProvidersQuery>;
+export type GetServiceProvidersLazyQueryHookResult = ReturnType<typeof useGetServiceProvidersLazyQuery>;
+export type GetServiceProvidersSuspenseQueryHookResult = ReturnType<typeof useGetServiceProvidersSuspenseQuery>;
+export type GetServiceProvidersQueryResult = Apollo.QueryResult<Types.GetServiceProvidersQuery, Types.GetServiceProvidersQueryVariables>;
 export const GetStatusDocument = gql`
     query GetStatus {
   statusCollection {

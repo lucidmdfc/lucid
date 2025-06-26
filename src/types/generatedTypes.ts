@@ -3,28 +3,24 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
-  [_ in K]?: never;
-};
-export type Incremental<T> =
-  | T
-  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
-  BigFloat: { input: any; output: any };
-  BigInt: { input: any; output: any };
-  Cursor: { input: any; output: any };
-  Date: { input: any; output: any };
-  Datetime: { input: any; output: any };
-  JSON: { input: any; output: any };
-  Opaque: { input: any; output: any };
-  Time: { input: any; output: any };
-  UUID: { input: any; output: any };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  BigFloat: { input: any; output: any; }
+  BigInt: { input: any; output: any; }
+  Cursor: { input: any; output: any; }
+  Date: { input: any; output: any; }
+  Datetime: { input: any; output: any; }
+  JSON: { input: any; output: any; }
+  Opaque: { input: any; output: any; }
+  Time: { input: any; output: any; }
+  UUID: { input: any; output: any; }
 };
 
 /** Boolean expression comparing fields on type "BigFloat" */
@@ -128,7 +124,7 @@ export type DatetimeListFilter = {
 
 export enum FilterIs {
   NotNull = 'NOT_NULL',
-  Null = 'NULL',
+  Null = 'NULL'
 }
 
 /** Boolean expression comparing fields on type "Float" */
@@ -197,6 +193,8 @@ export type Mutation = {
   deleteFromexpense_categoriesCollection: Expense_CategoriesDeleteResponse;
   /** Deletes zero or more records from the `expense_claims` collection */
   deleteFromexpense_claimsCollection: Expense_ClaimsDeleteResponse;
+  /** Deletes zero or more records from the `files` collection */
+  deleteFromfilesCollection: FilesDeleteResponse;
   /** Deletes zero or more records from the `grant_project_agreement` collection */
   deleteFromgrant_project_agreementCollection: Grant_Project_AgreementDeleteResponse;
   /** Deletes zero or more records from the `grant_slices` collection */
@@ -239,6 +237,8 @@ export type Mutation = {
   insertIntoexpense_categoriesCollection?: Maybe<Expense_CategoriesInsertResponse>;
   /** Adds one or more `expense_claims` records to the collection */
   insertIntoexpense_claimsCollection?: Maybe<Expense_ClaimsInsertResponse>;
+  /** Adds one or more `files` records to the collection */
+  insertIntofilesCollection?: Maybe<FilesInsertResponse>;
   /** Adds one or more `grant_project_agreement` records to the collection */
   insertIntogrant_project_agreementCollection?: Maybe<Grant_Project_AgreementInsertResponse>;
   /** Adds one or more `grant_slices` records to the collection */
@@ -290,6 +290,8 @@ export type Mutation = {
   updateexpense_categoriesCollection: Expense_CategoriesUpdateResponse;
   /** Updates zero or more records in the `expense_claims` collection */
   updateexpense_claimsCollection: Expense_ClaimsUpdateResponse;
+  /** Updates zero or more records in the `files` collection */
+  updatefilesCollection: FilesUpdateResponse;
   /** Updates zero or more records in the `grant_project_agreement` collection */
   updategrant_project_agreementCollection: Grant_Project_AgreementUpdateResponse;
   /** Updates zero or more records in the `grant_slices` collection */
@@ -318,11 +320,13 @@ export type Mutation = {
   updateutility_grant_allocationsCollection: Utility_Grant_AllocationsUpdateResponse;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromclientsCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<ClientsFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromdonorsCollectionArgs = {
@@ -330,11 +334,13 @@ export type MutationDeleteFromdonorsCollectionArgs = {
   filter?: InputMaybe<DonorsFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromemployee_Grant_AllocationsCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Employee_Grant_AllocationsFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromemployee_TransferCollectionArgs = {
@@ -342,11 +348,13 @@ export type MutationDeleteFromemployee_TransferCollectionArgs = {
   filter?: InputMaybe<Employee_TransferFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromemployeesCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<EmployeesFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromentityCollectionArgs = {
@@ -354,11 +362,13 @@ export type MutationDeleteFromentityCollectionArgs = {
   filter?: InputMaybe<EntityFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromexpense_CategoriesCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Expense_CategoriesFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromexpense_ClaimsCollectionArgs = {
@@ -366,11 +376,20 @@ export type MutationDeleteFromexpense_ClaimsCollectionArgs = {
   filter?: InputMaybe<Expense_ClaimsFilter>;
 };
 
+
+/** The root type for creating and mutating data */
+export type MutationDeleteFromfilesCollectionArgs = {
+  atMost?: Scalars['Int']['input'];
+  filter?: InputMaybe<FilesFilter>;
+};
+
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromgrant_Project_AgreementCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Grant_Project_AgreementFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromgrant_SlicesCollectionArgs = {
@@ -378,11 +397,13 @@ export type MutationDeleteFromgrant_SlicesCollectionArgs = {
   filter?: InputMaybe<Grant_SlicesFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromissued_InvoicesCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Issued_InvoicesFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFrommembersCollectionArgs = {
@@ -390,11 +411,13 @@ export type MutationDeleteFrommembersCollectionArgs = {
   filter?: InputMaybe<MembersFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFrommembershipsCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<MembershipsFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFrompetty_CashCollectionArgs = {
@@ -402,11 +425,13 @@ export type MutationDeleteFrompetty_CashCollectionArgs = {
   filter?: InputMaybe<Petty_CashFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromprojectsCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<ProjectsFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromprovider_InvoicesCollectionArgs = {
@@ -414,11 +439,13 @@ export type MutationDeleteFromprovider_InvoicesCollectionArgs = {
   filter?: InputMaybe<Provider_InvoicesFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromproviders_Invoice_ProjectCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Providers_Invoice_ProjectFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromservice_ProvidersCollectionArgs = {
@@ -426,11 +453,13 @@ export type MutationDeleteFromservice_ProvidersCollectionArgs = {
   filter?: InputMaybe<Service_ProvidersFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromstatusCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<StatusFilter>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromutilitiesCollectionArgs = {
@@ -438,116 +467,145 @@ export type MutationDeleteFromutilitiesCollectionArgs = {
   filter?: InputMaybe<UtilitiesFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationDeleteFromutility_Grant_AllocationsCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Utility_Grant_AllocationsFilter>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntoclientsCollectionArgs = {
   objects: Array<ClientsInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntodonorsCollectionArgs = {
   objects: Array<DonorsInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntoemployee_Grant_AllocationsCollectionArgs = {
   objects: Array<Employee_Grant_AllocationsInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntoemployee_TransferCollectionArgs = {
   objects: Array<Employee_TransferInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntoemployeesCollectionArgs = {
   objects: Array<EmployeesInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntoentityCollectionArgs = {
   objects: Array<EntityInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntoexpense_CategoriesCollectionArgs = {
   objects: Array<Expense_CategoriesInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntoexpense_ClaimsCollectionArgs = {
   objects: Array<Expense_ClaimsInsertInput>;
 };
 
+
+/** The root type for creating and mutating data */
+export type MutationInsertIntofilesCollectionArgs = {
+  objects: Array<FilesInsertInput>;
+};
+
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntogrant_Project_AgreementCollectionArgs = {
   objects: Array<Grant_Project_AgreementInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntogrant_SlicesCollectionArgs = {
   objects: Array<Grant_SlicesInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntoissued_InvoicesCollectionArgs = {
   objects: Array<Issued_InvoicesInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntomembersCollectionArgs = {
   objects: Array<MembersInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntomembershipsCollectionArgs = {
   objects: Array<MembershipsInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntopetty_CashCollectionArgs = {
   objects: Array<Petty_CashInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntoprojectsCollectionArgs = {
   objects: Array<ProjectsInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntoprovider_InvoicesCollectionArgs = {
   objects: Array<Provider_InvoicesInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntoproviders_Invoice_ProjectCollectionArgs = {
   objects: Array<Providers_Invoice_ProjectInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntoservice_ProvidersCollectionArgs = {
   objects: Array<Service_ProvidersInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntostatusCollectionArgs = {
   objects: Array<StatusInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationInsertIntoutilitiesCollectionArgs = {
   objects: Array<UtilitiesInsertInput>;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationInsertIntoutility_Grant_AllocationsCollectionArgs = {
   objects: Array<Utility_Grant_AllocationsInsertInput>;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdateclientsCollectionArgs = {
@@ -556,12 +614,14 @@ export type MutationUpdateclientsCollectionArgs = {
   set: ClientsUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdatedonorsCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<DonorsFilter>;
   set: DonorsUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdateemployee_Grant_AllocationsCollectionArgs = {
@@ -570,12 +630,14 @@ export type MutationUpdateemployee_Grant_AllocationsCollectionArgs = {
   set: Employee_Grant_AllocationsUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdateemployee_TransferCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Employee_TransferFilter>;
   set: Employee_TransferUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdateemployeesCollectionArgs = {
@@ -584,12 +646,14 @@ export type MutationUpdateemployeesCollectionArgs = {
   set: EmployeesUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdateentityCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<EntityFilter>;
   set: EntityUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdateexpense_CategoriesCollectionArgs = {
@@ -598,12 +662,22 @@ export type MutationUpdateexpense_CategoriesCollectionArgs = {
   set: Expense_CategoriesUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdateexpense_ClaimsCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Expense_ClaimsFilter>;
   set: Expense_ClaimsUpdateInput;
 };
+
+
+/** The root type for creating and mutating data */
+export type MutationUpdatefilesCollectionArgs = {
+  atMost?: Scalars['Int']['input'];
+  filter?: InputMaybe<FilesFilter>;
+  set: FilesUpdateInput;
+};
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdategrant_Project_AgreementCollectionArgs = {
@@ -612,12 +686,14 @@ export type MutationUpdategrant_Project_AgreementCollectionArgs = {
   set: Grant_Project_AgreementUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdategrant_SlicesCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Grant_SlicesFilter>;
   set: Grant_SlicesUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdateissued_InvoicesCollectionArgs = {
@@ -626,12 +702,14 @@ export type MutationUpdateissued_InvoicesCollectionArgs = {
   set: Issued_InvoicesUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdatemembersCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<MembersFilter>;
   set: MembersUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdatemembershipsCollectionArgs = {
@@ -640,12 +718,14 @@ export type MutationUpdatemembershipsCollectionArgs = {
   set: MembershipsUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdatepetty_CashCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Petty_CashFilter>;
   set: Petty_CashUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdateprojectsCollectionArgs = {
@@ -654,12 +734,14 @@ export type MutationUpdateprojectsCollectionArgs = {
   set: ProjectsUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdateprovider_InvoicesCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Provider_InvoicesFilter>;
   set: Provider_InvoicesUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdateproviders_Invoice_ProjectCollectionArgs = {
@@ -668,12 +750,14 @@ export type MutationUpdateproviders_Invoice_ProjectCollectionArgs = {
   set: Providers_Invoice_ProjectUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdateservice_ProvidersCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<Service_ProvidersFilter>;
   set: Service_ProvidersUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdatestatusCollectionArgs = {
@@ -682,12 +766,14 @@ export type MutationUpdatestatusCollectionArgs = {
   set: StatusUpdateInput;
 };
 
+
 /** The root type for creating and mutating data */
 export type MutationUpdateutilitiesCollectionArgs = {
   atMost?: Scalars['Int']['input'];
   filter?: InputMaybe<UtilitiesFilter>;
   set: UtilitiesUpdateInput;
 };
+
 
 /** The root type for creating and mutating data */
 export type MutationUpdateutility_Grant_AllocationsCollectionArgs = {
@@ -716,7 +802,7 @@ export enum OrderByDirection {
   /** Descending order, nulls first */
   DescNullsFirst = 'DescNullsFirst',
   /** Descending order, nulls last */
-  DescNullsLast = 'DescNullsLast',
+  DescNullsLast = 'DescNullsLast'
 }
 
 export type PageInfo = {
@@ -746,6 +832,8 @@ export type Query = {
   expense_categoriesCollection?: Maybe<Expense_CategoriesConnection>;
   /** A pagable collection of type `expense_claims` */
   expense_claimsCollection?: Maybe<Expense_ClaimsConnection>;
+  /** A pagable collection of type `files` */
+  filesCollection?: Maybe<FilesConnection>;
   /** A pagable collection of type `grant_project_agreement` */
   grant_project_agreementCollection?: Maybe<Grant_Project_AgreementConnection>;
   /** A pagable collection of type `grant_slices` */
@@ -776,6 +864,7 @@ export type Query = {
   utility_grant_allocationsCollection?: Maybe<Utility_Grant_AllocationsConnection>;
 };
 
+
 /** The root type for querying data */
 export type QueryClientsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -786,6 +875,7 @@ export type QueryClientsCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ClientsOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryDonorsCollectionArgs = {
@@ -798,6 +888,7 @@ export type QueryDonorsCollectionArgs = {
   orderBy?: InputMaybe<Array<DonorsOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryEmployee_Grant_AllocationsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -808,6 +899,7 @@ export type QueryEmployee_Grant_AllocationsCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Employee_Grant_AllocationsOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryEmployee_TransferCollectionArgs = {
@@ -820,6 +912,7 @@ export type QueryEmployee_TransferCollectionArgs = {
   orderBy?: InputMaybe<Array<Employee_TransferOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryEmployeesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -830,6 +923,7 @@ export type QueryEmployeesCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EmployeesOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryEntityCollectionArgs = {
@@ -842,6 +936,7 @@ export type QueryEntityCollectionArgs = {
   orderBy?: InputMaybe<Array<EntityOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryExpense_CategoriesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -852,6 +947,7 @@ export type QueryExpense_CategoriesCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Expense_CategoriesOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryExpense_ClaimsCollectionArgs = {
@@ -864,6 +960,19 @@ export type QueryExpense_ClaimsCollectionArgs = {
   orderBy?: InputMaybe<Array<Expense_ClaimsOrderBy>>;
 };
 
+
+/** The root type for querying data */
+export type QueryFilesCollectionArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  filter?: InputMaybe<FilesFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<FilesOrderBy>>;
+};
+
+
 /** The root type for querying data */
 export type QueryGrant_Project_AgreementCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -874,6 +983,7 @@ export type QueryGrant_Project_AgreementCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Grant_Project_AgreementOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryGrant_SlicesCollectionArgs = {
@@ -886,6 +996,7 @@ export type QueryGrant_SlicesCollectionArgs = {
   orderBy?: InputMaybe<Array<Grant_SlicesOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryIssued_InvoicesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -896,6 +1007,7 @@ export type QueryIssued_InvoicesCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Issued_InvoicesOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryMembersCollectionArgs = {
@@ -908,6 +1020,7 @@ export type QueryMembersCollectionArgs = {
   orderBy?: InputMaybe<Array<MembersOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryMembershipsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -919,10 +1032,12 @@ export type QueryMembershipsCollectionArgs = {
   orderBy?: InputMaybe<Array<MembershipsOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryNodeArgs = {
   nodeId: Scalars['ID']['input'];
 };
+
 
 /** The root type for querying data */
 export type QueryPetty_CashCollectionArgs = {
@@ -935,6 +1050,7 @@ export type QueryPetty_CashCollectionArgs = {
   orderBy?: InputMaybe<Array<Petty_CashOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryProjectsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -945,6 +1061,7 @@ export type QueryProjectsCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ProjectsOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryProvider_InvoicesCollectionArgs = {
@@ -957,6 +1074,7 @@ export type QueryProvider_InvoicesCollectionArgs = {
   orderBy?: InputMaybe<Array<Provider_InvoicesOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryProviders_Invoice_ProjectCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -967,6 +1085,7 @@ export type QueryProviders_Invoice_ProjectCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Providers_Invoice_ProjectOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryService_ProvidersCollectionArgs = {
@@ -979,6 +1098,7 @@ export type QueryService_ProvidersCollectionArgs = {
   orderBy?: InputMaybe<Array<Service_ProvidersOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryStatusCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -990,6 +1110,7 @@ export type QueryStatusCollectionArgs = {
   orderBy?: InputMaybe<Array<StatusOrderBy>>;
 };
 
+
 /** The root type for querying data */
 export type QueryUtilitiesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1000,6 +1121,7 @@ export type QueryUtilitiesCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<UtilitiesOrderBy>>;
 };
+
 
 /** The root type for querying data */
 export type QueryUtility_Grant_AllocationsCollectionArgs = {
@@ -1088,6 +1210,7 @@ export type Clients = Node & {
   nodeId: Scalars['ID']['output'];
   updated_at: Scalars['Datetime']['output'];
 };
+
 
 export type ClientsIssued_InvoicesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1185,6 +1308,7 @@ export type Donors = Node & {
   phone: Scalars['String']['output'];
   updated_at: Scalars['Datetime']['output'];
 };
+
 
 export type DonorsGrant_Project_AgreementCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1488,6 +1612,7 @@ export type Employees = Node & {
   updated_at: Scalars['Datetime']['output'];
 };
 
+
 export type EmployeesEmployee_Grant_AllocationsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1498,6 +1623,7 @@ export type EmployeesEmployee_Grant_AllocationsCollectionArgs = {
   orderBy?: InputMaybe<Array<Employee_Grant_AllocationsOrderBy>>;
 };
 
+
 export type EmployeesEmployee_TransferCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1507,6 +1633,7 @@ export type EmployeesEmployee_TransferCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Employee_TransferOrderBy>>;
 };
+
 
 export type EmployeesExpense_ClaimsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1625,6 +1752,7 @@ export type Entity = Node & {
   updated_at: Scalars['Datetime']['output'];
 };
 
+
 export type EntityClientsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1728,6 +1856,7 @@ export type Expense_Categories = Node & {
   updated_at: Scalars['Datetime']['output'];
 };
 
+
 export type Expense_CategoriesPetty_CashCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1814,20 +1943,16 @@ export type Expense_CategoriesUpdateResponse = {
 export type Expense_Claims = Node & {
   __typename?: 'expense_claims';
   accommodation_amount?: Maybe<Scalars['BigFloat']['output']>;
-  accommodation_document?: Maybe<Scalars['String']['output']>;
   amount: Scalars['BigFloat']['output'];
   comment?: Maybe<Scalars['String']['output']>;
   created_at: Scalars['Datetime']['output'];
   documentation_amount?: Maybe<Scalars['BigFloat']['output']>;
-  documentation_document?: Maybe<Scalars['String']['output']>;
   employee_id: Scalars['Int']['output'];
   employees?: Maybe<Employees>;
   endDate?: Maybe<Scalars['Date']['output']>;
   gifts_and_entertainment_amount?: Maybe<Scalars['BigFloat']['output']>;
-  gifts_and_entertainment_document?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];
   meals_amount?: Maybe<Scalars['BigFloat']['output']>;
-  meals_document?: Maybe<Scalars['String']['output']>;
   /** Globally Unique Record Identifier */
   nodeId: Scalars['ID']['output'];
   project_id: Scalars['Int']['output'];
@@ -1835,7 +1960,6 @@ export type Expense_Claims = Node & {
   startDate: Scalars['Date']['output'];
   status: Scalars['Boolean']['output'];
   transport_amount?: Maybe<Scalars['BigFloat']['output']>;
-  transport_document?: Maybe<Scalars['String']['output']>;
   updated_at: Scalars['Datetime']['output'];
 };
 
@@ -1861,21 +1985,17 @@ export type Expense_ClaimsEdge = {
 
 export type Expense_ClaimsFilter = {
   accommodation_amount?: InputMaybe<BigFloatFilter>;
-  accommodation_document?: InputMaybe<StringFilter>;
   amount?: InputMaybe<BigFloatFilter>;
   /** Returns true only if all its inner filters are true, otherwise returns false */
   and?: InputMaybe<Array<Expense_ClaimsFilter>>;
   comment?: InputMaybe<StringFilter>;
   created_at?: InputMaybe<DatetimeFilter>;
   documentation_amount?: InputMaybe<BigFloatFilter>;
-  documentation_document?: InputMaybe<StringFilter>;
   employee_id?: InputMaybe<IntFilter>;
   endDate?: InputMaybe<DateFilter>;
   gifts_and_entertainment_amount?: InputMaybe<BigFloatFilter>;
-  gifts_and_entertainment_document?: InputMaybe<StringFilter>;
   id?: InputMaybe<IntFilter>;
   meals_amount?: InputMaybe<BigFloatFilter>;
-  meals_document?: InputMaybe<StringFilter>;
   nodeId?: InputMaybe<IdFilter>;
   /** Negates a filter */
   not?: InputMaybe<Expense_ClaimsFilter>;
@@ -1885,29 +2005,23 @@ export type Expense_ClaimsFilter = {
   startDate?: InputMaybe<DateFilter>;
   status?: InputMaybe<BooleanFilter>;
   transport_amount?: InputMaybe<BigFloatFilter>;
-  transport_document?: InputMaybe<StringFilter>;
   updated_at?: InputMaybe<DatetimeFilter>;
 };
 
 export type Expense_ClaimsInsertInput = {
   accommodation_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  accommodation_document?: InputMaybe<Scalars['String']['input']>;
   amount?: InputMaybe<Scalars['BigFloat']['input']>;
   comment?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['Datetime']['input']>;
   documentation_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  documentation_document?: InputMaybe<Scalars['String']['input']>;
   employee_id?: InputMaybe<Scalars['Int']['input']>;
   endDate?: InputMaybe<Scalars['Date']['input']>;
   gifts_and_entertainment_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  gifts_and_entertainment_document?: InputMaybe<Scalars['String']['input']>;
   meals_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  meals_document?: InputMaybe<Scalars['String']['input']>;
   project_id?: InputMaybe<Scalars['Int']['input']>;
   startDate?: InputMaybe<Scalars['Date']['input']>;
   status?: InputMaybe<Scalars['Boolean']['input']>;
   transport_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  transport_document?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -1921,46 +2035,36 @@ export type Expense_ClaimsInsertResponse = {
 
 export type Expense_ClaimsOrderBy = {
   accommodation_amount?: InputMaybe<OrderByDirection>;
-  accommodation_document?: InputMaybe<OrderByDirection>;
   amount?: InputMaybe<OrderByDirection>;
   comment?: InputMaybe<OrderByDirection>;
   created_at?: InputMaybe<OrderByDirection>;
   documentation_amount?: InputMaybe<OrderByDirection>;
-  documentation_document?: InputMaybe<OrderByDirection>;
   employee_id?: InputMaybe<OrderByDirection>;
   endDate?: InputMaybe<OrderByDirection>;
   gifts_and_entertainment_amount?: InputMaybe<OrderByDirection>;
-  gifts_and_entertainment_document?: InputMaybe<OrderByDirection>;
   id?: InputMaybe<OrderByDirection>;
   meals_amount?: InputMaybe<OrderByDirection>;
-  meals_document?: InputMaybe<OrderByDirection>;
   project_id?: InputMaybe<OrderByDirection>;
   startDate?: InputMaybe<OrderByDirection>;
   status?: InputMaybe<OrderByDirection>;
   transport_amount?: InputMaybe<OrderByDirection>;
-  transport_document?: InputMaybe<OrderByDirection>;
   updated_at?: InputMaybe<OrderByDirection>;
 };
 
 export type Expense_ClaimsUpdateInput = {
   accommodation_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  accommodation_document?: InputMaybe<Scalars['String']['input']>;
   amount?: InputMaybe<Scalars['BigFloat']['input']>;
   comment?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['Datetime']['input']>;
   documentation_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  documentation_document?: InputMaybe<Scalars['String']['input']>;
   employee_id?: InputMaybe<Scalars['Int']['input']>;
   endDate?: InputMaybe<Scalars['Date']['input']>;
   gifts_and_entertainment_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  gifts_and_entertainment_document?: InputMaybe<Scalars['String']['input']>;
   meals_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  meals_document?: InputMaybe<Scalars['String']['input']>;
   project_id?: InputMaybe<Scalars['Int']['input']>;
   startDate?: InputMaybe<Scalars['Date']['input']>;
   status?: InputMaybe<Scalars['Boolean']['input']>;
   transport_amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  transport_document?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -1970,6 +2074,141 @@ export type Expense_ClaimsUpdateResponse = {
   affectedCount: Scalars['Int']['output'];
   /** Array of records impacted by the mutation */
   records: Array<Expense_Claims>;
+};
+
+export type Files = Node & {
+  __typename?: 'files';
+  bucket_name: Scalars['String']['output'];
+  created_at?: Maybe<Scalars['Datetime']['output']>;
+  document_category?: Maybe<Scalars['String']['output']>;
+  expense_claim_category?: Maybe<Scalars['String']['output']>;
+  expense_claim_id?: Maybe<Scalars['Int']['output']>;
+  expense_status?: Maybe<Scalars['Boolean']['output']>;
+  id: Scalars['Int']['output'];
+  metadata?: Maybe<Scalars['JSON']['output']>;
+  mime_type: Scalars['String']['output'];
+  /** Globally Unique Record Identifier */
+  nodeId: Scalars['ID']['output'];
+  original_filename: Scalars['String']['output'];
+  provider_invoice_file_category?: Maybe<Scalars['String']['output']>;
+  provider_invoice_id?: Maybe<Scalars['Int']['output']>;
+  public_url?: Maybe<Scalars['String']['output']>;
+  service_provider_id?: Maybe<Scalars['Int']['output']>;
+  size_bytes: Scalars['BigInt']['output'];
+  storage_key: Scalars['String']['output'];
+  storage_provider: Scalars['String']['output'];
+  uploaded_at?: Maybe<Scalars['Datetime']['output']>;
+};
+
+export type FilesConnection = {
+  __typename?: 'filesConnection';
+  edges: Array<FilesEdge>;
+  pageInfo: PageInfo;
+};
+
+export type FilesDeleteResponse = {
+  __typename?: 'filesDeleteResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int']['output'];
+  /** Array of records impacted by the mutation */
+  records: Array<Files>;
+};
+
+export type FilesEdge = {
+  __typename?: 'filesEdge';
+  cursor: Scalars['String']['output'];
+  node: Files;
+};
+
+export type FilesFilter = {
+  /** Returns true only if all its inner filters are true, otherwise returns false */
+  and?: InputMaybe<Array<FilesFilter>>;
+  bucket_name?: InputMaybe<StringFilter>;
+  created_at?: InputMaybe<DatetimeFilter>;
+  document_category?: InputMaybe<StringFilter>;
+  expense_claim_category?: InputMaybe<StringFilter>;
+  expense_claim_id?: InputMaybe<IntFilter>;
+  expense_status?: InputMaybe<BooleanFilter>;
+  id?: InputMaybe<IntFilter>;
+  mime_type?: InputMaybe<StringFilter>;
+  nodeId?: InputMaybe<IdFilter>;
+  /** Negates a filter */
+  not?: InputMaybe<FilesFilter>;
+  /** Returns true if at least one of its inner filters is true, otherwise returns false */
+  or?: InputMaybe<Array<FilesFilter>>;
+  original_filename?: InputMaybe<StringFilter>;
+  provider_invoice_file_category?: InputMaybe<StringFilter>;
+  provider_invoice_id?: InputMaybe<IntFilter>;
+  public_url?: InputMaybe<StringFilter>;
+  service_provider_id?: InputMaybe<IntFilter>;
+  size_bytes?: InputMaybe<BigIntFilter>;
+  storage_key?: InputMaybe<StringFilter>;
+  storage_provider?: InputMaybe<StringFilter>;
+  uploaded_at?: InputMaybe<DatetimeFilter>;
+};
+
+export type FilesInsertInput = {
+  bucket_name?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['Datetime']['input']>;
+  document_category?: InputMaybe<Scalars['String']['input']>;
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
+  mime_type?: InputMaybe<Scalars['String']['input']>;
+  original_filename?: InputMaybe<Scalars['String']['input']>;
+  public_url?: InputMaybe<Scalars['String']['input']>;
+  size_bytes?: InputMaybe<Scalars['BigInt']['input']>;
+  storage_key?: InputMaybe<Scalars['String']['input']>;
+  storage_provider?: InputMaybe<Scalars['String']['input']>;
+  uploaded_at?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type FilesInsertResponse = {
+  __typename?: 'filesInsertResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int']['output'];
+  /** Array of records impacted by the mutation */
+  records: Array<Files>;
+};
+
+export type FilesOrderBy = {
+  bucket_name?: InputMaybe<OrderByDirection>;
+  created_at?: InputMaybe<OrderByDirection>;
+  document_category?: InputMaybe<OrderByDirection>;
+  expense_claim_category?: InputMaybe<OrderByDirection>;
+  expense_claim_id?: InputMaybe<OrderByDirection>;
+  expense_status?: InputMaybe<OrderByDirection>;
+  id?: InputMaybe<OrderByDirection>;
+  mime_type?: InputMaybe<OrderByDirection>;
+  original_filename?: InputMaybe<OrderByDirection>;
+  provider_invoice_file_category?: InputMaybe<OrderByDirection>;
+  provider_invoice_id?: InputMaybe<OrderByDirection>;
+  public_url?: InputMaybe<OrderByDirection>;
+  service_provider_id?: InputMaybe<OrderByDirection>;
+  size_bytes?: InputMaybe<OrderByDirection>;
+  storage_key?: InputMaybe<OrderByDirection>;
+  storage_provider?: InputMaybe<OrderByDirection>;
+  uploaded_at?: InputMaybe<OrderByDirection>;
+};
+
+export type FilesUpdateInput = {
+  bucket_name?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['Datetime']['input']>;
+  document_category?: InputMaybe<Scalars['String']['input']>;
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
+  mime_type?: InputMaybe<Scalars['String']['input']>;
+  original_filename?: InputMaybe<Scalars['String']['input']>;
+  public_url?: InputMaybe<Scalars['String']['input']>;
+  size_bytes?: InputMaybe<Scalars['BigInt']['input']>;
+  storage_key?: InputMaybe<Scalars['String']['input']>;
+  storage_provider?: InputMaybe<Scalars['String']['input']>;
+  uploaded_at?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type FilesUpdateResponse = {
+  __typename?: 'filesUpdateResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int']['output'];
+  /** Array of records impacted by the mutation */
+  records: Array<Files>;
 };
 
 export type Grant_Project_Agreement = Node & {
@@ -1990,6 +2229,7 @@ export type Grant_Project_Agreement = Node & {
   utility_grant_allocationsCollection?: Maybe<Utility_Grant_AllocationsConnection>;
 };
 
+
 export type Grant_Project_AgreementEmployee_Grant_AllocationsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2000,6 +2240,7 @@ export type Grant_Project_AgreementEmployee_Grant_AllocationsCollectionArgs = {
   orderBy?: InputMaybe<Array<Employee_Grant_AllocationsOrderBy>>;
 };
 
+
 export type Grant_Project_AgreementPetty_CashCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2009,6 +2250,7 @@ export type Grant_Project_AgreementPetty_CashCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Petty_CashOrderBy>>;
 };
+
 
 export type Grant_Project_AgreementUtility_Grant_AllocationsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2326,6 +2568,7 @@ export type Members = Node & {
   updated_at: Scalars['Datetime']['output'];
 };
 
+
 export type MembersMembershipsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2439,7 +2682,7 @@ export type MembersUpdateResponse = {
 
 export enum Membership_Category_Enum {
   Category1 = 'category1',
-  Category2 = 'category2',
+  Category2 = 'category2'
 }
 
 /** Boolean expression comparing fields on type "membership_category_enum" */
@@ -2536,9 +2779,10 @@ export type MembershipsUpdateResponse = {
 };
 
 export enum Payment_Method_Enum {
+  Carte = 'Carte',
   Cash = 'Cash',
   Cheque = 'Cheque',
-  Transfer = 'Transfer',
+  Transfer = 'Transfer'
 }
 
 /** Boolean expression comparing fields on type "payment_method_enum" */
@@ -2675,13 +2919,14 @@ export type Projects = Node & {
   note?: Maybe<Scalars['String']['output']>;
   petty_cashCollection?: Maybe<Petty_CashConnection>;
   project_budget: Scalars['BigFloat']['output'];
+  provider_invoicesCollection?: Maybe<Provider_InvoicesConnection>;
   providers_invoice_projectCollection?: Maybe<Providers_Invoice_ProjectConnection>;
-  service_providersCollection?: Maybe<Service_ProvidersConnection>;
   start_date: Scalars['Date']['output'];
   status: Scalars['Boolean']['output'];
   updated_at: Scalars['Datetime']['output'];
   utility_grant_allocationsCollection?: Maybe<Utility_Grant_AllocationsConnection>;
 };
+
 
 export type ProjectsEmployee_Grant_AllocationsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2693,6 +2938,7 @@ export type ProjectsEmployee_Grant_AllocationsCollectionArgs = {
   orderBy?: InputMaybe<Array<Employee_Grant_AllocationsOrderBy>>;
 };
 
+
 export type ProjectsExpense_ClaimsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2702,6 +2948,7 @@ export type ProjectsExpense_ClaimsCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Expense_ClaimsOrderBy>>;
 };
+
 
 export type ProjectsGrant_Project_AgreementCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2713,6 +2960,7 @@ export type ProjectsGrant_Project_AgreementCollectionArgs = {
   orderBy?: InputMaybe<Array<Grant_Project_AgreementOrderBy>>;
 };
 
+
 export type ProjectsGrant_SlicesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2722,6 +2970,7 @@ export type ProjectsGrant_SlicesCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Grant_SlicesOrderBy>>;
 };
+
 
 export type ProjectsIssued_InvoicesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2733,6 +2982,7 @@ export type ProjectsIssued_InvoicesCollectionArgs = {
   orderBy?: InputMaybe<Array<Issued_InvoicesOrderBy>>;
 };
 
+
 export type ProjectsPetty_CashCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2742,6 +2992,18 @@ export type ProjectsPetty_CashCollectionArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<Petty_CashOrderBy>>;
 };
+
+
+export type ProjectsProvider_InvoicesCollectionArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  filter?: InputMaybe<Provider_InvoicesFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<Provider_InvoicesOrderBy>>;
+};
+
 
 export type ProjectsProviders_Invoice_ProjectCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2753,15 +3015,6 @@ export type ProjectsProviders_Invoice_ProjectCollectionArgs = {
   orderBy?: InputMaybe<Array<Providers_Invoice_ProjectOrderBy>>;
 };
 
-export type ProjectsService_ProvidersCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  filter?: InputMaybe<Service_ProvidersFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<Service_ProvidersOrderBy>>;
-};
 
 export type ProjectsUtility_Grant_AllocationsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2876,23 +3129,33 @@ export type ProjectsUpdateResponse = {
 
 export type Provider_Invoices = Node & {
   __typename?: 'provider_invoices';
-  amount: Scalars['BigFloat']['output'];
+  amount_ht: Scalars['BigFloat']['output'];
+  amount_ttc: Scalars['BigFloat']['output'];
   created_at: Scalars['Datetime']['output'];
-  due_date: Scalars['Date']['output'];
+  currency: Scalars['String']['output'];
+  due_date?: Maybe<Scalars['Date']['output']>;
+  file_url?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];
   invoice_number: Scalars['String']['output'];
   issue_date: Scalars['Date']['output'];
   /** Globally Unique Record Identifier */
   nodeId: Scalars['ID']['output'];
-  payment_date: Scalars['Date']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  payment_date?: Maybe<Scalars['Date']['output']>;
+  payment_method: Payment_Method_Enum;
   project_id: Scalars['Int']['output'];
+  projects?: Maybe<Projects>;
   providers_invoice_project?: Maybe<Providers_Invoice_Project>;
   providers_invoice_projectCollection?: Maybe<Providers_Invoice_ProjectConnection>;
   service_provider_id: Scalars['Int']['output'];
   service_providers?: Maybe<Service_Providers>;
-  status: Scalars['String']['output'];
+  status?: Maybe<Status>;
+  status_id: Scalars['Int']['output'];
+  storage_key?: Maybe<Scalars['String']['output']>;
+  tax_rate: Scalars['BigFloat']['output'];
   updated_at: Scalars['Datetime']['output'];
 };
+
 
 export type Provider_InvoicesProviders_Invoice_ProjectCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -2925,36 +3188,50 @@ export type Provider_InvoicesEdge = {
 };
 
 export type Provider_InvoicesFilter = {
-  amount?: InputMaybe<BigFloatFilter>;
+  amount_ht?: InputMaybe<BigFloatFilter>;
+  amount_ttc?: InputMaybe<BigFloatFilter>;
   /** Returns true only if all its inner filters are true, otherwise returns false */
   and?: InputMaybe<Array<Provider_InvoicesFilter>>;
   created_at?: InputMaybe<DatetimeFilter>;
+  currency?: InputMaybe<StringFilter>;
   due_date?: InputMaybe<DateFilter>;
+  file_url?: InputMaybe<StringFilter>;
   id?: InputMaybe<IntFilter>;
   invoice_number?: InputMaybe<StringFilter>;
   issue_date?: InputMaybe<DateFilter>;
   nodeId?: InputMaybe<IdFilter>;
   /** Negates a filter */
   not?: InputMaybe<Provider_InvoicesFilter>;
+  notes?: InputMaybe<StringFilter>;
   /** Returns true if at least one of its inner filters is true, otherwise returns false */
   or?: InputMaybe<Array<Provider_InvoicesFilter>>;
   payment_date?: InputMaybe<DateFilter>;
+  payment_method?: InputMaybe<Payment_Method_EnumFilter>;
   project_id?: InputMaybe<IntFilter>;
   service_provider_id?: InputMaybe<IntFilter>;
-  status?: InputMaybe<StringFilter>;
+  status_id?: InputMaybe<IntFilter>;
+  storage_key?: InputMaybe<StringFilter>;
+  tax_rate?: InputMaybe<BigFloatFilter>;
   updated_at?: InputMaybe<DatetimeFilter>;
 };
 
 export type Provider_InvoicesInsertInput = {
-  amount?: InputMaybe<Scalars['BigFloat']['input']>;
+  amount_ht?: InputMaybe<Scalars['BigFloat']['input']>;
+  amount_ttc?: InputMaybe<Scalars['BigFloat']['input']>;
   created_at?: InputMaybe<Scalars['Datetime']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
   due_date?: InputMaybe<Scalars['Date']['input']>;
+  file_url?: InputMaybe<Scalars['String']['input']>;
   invoice_number?: InputMaybe<Scalars['String']['input']>;
   issue_date?: InputMaybe<Scalars['Date']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
   payment_date?: InputMaybe<Scalars['Date']['input']>;
+  payment_method?: InputMaybe<Payment_Method_Enum>;
   project_id?: InputMaybe<Scalars['Int']['input']>;
   service_provider_id?: InputMaybe<Scalars['Int']['input']>;
-  status?: InputMaybe<Scalars['String']['input']>;
+  status_id?: InputMaybe<Scalars['Int']['input']>;
+  storage_key?: InputMaybe<Scalars['String']['input']>;
+  tax_rate?: InputMaybe<Scalars['BigFloat']['input']>;
   updated_at?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -2967,29 +3244,43 @@ export type Provider_InvoicesInsertResponse = {
 };
 
 export type Provider_InvoicesOrderBy = {
-  amount?: InputMaybe<OrderByDirection>;
+  amount_ht?: InputMaybe<OrderByDirection>;
+  amount_ttc?: InputMaybe<OrderByDirection>;
   created_at?: InputMaybe<OrderByDirection>;
+  currency?: InputMaybe<OrderByDirection>;
   due_date?: InputMaybe<OrderByDirection>;
+  file_url?: InputMaybe<OrderByDirection>;
   id?: InputMaybe<OrderByDirection>;
   invoice_number?: InputMaybe<OrderByDirection>;
   issue_date?: InputMaybe<OrderByDirection>;
+  notes?: InputMaybe<OrderByDirection>;
   payment_date?: InputMaybe<OrderByDirection>;
+  payment_method?: InputMaybe<OrderByDirection>;
   project_id?: InputMaybe<OrderByDirection>;
   service_provider_id?: InputMaybe<OrderByDirection>;
-  status?: InputMaybe<OrderByDirection>;
+  status_id?: InputMaybe<OrderByDirection>;
+  storage_key?: InputMaybe<OrderByDirection>;
+  tax_rate?: InputMaybe<OrderByDirection>;
   updated_at?: InputMaybe<OrderByDirection>;
 };
 
 export type Provider_InvoicesUpdateInput = {
-  amount?: InputMaybe<Scalars['BigFloat']['input']>;
+  amount_ht?: InputMaybe<Scalars['BigFloat']['input']>;
+  amount_ttc?: InputMaybe<Scalars['BigFloat']['input']>;
   created_at?: InputMaybe<Scalars['Datetime']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
   due_date?: InputMaybe<Scalars['Date']['input']>;
+  file_url?: InputMaybe<Scalars['String']['input']>;
   invoice_number?: InputMaybe<Scalars['String']['input']>;
   issue_date?: InputMaybe<Scalars['Date']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
   payment_date?: InputMaybe<Scalars['Date']['input']>;
+  payment_method?: InputMaybe<Payment_Method_Enum>;
   project_id?: InputMaybe<Scalars['Int']['input']>;
   service_provider_id?: InputMaybe<Scalars['Int']['input']>;
-  status?: InputMaybe<Scalars['String']['input']>;
+  status_id?: InputMaybe<Scalars['Int']['input']>;
+  storage_key?: InputMaybe<Scalars['String']['input']>;
+  tax_rate?: InputMaybe<Scalars['BigFloat']['input']>;
   updated_at?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -3089,26 +3380,20 @@ export type Providers_Invoice_ProjectUpdateResponse = {
 
 export type Service_Providers = Node & {
   __typename?: 'service_providers';
-  amount: Scalars['BigFloat']['output'];
-  comment?: Maybe<Scalars['String']['output']>;
+  address?: Maybe<Scalars['String']['output']>;
+  contact_person?: Maybe<Scalars['String']['output']>;
   created_at: Scalars['Datetime']['output'];
-  depositedDate?: Maybe<Scalars['Datetime']['output']>;
-  dueDate: Scalars['Date']['output'];
   email?: Maybe<Scalars['String']['output']>;
   ice: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   /** Globally Unique Record Identifier */
   nodeId: Scalars['ID']['output'];
-  payment_method: Payment_Method_Enum;
   phone: Scalars['String']['output'];
-  project_id: Scalars['Int']['output'];
-  projects?: Maybe<Projects>;
   provider_invoicesCollection?: Maybe<Provider_InvoicesConnection>;
-  status?: Maybe<Status>;
-  status_id: Scalars['Int']['output'];
   updated_at: Scalars['Datetime']['output'];
 };
+
 
 export type Service_ProvidersProvider_InvoicesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -3141,13 +3426,11 @@ export type Service_ProvidersEdge = {
 };
 
 export type Service_ProvidersFilter = {
-  amount?: InputMaybe<BigFloatFilter>;
+  address?: InputMaybe<StringFilter>;
   /** Returns true only if all its inner filters are true, otherwise returns false */
   and?: InputMaybe<Array<Service_ProvidersFilter>>;
-  comment?: InputMaybe<StringFilter>;
+  contact_person?: InputMaybe<StringFilter>;
   created_at?: InputMaybe<DatetimeFilter>;
-  depositedDate?: InputMaybe<DatetimeFilter>;
-  dueDate?: InputMaybe<DateFilter>;
   email?: InputMaybe<StringFilter>;
   ice?: InputMaybe<StringFilter>;
   id?: InputMaybe<IntFilter>;
@@ -3157,26 +3440,18 @@ export type Service_ProvidersFilter = {
   not?: InputMaybe<Service_ProvidersFilter>;
   /** Returns true if at least one of its inner filters is true, otherwise returns false */
   or?: InputMaybe<Array<Service_ProvidersFilter>>;
-  payment_method?: InputMaybe<Payment_Method_EnumFilter>;
   phone?: InputMaybe<StringFilter>;
-  project_id?: InputMaybe<IntFilter>;
-  status_id?: InputMaybe<IntFilter>;
   updated_at?: InputMaybe<DatetimeFilter>;
 };
 
 export type Service_ProvidersInsertInput = {
-  amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  comment?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  contact_person?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  depositedDate?: InputMaybe<Scalars['Datetime']['input']>;
-  dueDate?: InputMaybe<Scalars['Date']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   ice?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  payment_method?: InputMaybe<Payment_Method_Enum>;
   phone?: InputMaybe<Scalars['String']['input']>;
-  project_id?: InputMaybe<Scalars['Int']['input']>;
-  status_id?: InputMaybe<Scalars['Int']['input']>;
   updated_at?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -3189,35 +3464,25 @@ export type Service_ProvidersInsertResponse = {
 };
 
 export type Service_ProvidersOrderBy = {
-  amount?: InputMaybe<OrderByDirection>;
-  comment?: InputMaybe<OrderByDirection>;
+  address?: InputMaybe<OrderByDirection>;
+  contact_person?: InputMaybe<OrderByDirection>;
   created_at?: InputMaybe<OrderByDirection>;
-  depositedDate?: InputMaybe<OrderByDirection>;
-  dueDate?: InputMaybe<OrderByDirection>;
   email?: InputMaybe<OrderByDirection>;
   ice?: InputMaybe<OrderByDirection>;
   id?: InputMaybe<OrderByDirection>;
   name?: InputMaybe<OrderByDirection>;
-  payment_method?: InputMaybe<OrderByDirection>;
   phone?: InputMaybe<OrderByDirection>;
-  project_id?: InputMaybe<OrderByDirection>;
-  status_id?: InputMaybe<OrderByDirection>;
   updated_at?: InputMaybe<OrderByDirection>;
 };
 
 export type Service_ProvidersUpdateInput = {
-  amount?: InputMaybe<Scalars['BigFloat']['input']>;
-  comment?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  contact_person?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  depositedDate?: InputMaybe<Scalars['Datetime']['input']>;
-  dueDate?: InputMaybe<Scalars['Date']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   ice?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  payment_method?: InputMaybe<Payment_Method_Enum>;
   phone?: InputMaybe<Scalars['String']['input']>;
-  project_id?: InputMaybe<Scalars['Int']['input']>;
-  status_id?: InputMaybe<Scalars['Int']['input']>;
   updated_at?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -3232,21 +3497,22 @@ export type Service_ProvidersUpdateResponse = {
 export type Status = Node & {
   __typename?: 'status';
   created_at: Scalars['Datetime']['output'];
-  id: Scalars['BigInt']['output'];
+  id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   /** Globally Unique Record Identifier */
   nodeId: Scalars['ID']['output'];
-  service_providersCollection?: Maybe<Service_ProvidersConnection>;
+  provider_invoicesCollection?: Maybe<Provider_InvoicesConnection>;
 };
 
-export type StatusService_ProvidersCollectionArgs = {
+
+export type StatusProvider_InvoicesCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
-  filter?: InputMaybe<Service_ProvidersFilter>;
+  filter?: InputMaybe<Provider_InvoicesFilter>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<Service_ProvidersOrderBy>>;
+  orderBy?: InputMaybe<Array<Provider_InvoicesOrderBy>>;
 };
 
 export type StatusConnection = {
@@ -3273,7 +3539,7 @@ export type StatusFilter = {
   /** Returns true only if all its inner filters are true, otherwise returns false */
   and?: InputMaybe<Array<StatusFilter>>;
   created_at?: InputMaybe<DatetimeFilter>;
-  id?: InputMaybe<BigIntFilter>;
+  id?: InputMaybe<IntFilter>;
   name?: InputMaybe<StringFilter>;
   nodeId?: InputMaybe<IdFilter>;
   /** Negates a filter */
@@ -3327,6 +3593,7 @@ export type Utilities = Node & {
   utility_grant_allocationsCollection?: Maybe<Utility_Grant_AllocationsConnection>;
   water_and_electricity?: Maybe<Scalars['BigFloat']['output']>;
 };
+
 
 export type UtilitiesUtility_Grant_AllocationsCollectionArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
@@ -3521,25 +3788,9 @@ export type Utility_Grant_AllocationsUpdateResponse = {
   records: Array<Utility_Grant_Allocations>;
 };
 
-export type ClientFragmentFragment = {
-  __typename?: 'clients';
-  id: number;
-  entity_id: number;
-  created_at: any;
-  updated_at: any;
-  ice: string;
-};
+export type ClientFragmentFragment = { __typename?: 'clients', id: number, entity_id: number, created_at: any, updated_at: any, ice: string };
 
-export type DonorFragmentFragment = {
-  __typename?: 'donors';
-  id: number;
-  name: string;
-  email?: string | null;
-  phone: string;
-  created_at: any;
-  updated_at: any;
-  note?: string | null;
-};
+export type DonorFragmentFragment = { __typename?: 'donors', id: number, name: string, email?: string | null, phone: string, created_at: any, updated_at: any, note?: string | null };
 
 export type CreateDonorMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -3548,22 +3799,8 @@ export type CreateDonorMutationVariables = Exact<{
   note?: InputMaybe<Scalars['String']['input']>;
 }>;
 
-export type CreateDonorMutation = {
-  __typename?: 'Mutation';
-  insertIntodonorsCollection?: {
-    __typename?: 'donorsInsertResponse';
-    records: Array<{
-      __typename?: 'donors';
-      id: number;
-      name: string;
-      email?: string | null;
-      phone: string;
-      created_at: any;
-      updated_at: any;
-      note?: string | null;
-    }>;
-  } | null;
-};
+
+export type CreateDonorMutation = { __typename?: 'Mutation', insertIntodonorsCollection?: { __typename?: 'donorsInsertResponse', records: Array<{ __typename?: 'donors', id: number, name: string, email?: string | null, phone: string, created_at: any, updated_at: any, note?: string | null }> } | null };
 
 export type UpdateDonorMutationVariables = Exact<{
   set: DonorsUpdateInput;
@@ -3571,104 +3808,31 @@ export type UpdateDonorMutationVariables = Exact<{
   atMost: Scalars['Int']['input'];
 }>;
 
-export type UpdateDonorMutation = {
-  __typename?: 'Mutation';
-  updatedonorsCollection: {
-    __typename?: 'donorsUpdateResponse';
-    records: Array<{
-      __typename?: 'donors';
-      id: number;
-      name: string;
-      email?: string | null;
-      phone: string;
-      created_at: any;
-      updated_at: any;
-      note?: string | null;
-    }>;
-  };
-};
+
+export type UpdateDonorMutation = { __typename?: 'Mutation', updatedonorsCollection: { __typename?: 'donorsUpdateResponse', records: Array<{ __typename?: 'donors', id: number, name: string, email?: string | null, phone: string, created_at: any, updated_at: any, note?: string | null }> } };
 
 export type DeleteDonorMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type DeleteDonorMutation = {
-  __typename?: 'Mutation';
-  deleteFromdonorsCollection: { __typename?: 'donorsDeleteResponse'; affectedCount: number };
-};
 
-export type GetDonorsQueryVariables = Exact<{ [key: string]: never }>;
+export type DeleteDonorMutation = { __typename?: 'Mutation', deleteFromdonorsCollection: { __typename?: 'donorsDeleteResponse', affectedCount: number } };
 
-export type GetDonorsQuery = {
-  __typename?: 'Query';
-  donorsCollection?: {
-    __typename?: 'donorsConnection';
-    edges: Array<{
-      __typename?: 'donorsEdge';
-      node: {
-        __typename?: 'donors';
-        id: number;
-        name: string;
-        email?: string | null;
-        phone: string;
-        created_at: any;
-        updated_at: any;
-        note?: string | null;
-      };
-    }>;
-  } | null;
-};
+export type GetDonorsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDonorsQuery = { __typename?: 'Query', donorsCollection?: { __typename?: 'donorsConnection', edges: Array<{ __typename?: 'donorsEdge', node: { __typename?: 'donors', id: number, name: string, email?: string | null, phone: string, created_at: any, updated_at: any, note?: string | null } }> } | null };
 
 export type GetDonorByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type GetDonorByIdQuery = {
-  __typename?: 'Query';
-  donorsCollection?: {
-    __typename?: 'donorsConnection';
-    edges: Array<{
-      __typename?: 'donorsEdge';
-      node: {
-        __typename?: 'donors';
-        id: number;
-        name: string;
-        email?: string | null;
-        phone: string;
-        created_at: any;
-        updated_at: any;
-        note?: string | null;
-      };
-    }>;
-  } | null;
-};
 
-export type EmployeeGrantAllocationFragmentFragment = {
-  __typename?: 'employee_grant_allocations';
-  id: number;
-  employee_id: number;
-  project_id: number;
-  allocation_percentage: any;
-  effective_from: any;
-  effective_to: any;
-  created_at: any;
-  updated_at: any;
-  grant_project_agreement_id: number;
-};
+export type GetDonorByIdQuery = { __typename?: 'Query', donorsCollection?: { __typename?: 'donorsConnection', edges: Array<{ __typename?: 'donorsEdge', node: { __typename?: 'donors', id: number, name: string, email?: string | null, phone: string, created_at: any, updated_at: any, note?: string | null } }> } | null };
 
-export type EmployeeFragmentFragment = {
-  __typename?: 'employees';
-  id: number;
-  salaryName: string;
-  salaryFunction: string;
-  email?: string | null;
-  phone: string;
-  grossSalary: any;
-  recruitmentDate?: any | null;
-  status: string;
-  created_at: any;
-  updated_at: any;
-};
+export type EmployeeGrantAllocationFragmentFragment = { __typename?: 'employee_grant_allocations', id: number, employee_id: number, project_id: number, allocation_percentage: any, effective_from: any, effective_to: any, created_at: any, updated_at: any, grant_project_agreement_id: number };
+
+export type EmployeeFragmentFragment = { __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any };
 
 export type CreateEmployeeMutationVariables = Exact<{
   salaryName: Scalars['String']['input'];
@@ -3680,34 +3844,15 @@ export type CreateEmployeeMutationVariables = Exact<{
   status: Scalars['String']['input'];
 }>;
 
-export type CreateEmployeeMutation = {
-  __typename?: 'Mutation';
-  insertIntoemployeesCollection?: {
-    __typename?: 'employeesInsertResponse';
-    records: Array<{
-      __typename?: 'employees';
-      id: number;
-      salaryName: string;
-      salaryFunction: string;
-      email?: string | null;
-      phone: string;
-      grossSalary: any;
-      recruitmentDate?: any | null;
-      status: string;
-      created_at: any;
-      updated_at: any;
-    }>;
-  } | null;
-};
+
+export type CreateEmployeeMutation = { __typename?: 'Mutation', insertIntoemployeesCollection?: { __typename?: 'employeesInsertResponse', records: Array<{ __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any }> } | null };
 
 export type DeleteEmployeeMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type DeleteEmployeeMutation = {
-  __typename?: 'Mutation';
-  deleteFromemployeesCollection: { __typename?: 'employeesDeleteResponse'; affectedCount: number };
-};
+
+export type DeleteEmployeeMutation = { __typename?: 'Mutation', deleteFromemployeesCollection: { __typename?: 'employeesDeleteResponse', affectedCount: number } };
 
 export type UpdateEmployeeMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3720,26 +3865,8 @@ export type UpdateEmployeeMutationVariables = Exact<{
   status: Scalars['String']['input'];
 }>;
 
-export type UpdateEmployeeMutation = {
-  __typename?: 'Mutation';
-  updateemployeesCollection: {
-    __typename?: 'employeesUpdateResponse';
-    affectedCount: number;
-    records: Array<{
-      __typename?: 'employees';
-      id: number;
-      salaryName: string;
-      salaryFunction: string;
-      email?: string | null;
-      phone: string;
-      grossSalary: any;
-      recruitmentDate?: any | null;
-      status: string;
-      created_at: any;
-      updated_at: any;
-    }>;
-  };
-};
+
+export type UpdateEmployeeMutation = { __typename?: 'Mutation', updateemployeesCollection: { __typename?: 'employeesUpdateResponse', affectedCount: number, records: Array<{ __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any }> } };
 
 export type GetEmployeesQueryVariables = Exact<{
   filter?: InputMaybe<EmployeesFilter>;
@@ -3748,127 +3875,21 @@ export type GetEmployeesQueryVariables = Exact<{
   orderBy?: InputMaybe<Array<EmployeesOrderBy> | EmployeesOrderBy>;
 }>;
 
-export type GetEmployeesQuery = {
-  __typename?: 'Query';
-  employeesCollection?: {
-    __typename?: 'employeesConnection';
-    edges: Array<{
-      __typename?: 'employeesEdge';
-      node: {
-        __typename?: 'employees';
-        id: number;
-        salaryName: string;
-        salaryFunction: string;
-        email?: string | null;
-        phone: string;
-        grossSalary: any;
-        recruitmentDate?: any | null;
-        status: string;
-        created_at: any;
-        updated_at: any;
-      };
-    }>;
-  } | null;
-};
+
+export type GetEmployeesQuery = { __typename?: 'Query', employeesCollection?: { __typename?: 'employeesConnection', edges: Array<{ __typename?: 'employeesEdge', node: { __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any } }> } | null };
 
 export type GetEmployeeQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type GetEmployeeQuery = {
-  __typename?: 'Query';
-  employeesCollection?: {
-    __typename?: 'employeesConnection';
-    edges: Array<{
-      __typename?: 'employeesEdge';
-      node: {
-        __typename?: 'employees';
-        id: number;
-        salaryName: string;
-        salaryFunction: string;
-        email?: string | null;
-        phone: string;
-        grossSalary: any;
-        recruitmentDate?: any | null;
-        status: string;
-        created_at: any;
-        updated_at: any;
-      };
-    }>;
-  } | null;
-};
 
-export type EntityFragmentFragment = {
-  __typename?: 'entity';
-  id: number;
-  fullName: string;
-  address?: string | null;
-  email?: string | null;
-  phone: string;
-  created_at: any;
-  updated_at: any;
-};
+export type GetEmployeeQuery = { __typename?: 'Query', employeesCollection?: { __typename?: 'employeesConnection', edges: Array<{ __typename?: 'employeesEdge', node: { __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any } }> } | null };
 
-export type ExpenseCategoryFragmentFragment = {
-  __typename?: 'expense_categories';
-  id: number;
-  name: string;
-  description?: string | null;
-  created_at: any;
-  updated_at: any;
-};
+export type EntityFragmentFragment = { __typename?: 'entity', id: number, fullName: string, address?: string | null, email?: string | null, phone: string, created_at: any, updated_at: any };
 
-export type ExpenseClaimFragmentFragment = {
-  __typename?: 'expense_claims';
-  id: number;
-  employee_id: number;
-  project_id: number;
-  amount: any;
-  startDate: any;
-  endDate?: any | null;
-  created_at: any;
-  updated_at: any;
-  comment?: string | null;
-  status: boolean;
-  transport_amount?: any | null;
-  transport_document?: string | null;
-  accommodation_amount?: any | null;
-  accommodation_document?: string | null;
-  meals_amount?: any | null;
-  meals_document?: string | null;
-  gifts_and_entertainment_amount?: any | null;
-  gifts_and_entertainment_document?: string | null;
-  documentation_amount?: any | null;
-  documentation_document?: string | null;
-  projects?: {
-    __typename?: 'projects';
-    id: number;
-    name: string;
-    description?: string | null;
-    start_date: any;
-    end_date: any;
-    project_budget: any;
-    created_at: any;
-    updated_at: any;
-    status: boolean;
-    note?: string | null;
-    contact_person_email?: string | null;
-    contact_person_name?: string | null;
-  } | null;
-  employees?: {
-    __typename?: 'employees';
-    id: number;
-    salaryName: string;
-    salaryFunction: string;
-    email?: string | null;
-    phone: string;
-    grossSalary: any;
-    recruitmentDate?: any | null;
-    status: string;
-    created_at: any;
-    updated_at: any;
-  } | null;
-};
+export type ExpenseCategoryFragmentFragment = { __typename?: 'expense_categories', id: number, name: string, description?: string | null, created_at: any, updated_at: any };
+
+export type ExpenseClaimFragmentFragment = { __typename?: 'expense_claims', id: number, employee_id: number, project_id: number, amount: any, startDate: any, endDate?: any | null, created_at: any, updated_at: any, comment?: string | null, status: boolean, transport_amount?: any | null, accommodation_amount?: any | null, meals_amount?: any | null, gifts_and_entertainment_amount?: any | null, documentation_amount?: any | null, projects?: { __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null } | null, employees?: { __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any } | null };
 
 export type CreateExpenseClaimMutationVariables = Exact<{
   employee_id: Scalars['Int']['input'];
@@ -3878,214 +3899,59 @@ export type CreateExpenseClaimMutationVariables = Exact<{
   endDate?: InputMaybe<Scalars['Date']['input']>;
 }>;
 
-export type CreateExpenseClaimMutation = {
-  __typename?: 'Mutation';
-  insertIntoexpense_claimsCollection?: {
-    __typename?: 'expense_claimsInsertResponse';
-    records: Array<{
-      __typename?: 'expense_claims';
-      id: number;
-      employee_id: number;
-      project_id: number;
-      amount: any;
-      startDate: any;
-      endDate?: any | null;
-      created_at: any;
-      updated_at: any;
-      comment?: string | null;
-      status: boolean;
-      transport_amount?: any | null;
-      transport_document?: string | null;
-      accommodation_amount?: any | null;
-      accommodation_document?: string | null;
-      meals_amount?: any | null;
-      meals_document?: string | null;
-      gifts_and_entertainment_amount?: any | null;
-      gifts_and_entertainment_document?: string | null;
-      documentation_amount?: any | null;
-      documentation_document?: string | null;
-      projects?: {
-        __typename?: 'projects';
-        id: number;
-        name: string;
-        description?: string | null;
-        start_date: any;
-        end_date: any;
-        project_budget: any;
-        created_at: any;
-        updated_at: any;
-        status: boolean;
-        note?: string | null;
-        contact_person_email?: string | null;
-        contact_person_name?: string | null;
-      } | null;
-      employees?: {
-        __typename?: 'employees';
-        id: number;
-        salaryName: string;
-        salaryFunction: string;
-        email?: string | null;
-        phone: string;
-        grossSalary: any;
-        recruitmentDate?: any | null;
-        status: string;
-        created_at: any;
-        updated_at: any;
-      } | null;
-    }>;
-  } | null;
-};
+
+export type CreateExpenseClaimMutation = { __typename?: 'Mutation', insertIntoexpense_claimsCollection?: { __typename?: 'expense_claimsInsertResponse', records: Array<{ __typename?: 'expense_claims', id: number, employee_id: number, project_id: number, amount: any, startDate: any, endDate?: any | null, created_at: any, updated_at: any, comment?: string | null, status: boolean, transport_amount?: any | null, accommodation_amount?: any | null, meals_amount?: any | null, gifts_and_entertainment_amount?: any | null, documentation_amount?: any | null, projects?: { __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null } | null, employees?: { __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any } | null }> } | null };
 
 export type DeleteExpenseClaimMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type DeleteExpenseClaimMutation = {
-  __typename?: 'Mutation';
-  deleteFromexpense_claimsCollection: {
-    __typename?: 'expense_claimsDeleteResponse';
-    affectedCount: number;
-  };
-};
 
-export type GetExpenseClaimsQueryVariables = Exact<{ [key: string]: never }>;
+export type DeleteExpenseClaimMutation = { __typename?: 'Mutation', deleteFromexpense_claimsCollection: { __typename?: 'expense_claimsDeleteResponse', affectedCount: number } };
 
-export type GetExpenseClaimsQuery = {
-  __typename?: 'Query';
-  expense_claimsCollection?: {
-    __typename?: 'expense_claimsConnection';
-    edges: Array<{
-      __typename?: 'expense_claimsEdge';
-      node: {
-        __typename?: 'expense_claims';
-        id: number;
-        employee_id: number;
-        project_id: number;
-        amount: any;
-        startDate: any;
-        endDate?: any | null;
-        created_at: any;
-        updated_at: any;
-        comment?: string | null;
-        status: boolean;
-        transport_amount?: any | null;
-        transport_document?: string | null;
-        accommodation_amount?: any | null;
-        accommodation_document?: string | null;
-        meals_amount?: any | null;
-        meals_document?: string | null;
-        gifts_and_entertainment_amount?: any | null;
-        gifts_and_entertainment_document?: string | null;
-        documentation_amount?: any | null;
-        documentation_document?: string | null;
-        projects?: {
-          __typename?: 'projects';
-          id: number;
-          name: string;
-          description?: string | null;
-          start_date: any;
-          end_date: any;
-          project_budget: any;
-          created_at: any;
-          updated_at: any;
-          status: boolean;
-          note?: string | null;
-          contact_person_email?: string | null;
-          contact_person_name?: string | null;
-        } | null;
-        employees?: {
-          __typename?: 'employees';
-          id: number;
-          salaryName: string;
-          salaryFunction: string;
-          email?: string | null;
-          phone: string;
-          grossSalary: any;
-          recruitmentDate?: any | null;
-          status: string;
-          created_at: any;
-          updated_at: any;
-        } | null;
-      };
-    }>;
-  } | null;
-};
+export type UpdateExpenseClaimMutationVariables = Exact<{
+  set: Expense_ClaimsUpdateInput;
+  filter?: InputMaybe<Expense_ClaimsFilter>;
+  atMost: Scalars['Int']['input'];
+}>;
+
+
+export type UpdateExpenseClaimMutation = { __typename?: 'Mutation', updateexpense_claimsCollection: { __typename?: 'expense_claimsUpdateResponse', records: Array<{ __typename?: 'expense_claims', id: number, employee_id: number, project_id: number, amount: any, startDate: any, endDate?: any | null, created_at: any, updated_at: any, comment?: string | null, status: boolean, transport_amount?: any | null, accommodation_amount?: any | null, meals_amount?: any | null, gifts_and_entertainment_amount?: any | null, documentation_amount?: any | null, projects?: { __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null } | null, employees?: { __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any } | null }> } };
+
+export type GetExpenseClaimsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetExpenseClaimsQuery = { __typename?: 'Query', expense_claimsCollection?: { __typename?: 'expense_claimsConnection', edges: Array<{ __typename?: 'expense_claimsEdge', node: { __typename?: 'expense_claims', id: number, employee_id: number, project_id: number, amount: any, startDate: any, endDate?: any | null, created_at: any, updated_at: any, comment?: string | null, status: boolean, transport_amount?: any | null, accommodation_amount?: any | null, meals_amount?: any | null, gifts_and_entertainment_amount?: any | null, documentation_amount?: any | null, projects?: { __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null } | null, employees?: { __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any } | null } }> } | null };
 
 export type GetExpenceClaimByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type GetExpenceClaimByIdQuery = {
-  __typename?: 'Query';
-  expense_claimsCollection?: {
-    __typename?: 'expense_claimsConnection';
-    edges: Array<{
-      __typename?: 'expense_claimsEdge';
-      node: {
-        __typename?: 'expense_claims';
-        id: number;
-        employee_id: number;
-        project_id: number;
-        amount: any;
-        startDate: any;
-        endDate?: any | null;
-        created_at: any;
-        updated_at: any;
-        comment?: string | null;
-        status: boolean;
-        transport_amount?: any | null;
-        transport_document?: string | null;
-        accommodation_amount?: any | null;
-        accommodation_document?: string | null;
-        meals_amount?: any | null;
-        meals_document?: string | null;
-        gifts_and_entertainment_amount?: any | null;
-        gifts_and_entertainment_document?: string | null;
-        documentation_amount?: any | null;
-        documentation_document?: string | null;
-        projects?: {
-          __typename?: 'projects';
-          id: number;
-          name: string;
-          description?: string | null;
-          start_date: any;
-          end_date: any;
-          project_budget: any;
-          created_at: any;
-          updated_at: any;
-          status: boolean;
-          note?: string | null;
-          contact_person_email?: string | null;
-          contact_person_name?: string | null;
-        } | null;
-        employees?: {
-          __typename?: 'employees';
-          id: number;
-          salaryName: string;
-          salaryFunction: string;
-          email?: string | null;
-          phone: string;
-          grossSalary: any;
-          recruitmentDate?: any | null;
-          status: string;
-          created_at: any;
-          updated_at: any;
-        } | null;
-      };
-    }>;
-  } | null;
-};
 
-export type GrantProjectAgreementFragmentFragment = {
-  __typename?: 'grant_project_agreement';
-  id: number;
-  project_id: number;
-  grant?: any | null;
-  agreement_date?: any | null;
-  created_at: any;
-  updated_at: any;
-  donor_id: number;
-};
+export type GetExpenceClaimByIdQuery = { __typename?: 'Query', expense_claimsCollection?: { __typename?: 'expense_claimsConnection', edges: Array<{ __typename?: 'expense_claimsEdge', node: { __typename?: 'expense_claims', id: number, employee_id: number, project_id: number, amount: any, startDate: any, endDate?: any | null, created_at: any, updated_at: any, comment?: string | null, status: boolean, transport_amount?: any | null, accommodation_amount?: any | null, meals_amount?: any | null, gifts_and_entertainment_amount?: any | null, documentation_amount?: any | null, projects?: { __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null } | null, employees?: { __typename?: 'employees', id: number, salaryName: string, salaryFunction: string, email?: string | null, phone: string, grossSalary: any, recruitmentDate?: any | null, status: string, created_at: any, updated_at: any } | null } }> } | null };
+
+export type FilesFragmentFragment = { __typename?: 'files', id: number, storage_provider: string, bucket_name: string, storage_key: string, original_filename: string, mime_type: string, size_bytes: any, document_category?: string | null, created_at?: any | null, uploaded_at?: any | null, metadata?: any | null, public_url?: string | null, expense_status?: boolean | null, expense_claim_id?: number | null, expense_claim_category?: string | null, provider_invoice_file_category?: string | null, provider_invoice_id?: number | null };
+
+export type GetFilesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFilesQuery = { __typename?: 'Query', filesCollection?: { __typename?: 'filesConnection', edges: Array<{ __typename?: 'filesEdge', node: { __typename?: 'files', id: number, storage_provider: string, bucket_name: string, storage_key: string, original_filename: string, mime_type: string, size_bytes: any, document_category?: string | null, created_at?: any | null, uploaded_at?: any | null, metadata?: any | null, public_url?: string | null, expense_status?: boolean | null, expense_claim_id?: number | null, expense_claim_category?: string | null, provider_invoice_file_category?: string | null, provider_invoice_id?: number | null } }> } | null };
+
+export type GetFilesByExpenseClaimQueryVariables = Exact<{
+  expenseClaimId: Scalars['Int']['input'];
+}>;
+
+
+export type GetFilesByExpenseClaimQuery = { __typename?: 'Query', filesCollection?: { __typename?: 'filesConnection', edges: Array<{ __typename?: 'filesEdge', node: { __typename?: 'files', id: number, storage_provider: string, bucket_name: string, storage_key: string, original_filename: string, mime_type: string, size_bytes: any, document_category?: string | null, created_at?: any | null, uploaded_at?: any | null, metadata?: any | null, public_url?: string | null, expense_status?: boolean | null, expense_claim_id?: number | null, expense_claim_category?: string | null, provider_invoice_file_category?: string | null, provider_invoice_id?: number | null } }> } | null };
+
+export type GetFilesByProviderQueryVariables = Exact<{
+  providerInvoiceId: Scalars['Int']['input'];
+}>;
+
+
+export type GetFilesByProviderQuery = { __typename?: 'Query', filesCollection?: { __typename?: 'filesConnection', edges: Array<{ __typename?: 'filesEdge', node: { __typename?: 'files', id: number, storage_provider: string, bucket_name: string, storage_key: string, original_filename: string, mime_type: string, size_bytes: any, document_category?: string | null, created_at?: any | null, uploaded_at?: any | null, metadata?: any | null, public_url?: string | null, expense_status?: boolean | null, expense_claim_id?: number | null, expense_claim_category?: string | null, provider_invoice_file_category?: string | null, provider_invoice_id?: number | null } }> } | null };
+
+export type GrantProjectAgreementFragmentFragment = { __typename?: 'grant_project_agreement', id: number, project_id: number, grant?: any | null, agreement_date?: any | null, created_at: any, updated_at: any, donor_id: number };
 
 export type CreateGrantAgreementMutationVariables = Exact<{
   donor_id: Scalars['Int']['input'];
@@ -4094,67 +3960,22 @@ export type CreateGrantAgreementMutationVariables = Exact<{
   agreement_date: Scalars['Date']['input'];
 }>;
 
-export type CreateGrantAgreementMutation = {
-  __typename?: 'Mutation';
-  insertIntogrant_project_agreementCollection?: {
-    __typename?: 'grant_project_agreementInsertResponse';
-    records: Array<{
-      __typename?: 'grant_project_agreement';
-      id: number;
-      project_id: number;
-      grant?: any | null;
-      agreement_date?: any | null;
-      created_at: any;
-      updated_at: any;
-      donor_id: number;
-    }>;
-  } | null;
-};
 
-export type GetGrantProjectAgreementQueryVariables = Exact<{ [key: string]: never }>;
+export type CreateGrantAgreementMutation = { __typename?: 'Mutation', insertIntogrant_project_agreementCollection?: { __typename?: 'grant_project_agreementInsertResponse', records: Array<{ __typename?: 'grant_project_agreement', id: number, project_id: number, grant?: any | null, agreement_date?: any | null, created_at: any, updated_at: any, donor_id: number }> } | null };
 
-export type GetGrantProjectAgreementQuery = {
-  __typename?: 'Query';
-  grant_project_agreementCollection?: {
-    __typename?: 'grant_project_agreementConnection';
-    edges: Array<{
-      __typename?: 'grant_project_agreementEdge';
-      node: {
-        __typename?: 'grant_project_agreement';
-        id: number;
-        project_id: number;
-        grant?: any | null;
-        agreement_date?: any | null;
-        created_at: any;
-        updated_at: any;
-        donor_id: number;
-      };
-    }>;
-  } | null;
-};
+export type GetGrantProjectAgreementQueryVariables = Exact<{ [key: string]: never; }>;
 
-export type GrantFragmentFragment = {
-  __typename?: 'grant_slices';
-  id: number;
-  project_id: number;
-  amount: any;
-  received_date: any;
-  status?: string | null;
-  created_at: any;
-  updated_at: any;
-};
+
+export type GetGrantProjectAgreementQuery = { __typename?: 'Query', grant_project_agreementCollection?: { __typename?: 'grant_project_agreementConnection', edges: Array<{ __typename?: 'grant_project_agreementEdge', node: { __typename?: 'grant_project_agreement', id: number, project_id: number, grant?: any | null, agreement_date?: any | null, created_at: any, updated_at: any, donor_id: number } }> } | null };
+
+export type GrantFragmentFragment = { __typename?: 'grant_slices', id: number, project_id: number, amount: any, received_date: any, status?: string | null, created_at: any, updated_at: any };
 
 export type DeleteGrantSliceMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type DeleteGrantSliceMutation = {
-  __typename?: 'Mutation';
-  deleteFromgrant_slicesCollection: {
-    __typename?: 'grant_slicesDeleteResponse';
-    affectedCount: number;
-  };
-};
+
+export type DeleteGrantSliceMutation = { __typename?: 'Mutation', deleteFromgrant_slicesCollection: { __typename?: 'grant_slicesDeleteResponse', affectedCount: number } };
 
 export type UpdateGrantSliceMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -4162,14 +3983,8 @@ export type UpdateGrantSliceMutationVariables = Exact<{
   received_date: Scalars['Datetime']['input'];
 }>;
 
-export type UpdateGrantSliceMutation = {
-  __typename?: 'Mutation';
-  updategrant_slicesCollection: {
-    __typename?: 'grant_slicesUpdateResponse';
-    affectedCount: number;
-    records: Array<{ __typename?: 'grant_slices'; id: number; amount: any; received_date: any }>;
-  };
-};
+
+export type UpdateGrantSliceMutation = { __typename?: 'Mutation', updategrant_slicesCollection: { __typename?: 'grant_slicesUpdateResponse', affectedCount: number, records: Array<{ __typename?: 'grant_slices', id: number, amount: any, received_date: any }> } };
 
 export type CreateGrantSliceMutationVariables = Exact<{
   project_id: Scalars['Int']['input'];
@@ -4178,112 +3993,60 @@ export type CreateGrantSliceMutationVariables = Exact<{
   status: Scalars['String']['input'];
 }>;
 
-export type CreateGrantSliceMutation = {
-  __typename?: 'Mutation';
-  insertIntogrant_slicesCollection?: {
-    __typename?: 'grant_slicesInsertResponse';
-    records: Array<{
-      __typename?: 'grant_slices';
-      id: number;
-      amount: any;
-      received_date: any;
-      status?: string | null;
-      project_id: number;
-    }>;
-  } | null;
-};
+
+export type CreateGrantSliceMutation = { __typename?: 'Mutation', insertIntogrant_slicesCollection?: { __typename?: 'grant_slicesInsertResponse', records: Array<{ __typename?: 'grant_slices', id: number, amount: any, received_date: any, status?: string | null, project_id: number }> } | null };
 
 export type GetGrantsByProjectIdQueryVariables = Exact<{
   projectId: Scalars['Int']['input'];
 }>;
 
-export type GetGrantsByProjectIdQuery = {
-  __typename?: 'Query';
-  grant_slicesCollection?: {
-    __typename?: 'grant_slicesConnection';
-    edges: Array<{
-      __typename?: 'grant_slicesEdge';
-      node: {
-        __typename?: 'grant_slices';
-        id: number;
-        project_id: number;
-        amount: any;
-        received_date: any;
-        status?: string | null;
-        created_at: any;
-        updated_at: any;
-      };
-    }>;
-  } | null;
-};
 
-export type IssuedInvoiceFragmentFragment = {
-  __typename?: 'issued_invoices';
-  id: number;
-  client_id: number;
-  project_id: number;
-  amount: any;
-  issue_date: any;
-  due_date: any;
-  billingStatus: string;
-  created_at: any;
-  updated_at: any;
-  designation?: string | null;
-};
+export type GetGrantsByProjectIdQuery = { __typename?: 'Query', grant_slicesCollection?: { __typename?: 'grant_slicesConnection', edges: Array<{ __typename?: 'grant_slicesEdge', node: { __typename?: 'grant_slices', id: number, project_id: number, amount: any, received_date: any, status?: string | null, created_at: any, updated_at: any } }> } | null };
 
-export type MemberFragmentFragment = {
-  __typename?: 'members';
-  id: number;
-  amount: any;
-  payment_date: any;
-  created_at: any;
-  updated_at: any;
-  rc_cin: string;
-  payment_method: Payment_Method_Enum;
-  status: boolean;
-  full_name: string;
-  address?: string | null;
-  email?: string | null;
-  phone: string;
-};
+export type IssuedInvoiceFragmentFragment = { __typename?: 'issued_invoices', id: number, client_id: number, project_id: number, amount: any, issue_date: any, due_date: any, billingStatus: string, created_at: any, updated_at: any, designation?: string | null };
 
-export type MembershipFragmentFragment = {
-  __typename?: 'memberships';
-  id: any;
-  created_at: any;
-  member_id: number;
-  updated_at: any;
-  membership_category: Membership_Category_Enum;
-};
+export type MemberFragmentFragment = { __typename?: 'members', id: number, amount: any, payment_date: any, created_at: any, updated_at: any, rc_cin: string, payment_method: Payment_Method_Enum, status: boolean, full_name: string, address?: string | null, email?: string | null, phone: string };
 
-export type PettyCashFragmentFragment = {
-  __typename?: 'petty_cash';
-  id: number;
-  grant_project_agreement_id?: number | null;
-  category_id: number;
-  amount: any;
-  startDate: any;
-  motif: string;
-  created_at: any;
-  updated_at: any;
-  project: number;
-};
+export type CreateMemberMutationVariables = Exact<{
+  amount: Scalars['BigFloat']['input'];
+  payment_date: Scalars['Datetime']['input'];
+  rc_cin?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['Boolean']['input']>;
+  full_name?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+}>;
 
-export type ProjectFragmentFragment = {
-  __typename?: 'projects';
-  id: number;
-  name: string;
-  description?: string | null;
-  start_date: any;
-  end_date: any;
-  project_budget: any;
-  created_at: any;
-  updated_at: any;
-  status: boolean;
-  note?: string | null;
-  contact_person_email?: string | null;
-  contact_person_name?: string | null;
-};
+
+export type CreateMemberMutation = { __typename?: 'Mutation', insertIntomembersCollection?: { __typename?: 'membersInsertResponse', records: Array<{ __typename?: 'members', id: number, amount: any, payment_date: any, created_at: any, updated_at: any, rc_cin: string, payment_method: Payment_Method_Enum, status: boolean, full_name: string, address?: string | null, email?: string | null, phone: string }> } | null };
+
+export type UpdateMemberMutationVariables = Exact<{
+  filter?: InputMaybe<MembersFilter>;
+  set: MembersUpdateInput;
+  atMost?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type UpdateMemberMutation = { __typename?: 'Mutation', updatemembersCollection: { __typename?: 'membersUpdateResponse', records: Array<{ __typename?: 'members', id: number, amount: any, payment_date: any, created_at: any, updated_at: any, rc_cin: string, payment_method: Payment_Method_Enum, status: boolean, full_name: string, address?: string | null, email?: string | null, phone: string }> } };
+
+export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMembersQuery = { __typename?: 'Query', membersCollection?: { __typename?: 'membersConnection', edges: Array<{ __typename?: 'membersEdge', node: { __typename?: 'members', id: number, amount: any, payment_date: any, created_at: any, updated_at: any, rc_cin: string, payment_method: Payment_Method_Enum, status: boolean, full_name: string, address?: string | null, email?: string | null, phone: string } }> } | null };
+
+export type GetMemberQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetMemberQuery = { __typename?: 'Query', membersCollection?: { __typename?: 'membersConnection', edges: Array<{ __typename?: 'membersEdge', node: { __typename?: 'members', id: number, amount: any, payment_date: any, created_at: any, updated_at: any, rc_cin: string, payment_method: Payment_Method_Enum, status: boolean, full_name: string, address?: string | null, email?: string | null, phone: string } }> } | null };
+
+export type MembershipFragmentFragment = { __typename?: 'memberships', id: any, created_at: any, member_id: number, updated_at: any, membership_category: Membership_Category_Enum };
+
+export type PettyCashFragmentFragment = { __typename?: 'petty_cash', id: number, grant_project_agreement_id?: number | null, category_id: number, amount: any, startDate: any, motif: string, created_at: any, updated_at: any, project: number };
+
+export type ProjectFragmentFragment = { __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null };
 
 export type CreateProjectMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -4297,27 +4060,8 @@ export type CreateProjectMutationVariables = Exact<{
   contact_person_name?: InputMaybe<Scalars['String']['input']>;
 }>;
 
-export type CreateProjectMutation = {
-  __typename?: 'Mutation';
-  insertIntoprojectsCollection?: {
-    __typename?: 'projectsInsertResponse';
-    records: Array<{
-      __typename?: 'projects';
-      id: number;
-      name: string;
-      description?: string | null;
-      start_date: any;
-      end_date: any;
-      project_budget: any;
-      created_at: any;
-      updated_at: any;
-      status: boolean;
-      note?: string | null;
-      contact_person_email?: string | null;
-      contact_person_name?: string | null;
-    }>;
-  } | null;
-};
+
+export type CreateProjectMutation = { __typename?: 'Mutation', insertIntoprojectsCollection?: { __typename?: 'projectsInsertResponse', records: Array<{ __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null }> } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
   set: ProjectsUpdateInput;
@@ -4325,165 +4069,99 @@ export type UpdateProjectMutationVariables = Exact<{
   atMost: Scalars['Int']['input'];
 }>;
 
-export type UpdateProjectMutation = {
-  __typename?: 'Mutation';
-  updateprojectsCollection: {
-    __typename?: 'projectsUpdateResponse';
-    records: Array<{
-      __typename?: 'projects';
-      id: number;
-      name: string;
-      description?: string | null;
-      start_date: any;
-      end_date: any;
-      project_budget: any;
-      status: boolean;
-      note?: string | null;
-      contact_person_email?: string | null;
-      contact_person_name?: string | null;
-    }>;
-  };
-};
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateprojectsCollection: { __typename?: 'projectsUpdateResponse', records: Array<{ __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null }> } };
 
 export type DeleteProjectMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type DeleteProjectMutation = {
-  __typename?: 'Mutation';
-  deleteFromprojectsCollection: { __typename?: 'projectsDeleteResponse'; affectedCount: number };
-};
 
-export type GetProjectsQueryVariables = Exact<{ [key: string]: never }>;
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteFromprojectsCollection: { __typename?: 'projectsDeleteResponse', affectedCount: number } };
 
-export type GetProjectsQuery = {
-  __typename?: 'Query';
-  projectsCollection?: {
-    __typename?: 'projectsConnection';
-    edges: Array<{
-      __typename?: 'projectsEdge';
-      node: {
-        __typename?: 'projects';
-        id: number;
-        name: string;
-        description?: string | null;
-        start_date: any;
-        end_date: any;
-        project_budget: any;
-        created_at: any;
-        updated_at: any;
-        status: boolean;
-        note?: string | null;
-        contact_person_email?: string | null;
-        contact_person_name?: string | null;
-      };
-    }>;
-  } | null;
-};
+export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProjectsQuery = { __typename?: 'Query', projectsCollection?: { __typename?: 'projectsConnection', edges: Array<{ __typename?: 'projectsEdge', node: { __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null } }> } | null };
 
 export type GetProjectByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
-export type GetProjectByIdQuery = {
-  __typename?: 'Query';
-  projectsCollection?: {
-    __typename?: 'projectsConnection';
-    edges: Array<{
-      __typename?: 'projectsEdge';
-      node: {
-        __typename?: 'projects';
-        id: number;
-        name: string;
-        description?: string | null;
-        start_date: any;
-        end_date: any;
-        project_budget: any;
-        created_at: any;
-        updated_at: any;
-        status: boolean;
-        note?: string | null;
-        contact_person_email?: string | null;
-        contact_person_name?: string | null;
-      };
-    }>;
-  } | null;
-};
 
-export type ProviderInvoiceFragmentFragment = {
-  __typename?: 'provider_invoices';
-  id: number;
-  service_provider_id: number;
-  project_id: number;
-  invoice_number: string;
-  amount: any;
-  issue_date: any;
-  due_date: any;
-  payment_date: any;
-  status: string;
-  created_at: any;
-  updated_at: any;
-};
+export type GetProjectByIdQuery = { __typename?: 'Query', projectsCollection?: { __typename?: 'projectsConnection', edges: Array<{ __typename?: 'projectsEdge', node: { __typename?: 'projects', id: number, name: string, description?: string | null, start_date: any, end_date: any, project_budget: any, created_at: any, updated_at: any, status: boolean, note?: string | null, contact_person_email?: string | null, contact_person_name?: string | null } }> } | null };
 
-export type ProvidersInvoiceProjectFragmentFragment = {
-  __typename?: 'providers_invoice_project';
-  id: number;
-  created_at: any;
-  updated_at?: any | null;
-  provider_invoice_id: number;
-  project_id: number;
-};
+export type ProviderInvoiceFragmentFragment = { __typename?: 'provider_invoices', id: number, service_provider_id: number, project_id: number, invoice_number: string, amount_ht: any, tax_rate: any, amount_ttc: any, currency: string, issue_date: any, due_date?: any | null, payment_date?: any | null, payment_method: Payment_Method_Enum, status_id: number, notes?: string | null, created_at: any, updated_at: any, service_providers?: { __typename?: 'service_providers', name: string } | null, status?: { __typename?: 'status', name: string } | null };
 
-export type ServiceProviderFragmentFragment = {
-  __typename?: 'service_providers';
-  id: number;
-  name: string;
-  email?: string | null;
-  phone: string;
-  created_at: any;
-  updated_at: any;
-  ice: string;
-  depositedDate?: any | null;
-  dueDate: any;
-  amount: any;
-  status_id: number;
-};
+export type CreateProviderInvoiceMutationVariables = Exact<{
+  service_provider_id: Scalars['Int']['input'];
+  project_id: Scalars['Int']['input'];
+  invoice_number: Scalars['String']['input'];
+  amount_ht: Scalars['BigFloat']['input'];
+  tax_rate: Scalars['BigFloat']['input'];
+  amount_ttc: Scalars['BigFloat']['input'];
+  currency: Scalars['String']['input'];
+  issue_date: Scalars['Date']['input'];
+  due_date?: InputMaybe<Scalars['Date']['input']>;
+  payment_date?: InputMaybe<Scalars['Date']['input']>;
+  payment_method: Payment_Method_Enum;
+  status_id: Scalars['Int']['input'];
+  storage_key?: InputMaybe<Scalars['String']['input']>;
+  file_url?: InputMaybe<Scalars['String']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+}>;
 
-export type StatusFragmentFragment = {
-  __typename?: 'status';
-  id: any;
-  created_at: any;
-  name: string;
-};
 
-export type GetStatusQueryVariables = Exact<{ [key: string]: never }>;
+export type CreateProviderInvoiceMutation = { __typename?: 'Mutation', insertIntoprovider_invoicesCollection?: { __typename?: 'provider_invoicesInsertResponse', records: Array<{ __typename?: 'provider_invoices', id: number, service_provider_id: number, project_id: number, invoice_number: string, amount_ht: any, tax_rate: any, amount_ttc: any, currency: string, issue_date: any, due_date?: any | null, payment_date?: any | null, payment_method: Payment_Method_Enum, status_id: number, notes?: string | null, created_at: any, updated_at: any, service_providers?: { __typename?: 'service_providers', name: string } | null, status?: { __typename?: 'status', name: string } | null }> } | null };
 
-export type GetStatusQuery = {
-  __typename?: 'Query';
-  statusCollection?: {
-    __typename?: 'statusConnection';
-    edges: Array<{
-      __typename?: 'statusEdge';
-      node: { __typename?: 'status'; id: any; created_at: any; name: string };
-    }>;
-  } | null;
-};
+export type DeleteProviderInvoiceMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
 
-export type UtilitiesFragmentFragment = {
-  __typename?: 'utilities';
-  id: number;
-  created_at?: any | null;
-  updated_at?: any | null;
-};
 
-export type UtilityGrantAllocationFragmentFragment = {
-  __typename?: 'utility_grant_allocations';
-  id: number;
-  utility_id: number;
-  grant_project_agreement_id: number;
-  allocation_percentage: any;
-  amount: any;
-  created_at: any;
-  updated_at: any;
-  project_id: number;
-};
+export type DeleteProviderInvoiceMutation = { __typename?: 'Mutation', deleteFromprovider_invoicesCollection: { __typename?: 'provider_invoicesDeleteResponse', affectedCount: number } };
+
+export type GetProvidersInvoicesQueryVariables = Exact<{
+  filter?: InputMaybe<Provider_InvoicesFilter>;
+  orderBy?: InputMaybe<Array<Provider_InvoicesOrderBy> | Provider_InvoicesOrderBy>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetProvidersInvoicesQuery = { __typename?: 'Query', provider_invoicesCollection?: { __typename?: 'provider_invoicesConnection', edges: Array<{ __typename?: 'provider_invoicesEdge', node: { __typename?: 'provider_invoices', id: number, service_provider_id: number, project_id: number, invoice_number: string, amount_ht: any, tax_rate: any, amount_ttc: any, currency: string, issue_date: any, due_date?: any | null, payment_date?: any | null, payment_method: Payment_Method_Enum, status_id: number, notes?: string | null, created_at: any, updated_at: any, service_providers?: { __typename?: 'service_providers', name: string } | null, status?: { __typename?: 'status', name: string } | null } }> } | null };
+
+export type ProvidersInvoiceProjectFragmentFragment = { __typename?: 'providers_invoice_project', id: number, created_at: any, updated_at?: any | null, provider_invoice_id: number, project_id: number };
+
+export type ServiceProviderFragmentFragment = { __typename?: 'service_providers', id: number, phone: string, address?: string | null, contact_person?: string | null, ice: string, name: string, email?: string | null, created_at: any, updated_at: any };
+
+export type CreateServiceProviderMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+  email?: InputMaybe<Scalars['String']['input']>;
+  phone: Scalars['String']['input'];
+  ice: Scalars['String']['input'];
+  address?: InputMaybe<Scalars['String']['input']>;
+  contact_person?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CreateServiceProviderMutation = { __typename?: 'Mutation', insertIntoservice_providersCollection?: { __typename?: 'service_providersInsertResponse', records: Array<{ __typename?: 'service_providers', id: number, phone: string, address?: string | null, contact_person?: string | null, ice: string, name: string, email?: string | null, created_at: any, updated_at: any }> } | null };
+
+export type GetServiceProvidersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetServiceProvidersQuery = { __typename?: 'Query', service_providersCollection?: { __typename?: 'service_providersConnection', edges: Array<{ __typename?: 'service_providersEdge', node: { __typename?: 'service_providers', id: number, phone: string, address?: string | null, contact_person?: string | null, ice: string, name: string, email?: string | null, created_at: any, updated_at: any } }> } | null };
+
+export type StatusFragmentFragment = { __typename?: 'status', id: number, created_at: any, name: string };
+
+export type GetStatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetStatusQuery = { __typename?: 'Query', statusCollection?: { __typename?: 'statusConnection', edges: Array<{ __typename?: 'statusEdge', node: { __typename?: 'status', id: number, created_at: any, name: string } }> } | null };
+
+export type UtilitiesFragmentFragment = { __typename?: 'utilities', id: number, created_at?: any | null, updated_at?: any | null };
+
+export type UtilityGrantAllocationFragmentFragment = { __typename?: 'utility_grant_allocations', id: number, utility_id: number, grant_project_agreement_id: number, allocation_percentage: any, amount: any, created_at: any, updated_at: any, project_id: number };

@@ -75,7 +75,15 @@ export const paths = {
     create: '/projets/create',
     details: '/projets/:projetId/',
     edit: '/projets/:projetId/edit',
-    tranche: '/projets/tranche',
+  },
+  grants: {
+    index: '/grants',
+    create: '/grants/create',
+    tranche: '/grants/tranche',
+  },
+  donors: {
+    index: '/donors',
+    create: '/donors/create',
   },
   invoices: {
     index: '/invoices',

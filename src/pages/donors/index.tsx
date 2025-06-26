@@ -9,7 +9,6 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
-
 import { Seo } from 'src/components/seo';
 import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
@@ -23,9 +22,8 @@ import { RouterLink } from 'src/components/router-link';
 import { Project } from 'src/types/project';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
-import { projectsApi } from 'src/api/projects';
-import { useGetProjectByIdQuery, useGetProjectsQuery } from 'src/hooks/generatedHook';
-import ProjectDrawer from './sections/project-drawer';
+import { useGetDonorByIdQuery, useGetDonorsQuery } from 'src/hooks/generatedHook';
+import DonorsDrawer from './sections/donors-drawer';
 import { useDialog } from 'src/hooks/use-dialog';
 import MemberListContainer from '../membres/sections/member-list-container';
 
@@ -33,7 +31,7 @@ interface Filters {
   query?: string;
 }
 
-interface ProjectsSearchState {
+interface donorsSearchState {
   filters: Filters;
   page: number;
   rowsPerPage: number;
@@ -41,8 +39,8 @@ interface ProjectsSearchState {
   sortDir: 'asc' | 'desc';
 }
 
-const useProjectsSearch = () => {
-  const [state, setState] = useState<ProjectsSearchState>({
+const usedonorsSearch = () => {
+  const [state, setState] = useState<donorsSearchState>({
     filters: {
       query: undefined,
     },
@@ -97,82 +95,81 @@ const useProjectsSearch = () => {
   };
 };
 
-interface ProjectsStoreState {
-  projects: Project[];
-  projectsCount: number;
+interface donorsStoreState {
+  donors: Project[];
+  donorsCount: number;
 }
 
-const useProjectsStore = (searchState: ProjectsSearchState) => {
-  const isMounted = useMounted();
-  const [state, setState] = useState<ProjectsStoreState>({
-    projects: [],
-    projectsCount: 0,
-  });
+// const usedonorsStore = (searchState: donorsSearchState) => {
+//   const isMounted = useMounted();
+//   const [state, setState] = useState<donorsStoreState>({
+//     donors: [],
+//     donorsCount: 0,
+//   });
 
-  const handleProjectsGet = useCallback(async () => {
-    try {
-      const response = await projectsApi.getProjects(searchState);
+//   const handledonorsGet = useCallback(async () => {
+//     try {
+//       const response = await donorsApi.getdonors(searchState);
 
-      if (isMounted()) {
-        setState({
-          projects: response.data,
-          projectsCount: response.count,
-        });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }, [searchState, isMounted]);
+//       if (isMounted()) {
+//         setState({
+//           donors: response.data,
+//           donorsCount: response.count,
+//         });
+//       }
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   }, [searchState, isMounted]);
 
-  useEffect(
-    () => {
-      handleProjectsGet();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchState]
-  );
+//   useEffect(
+//     () => {
+//       handledonorsGet();
+//     },
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//     [searchState]
+//   );
 
-  return {
-    ...state,
-  };
-};
+//   return {
+//     ...state,
+//   };
+// };
 
-const useProjectIds = (projects: Project[] = []) => {
+const useProjectIds = (donors: Project[] = []) => {
   return useMemo(() => {
-    return projects.map((project) => project.id);
-  }, [projects]);
+    return donors.map((project) => project.id);
+  }, [donors]);
 };
 
 const Page: NextPage = () => {
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const projectsSearch = useProjectsSearch();
-  const projectsStore = useProjectsStore(projectsSearch.state);
-  // const projectsIds = useProjectIds(projectsStore.projects);
+  const donorsSearch = usedonorsSearch();
+  // const donorsStore = usedonorsStore(donorsSearch.state);
+  // const donorsIds = useProjectIds(donorsStore.donors);
   const dialog = useDialog<string>();
-
   const settings = useSettings();
   const { t } = useTranslation();
   usePageView();
   const {
-    loading: projectsLoading,
-    error: projectsError,
-    data: projectsData,
-    refetch: projectsRefetsh,
-  } = useGetProjectsQuery();
+    loading: donorsLoading,
+    error: donorsError,
+    data: donorsData,
+    refetch: donorsRefetsh,
+  } = useGetDonorsQuery();
 
   const {
-    loading: projectLoading,
-    error: projectError,
-    data: projectData,
-    refetch: projectRefetsh,
-  } = useGetProjectByIdQuery({
+    loading: donorLoading,
+    error: donorError,
+    data: donorData,
+    refetch: donorRefetsh,
+  } = useGetDonorByIdQuery({
     variables: {
       id: Number(dialog.data),
     },
   });
 
-  const projectsNode = projectData?.projectsCollection?.edges?.map((edge) => edge.node) ?? [];
-  const project = projectsNode[0] || null;
+  const donorsNode = donorData?.donorsCollection?.edges?.map((edge) => edge.node) ?? [];
+  const donor = donorsNode[0] || null;
 
   const handleMemberOpen = useCallback(
     (memberId: string): void => {
@@ -188,7 +185,7 @@ const Page: NextPage = () => {
     [dialog]
   );
   console.log(dialog);
-  const projects = projectsData?.projectsCollection?.edges?.map((edge) => edge.node) ?? [];
+  const donors = donorsData?.donorsCollection?.edges?.map((edge) => edge.node) ?? [];
 
   return (
     <>
@@ -216,7 +213,7 @@ const Page: NextPage = () => {
               spacing={4}
             >
               <Stack spacing={1}>
-                <Typography variant="h4">{t(tokens.nav.projects_management)}</Typography>
+                <Typography variant="h4">{t(tokens.nav.donors_management)}</Typography>
               </Stack>
               <Stack
                 alignItems="center"
@@ -225,7 +222,7 @@ const Page: NextPage = () => {
               >
                 <Button
                   component={RouterLink}
-                  href={paths.projets.create}
+                  href={paths.donors.create}
                   startIcon={
                     <SvgIcon>
                       <PlusIcon />
@@ -233,34 +230,34 @@ const Page: NextPage = () => {
                   }
                   variant="contained"
                 >
-                  Nouveau Projet
+                  Nouveau bailleur
                 </Button>
               </Stack>
             </Stack>
           </Box>
 
-          <ProjectListSearch onFiltersChange={projectsSearch.handleFiltersChange} />
+          <ProjectListSearch onFiltersChange={donorsSearch.handleFiltersChange} />
           <ProjectListTable
-            count={projectsStore.projectsCount}
-            // items={projectsStore.projects}
-            items={projects}
+            // count={donorsStore.donorsCount}
+            // items={donorsStore.donors}
+            items={donors}
             onSelect={handleMemberOpen}
-            onPageChange={projectsSearch.handlePageChange}
-            onRowsPerPageChange={projectsSearch.handleRowsPerPageChange}
-            page={projectsSearch.state.page}
-            rowsPerPage={projectsSearch.state.rowsPerPage}
+            onPageChange={donorsSearch.handlePageChange}
+            onRowsPerPageChange={donorsSearch.handleRowsPerPageChange}
+            page={donorsSearch.state.page}
+            rowsPerPage={donorsSearch.state.rowsPerPage}
           />
           {/* <Card></Card> */}
           {/* </Stack> */}
         </MemberListContainer>
 
         {/* </Container> */}
-        <ProjectDrawer
+        <DonorsDrawer
           container={rootRef.current}
           onClose={dialog.handleClose}
           open={dialog.open}
           // member={singleMemberData?.membersCollection?.edges[0]?.node}
-          project={projectData?.projectsCollection?.edges[0]?.node}
+          donor={donorData?.donorsCollection?.edges[0]?.node}
           onUpdateMember={function (): void {
             throw new Error('Function not implemented.');
           }}

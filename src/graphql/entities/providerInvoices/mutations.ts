@@ -6,14 +6,14 @@ export const CREATE_PROVIDER_INVOICE = gql`
     $service_provider_id: Int!
     $project_id: Int!
     $invoice_number: String!
-    $amount_ht: numeric!
-    $tax_rate: numeric!
-    $amount_ttc: numeric!
+    $amount_ht: BigFloat!
+    $tax_rate: BigFloat!
+    $amount_ttc: BigFloat!
     $currency: String!
-    $issue_date: date!
-    $due_date: date
-    $payment_date: date
-    $payment_method: String!
+    $issue_date: Date!
+    $due_date: Date
+    $payment_date: Date
+    $payment_method: payment_method_enum!
     $status_id: Int!
     $storage_key: String
     $file_url: String

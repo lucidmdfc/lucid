@@ -25,7 +25,6 @@ import { suppliersApi } from 'src/api/suppliers';
 import SupplierFilterSidebar from './sections/supplier-filter-sidebar';
 import SupplierAmountSummary from './sections/supplier-amount-summary';
 import { useQuery } from '@apollo/client';
-import { SERVICE_PROVIDERS_FILE } from 'src/graphql/entities/files/queries';
 import { status } from 'src/graphql/shared/enums/status';
 import { paths } from 'src/paths';
 import { GET_PROVIDER_INVOICES } from 'src/graphql/entities/providerInvoices/queries';

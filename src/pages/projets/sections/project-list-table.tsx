@@ -9,14 +9,20 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Scrollbar } from 'src/components/scrollbar';
-import { Project } from 'src/types/project';
+// import { Project } from 'src/types/project';
 import ProjectListTableRow from '../components/project-list-table-row';
+import { GetProjectsQuery } from 'src/types/generatedTypes';
+
+type Project = NonNullable<
+  NonNullable<GetProjectsQuery['projectsCollection']>['edges']
+>[number]['node'];
 
 interface ProjectListTableProps {
   count?: number;
   items?: Project[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onSelect?: (projectId: string) => void;
   page?: number;
   rowsPerPage?: number;
 }
@@ -27,6 +33,7 @@ const ProjectListTable: FC<ProjectListTableProps> = (props) => {
     items = [],
     onPageChange = () => {},
     onRowsPerPageChange,
+    onSelect,
     page = 0,
     rowsPerPage = 0,
   } = props;
@@ -39,20 +46,21 @@ const ProjectListTable: FC<ProjectListTableProps> = (props) => {
             <TableRow>
               <TableCell>Nom projet</TableCell>
               <TableCell>Email de contact</TableCell>
-              <TableCell>Bailleur de fond</TableCell>
-              <TableCell>Bénéficiaire</TableCell>
+              <TableCell>personne de contact</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Montant global</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {items.map((project) => {
-              const totalAmount = numeral(project.amount).format(`0,0.00`);
+              const totalAmount = numeral(project.project_budget).format(`0,0.00`);
 
               return (
                 <ProjectListTableRow
                   project={project}
                   totalAmount={totalAmount}
+                  onSelect={onSelect}
                 />
               );
             })}

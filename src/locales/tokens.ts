@@ -56,6 +56,8 @@ export const tokens = {
     revenus: 'nav.revenus',
     add_ressource: 'nav.add_ressource',
     projects_management: 'nav.projects_management',
+    grants_management: 'nav.grants_management',
+    donors_management: 'nav.donors_management',
     clients_management: 'nav.clients_management',
     invoices_management: 'nav.invoices_management',
     members_management: 'nav.members_management',

@@ -24,9 +24,10 @@ interface UploadedFileResponse {
 
 interface UploadFileArgs {
   file: Promise<FileUpload>;
-  documentCategory: 'expense_claims' | 'agreements' | 'provider_invoice_file';
+  documentCategory: 'expense_claims' | 'grant_agreements' | 'provider_invoice_file';
   expense_claim_category?: string;
   expense_claim_id?: string;
+  grant_id?: string;
   expense_status?: boolean;
   provider_invoice_id?: string;
   provider_invoice_file_category?: string;
@@ -67,6 +68,7 @@ const resolvers = {
         expense_claim_id,
         provider_invoice_id,
         provider_invoice_file_category,
+        grant_id,
       }: UploadFileArgs,
       context: { token: string }
     ): Promise<UploadedFileResponse> => {
@@ -122,8 +124,10 @@ const resolvers = {
               provider_invoice_file_category,
             },
           }),
-          agreements: () => ({
-            project_id: 98765,
+          grant_agreements: () => ({
+            grant_agreements: {
+              grant_id: grant_id,
+            },
           }),
         };
 
