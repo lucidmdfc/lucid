@@ -16,8 +16,6 @@ import { usePageView } from 'src/hooks/use-page-view';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { useSettings } from 'src/hooks/use-settings';
-import ProjectListSearch from './sections/Project-list-search';
-import ProjectListTable from './sections/project-list-table';
 import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
 import { Project } from 'src/types/project';
@@ -193,6 +191,7 @@ const Page: NextPage = () => {
 
   // console.log(nodes);
   // console.log(mappedData);
+  console.log(donorsInProject);
   return (
     <>
       <Seo title="Revenus: Gestion projets" />
@@ -211,7 +210,7 @@ const Page: NextPage = () => {
               spacing={4}
             >
               <Stack spacing={1}>
-                <Typography variant="h4">{t(tokens.nav.projects_management)}</Typography>
+                <Typography variant="h4">{t(tokens.nav.grants_management)}</Typography>
               </Stack>
               <Stack
                 alignItems="center"
@@ -249,7 +248,8 @@ const Page: NextPage = () => {
                     amount={grant.project_budget}
                     name={grant.project_name}
                     id={grant.project_id}
-                    donors={grant.donors.length}
+                    donorsCount={grant.donors.length}
+                    donors={grant.donors}
                   />
                 </Grid>
               ))}

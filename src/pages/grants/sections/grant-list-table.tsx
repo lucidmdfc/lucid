@@ -9,24 +9,30 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Scrollbar } from 'src/components/scrollbar';
-import { Project } from 'src/types/project';
-import ProjectListTableRow from '../components/project-list-table-row';
+import GrantListTableRow from '../components/grant-list-table-row';
+import { GetGrantProjectAgreementQuery } from 'src/types/generatedTypes';
 
-interface ProjectListTableProps {
+type Grant = NonNullable<
+  NonNullable<GetGrantProjectAgreementQuery['grant_project_agreementCollection']>['edges']
+>[number]['node'];
+
+interface grantListTableProps {
   count?: number;
-  items?: Project[];
+  items?: Grant[];
   onPageChange?: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onSelect?: (projectId: string) => void;
   page?: number;
   rowsPerPage?: number;
 }
 
-const ProjectListTable: FC<ProjectListTableProps> = (props) => {
+const ProjectListTable: FC<grantListTableProps> = (props) => {
   const {
     count = 0,
     items = [],
     onPageChange = () => {},
     onRowsPerPageChange,
+    onSelect,
     page = 0,
     rowsPerPage = 0,
   } = props;
@@ -37,22 +43,18 @@ const ProjectListTable: FC<ProjectListTableProps> = (props) => {
         <Table sx={{ minWidth: 700 }}>
           <TableHead>
             <TableRow>
-              <TableCell>Nom projet</TableCell>
-              <TableCell>Email de contact</TableCell>
-              <TableCell>Bailleur de fond</TableCell>
-              <TableCell>Bénéficiaire</TableCell>
-              <TableCell>Montant global</TableCell>
+              <TableCell>Nom</TableCell>
+              <TableCell>date de l'accord</TableCell>
+              <TableCell>Grant Montant</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((project) => {
-              const totalAmount = numeral(project.amount).format(`0,0.00`);
-
+            {items.map((grant) => {
               return (
-                <ProjectListTableRow
-                  project={project}
-                  totalAmount={totalAmount}
+                <GrantListTableRow
+                  grant={grant}
+                  onSelect={onSelect}
                 />
               );
             })}

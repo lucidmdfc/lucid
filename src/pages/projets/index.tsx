@@ -174,7 +174,7 @@ const Page: NextPage = () => {
   const projectsNode = projectData?.projectsCollection?.edges?.map((edge) => edge.node) ?? [];
   const project = projectsNode[0] || null;
 
-  const handleMemberOpen = useCallback(
+  const handleProjectOpen = useCallback(
     (memberId: string): void => {
       // Close drawer if is the same order
 
@@ -244,7 +244,7 @@ const Page: NextPage = () => {
             count={projectsStore.projectsCount}
             // items={projectsStore.projects}
             items={projects}
-            onSelect={handleMemberOpen}
+            onSelect={handleProjectOpen}
             onPageChange={projectsSearch.handlePageChange}
             onRowsPerPageChange={projectsSearch.handleRowsPerPageChange}
             page={projectsSearch.state.page}

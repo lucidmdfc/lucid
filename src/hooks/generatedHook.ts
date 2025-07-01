@@ -12,17 +12,6 @@ export const ClientFragmentFragmentDoc = gql`
   ice
 }
     `;
-export const DonorFragmentFragmentDoc = gql`
-    fragment DonorFragment on donors {
-  id
-  name
-  email
-  phone
-  created_at
-  updated_at
-  note
-}
-    `;
 export const EmployeeGrantAllocationFragmentFragmentDoc = gql`
     fragment EmployeeGrantAllocationFragment on employee_grant_allocations {
   id
@@ -133,6 +122,17 @@ export const FilesFragmentFragmentDoc = gql`
   provider_invoice_id
 }
     `;
+export const DonorFragmentFragmentDoc = gql`
+    fragment DonorFragment on donors {
+  id
+  name
+  email
+  phone
+  created_at
+  updated_at
+  note
+}
+    `;
 export const GrantProjectAgreementFragmentFragmentDoc = gql`
     fragment GrantProjectAgreementFragment on grant_project_agreement {
   id
@@ -142,8 +142,15 @@ export const GrantProjectAgreementFragmentFragmentDoc = gql`
   created_at
   updated_at
   donor_id
+  projects {
+    ...ProjectFragment
+  }
+  donors {
+    ...DonorFragment
+  }
 }
-    `;
+    ${ProjectFragmentFragmentDoc}
+${DonorFragmentFragmentDoc}`;
 export const GrantFragmentFragmentDoc = gql`
     fragment GrantFragment on grant_slices {
   id
@@ -1112,6 +1119,94 @@ export type GetGrantProjectAgreementQueryHookResult = ReturnType<typeof useGetGr
 export type GetGrantProjectAgreementLazyQueryHookResult = ReturnType<typeof useGetGrantProjectAgreementLazyQuery>;
 export type GetGrantProjectAgreementSuspenseQueryHookResult = ReturnType<typeof useGetGrantProjectAgreementSuspenseQuery>;
 export type GetGrantProjectAgreementQueryResult = Apollo.QueryResult<Types.GetGrantProjectAgreementQuery, Types.GetGrantProjectAgreementQueryVariables>;
+export const GetGrantProjectAgreementByProjectDocument = gql`
+    query GetGrantProjectAgreementByProject($projectId: Int!) {
+  grant_project_agreementCollection(filter: {project_id: {eq: $projectId}}) {
+    edges {
+      node {
+        ...GrantProjectAgreementFragment
+      }
+    }
+  }
+}
+    ${GrantProjectAgreementFragmentFragmentDoc}`;
+
+/**
+ * __useGetGrantProjectAgreementByProjectQuery__
+ *
+ * To run a query within a React component, call `useGetGrantProjectAgreementByProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGrantProjectAgreementByProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGrantProjectAgreementByProjectQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useGetGrantProjectAgreementByProjectQuery(baseOptions: Apollo.QueryHookOptions<Types.GetGrantProjectAgreementByProjectQuery, Types.GetGrantProjectAgreementByProjectQueryVariables> & ({ variables: Types.GetGrantProjectAgreementByProjectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetGrantProjectAgreementByProjectQuery, Types.GetGrantProjectAgreementByProjectQueryVariables>(GetGrantProjectAgreementByProjectDocument, options);
+      }
+export function useGetGrantProjectAgreementByProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetGrantProjectAgreementByProjectQuery, Types.GetGrantProjectAgreementByProjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetGrantProjectAgreementByProjectQuery, Types.GetGrantProjectAgreementByProjectQueryVariables>(GetGrantProjectAgreementByProjectDocument, options);
+        }
+export function useGetGrantProjectAgreementByProjectSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetGrantProjectAgreementByProjectQuery, Types.GetGrantProjectAgreementByProjectQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetGrantProjectAgreementByProjectQuery, Types.GetGrantProjectAgreementByProjectQueryVariables>(GetGrantProjectAgreementByProjectDocument, options);
+        }
+export type GetGrantProjectAgreementByProjectQueryHookResult = ReturnType<typeof useGetGrantProjectAgreementByProjectQuery>;
+export type GetGrantProjectAgreementByProjectLazyQueryHookResult = ReturnType<typeof useGetGrantProjectAgreementByProjectLazyQuery>;
+export type GetGrantProjectAgreementByProjectSuspenseQueryHookResult = ReturnType<typeof useGetGrantProjectAgreementByProjectSuspenseQuery>;
+export type GetGrantProjectAgreementByProjectQueryResult = Apollo.QueryResult<Types.GetGrantProjectAgreementByProjectQuery, Types.GetGrantProjectAgreementByProjectQueryVariables>;
+export const GetOneGrantProjectAgreementDocument = gql`
+    query GetOneGrantProjectAgreement($id: Int!) {
+  grant_project_agreementCollection(filter: {id: {eq: $id}}, first: 1) {
+    edges {
+      node {
+        ...GrantProjectAgreementFragment
+      }
+    }
+  }
+}
+    ${GrantProjectAgreementFragmentFragmentDoc}`;
+
+/**
+ * __useGetOneGrantProjectAgreementQuery__
+ *
+ * To run a query within a React component, call `useGetOneGrantProjectAgreementQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOneGrantProjectAgreementQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOneGrantProjectAgreementQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetOneGrantProjectAgreementQuery(baseOptions: Apollo.QueryHookOptions<Types.GetOneGrantProjectAgreementQuery, Types.GetOneGrantProjectAgreementQueryVariables> & ({ variables: Types.GetOneGrantProjectAgreementQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Types.GetOneGrantProjectAgreementQuery, Types.GetOneGrantProjectAgreementQueryVariables>(GetOneGrantProjectAgreementDocument, options);
+      }
+export function useGetOneGrantProjectAgreementLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Types.GetOneGrantProjectAgreementQuery, Types.GetOneGrantProjectAgreementQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Types.GetOneGrantProjectAgreementQuery, Types.GetOneGrantProjectAgreementQueryVariables>(GetOneGrantProjectAgreementDocument, options);
+        }
+export function useGetOneGrantProjectAgreementSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<Types.GetOneGrantProjectAgreementQuery, Types.GetOneGrantProjectAgreementQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<Types.GetOneGrantProjectAgreementQuery, Types.GetOneGrantProjectAgreementQueryVariables>(GetOneGrantProjectAgreementDocument, options);
+        }
+export type GetOneGrantProjectAgreementQueryHookResult = ReturnType<typeof useGetOneGrantProjectAgreementQuery>;
+export type GetOneGrantProjectAgreementLazyQueryHookResult = ReturnType<typeof useGetOneGrantProjectAgreementLazyQuery>;
+export type GetOneGrantProjectAgreementSuspenseQueryHookResult = ReturnType<typeof useGetOneGrantProjectAgreementSuspenseQuery>;
+export type GetOneGrantProjectAgreementQueryResult = Apollo.QueryResult<Types.GetOneGrantProjectAgreementQuery, Types.GetOneGrantProjectAgreementQueryVariables>;
 export const DeleteGrantSliceDocument = gql`
     mutation DeleteGrantSlice($id: Int!) {
   deleteFromgrant_slicesCollection(filter: {id: {eq: $id}}) {

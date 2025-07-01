@@ -9,29 +9,35 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
+
 import { Seo } from 'src/components/seo';
 import { useMounted } from 'src/hooks/use-mounted';
 import { usePageView } from 'src/hooks/use-page-view';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { useSettings } from 'src/hooks/use-settings';
-import DonorListSearch from './sections/donor-list-search';
-import DonorListTable from './sections/donor-list-table';
+import GrantListSearch from './sections/grant-list-search';
+import GrantListTable from './sections/grant-list-table';
 import { paths } from 'src/paths';
 import { RouterLink } from 'src/components/router-link';
 import { Project } from 'src/types/project';
 import { useTranslation } from 'react-i18next';
 import { tokens } from 'src/locales/tokens';
-import { useGetDonorByIdQuery, useGetDonorsQuery } from 'src/hooks/generatedHook';
-import DonorsDrawer from './sections/donors-drawer';
+import { projectsApi } from 'src/api/projects';
+import {
+  useGetGrantProjectAgreementByProjectQuery,
+  useGetOneGrantProjectAgreementQuery,
+} from 'src/hooks/generatedHook';
+import GrantDrawer from './sections/grant-drawer';
 import { useDialog } from 'src/hooks/use-dialog';
 import MemberListContainer from '../membres/sections/member-list-container';
+import { useRouter } from 'next/router';
 
 interface Filters {
   query?: string;
 }
 
-interface donorsSearchState {
+interface ProjectsSearchState {
   filters: Filters;
   page: number;
   rowsPerPage: number;
@@ -39,8 +45,8 @@ interface donorsSearchState {
   sortDir: 'asc' | 'desc';
 }
 
-const usedonorsSearch = () => {
-  const [state, setState] = useState<donorsSearchState>({
+const useProjectsSearch = () => {
+  const [state, setState] = useState<ProjectsSearchState>({
     filters: {
       query: undefined,
     },
@@ -95,97 +101,105 @@ const usedonorsSearch = () => {
   };
 };
 
-interface donorsStoreState {
-  donors: Project[];
-  donorsCount: number;
+interface ProjectsStoreState {
+  projects: Project[];
+  projectsCount: number;
 }
 
-// const usedonorsStore = (searchState: donorsSearchState) => {
-//   const isMounted = useMounted();
-//   const [state, setState] = useState<donorsStoreState>({
-//     donors: [],
-//     donorsCount: 0,
-//   });
+const useProjectsStore = (searchState: ProjectsSearchState) => {
+  const isMounted = useMounted();
+  const [state, setState] = useState<ProjectsStoreState>({
+    projects: [],
+    projectsCount: 0,
+  });
 
-//   const handledonorsGet = useCallback(async () => {
-//     try {
-//       const response = await donorsApi.getdonors(searchState);
+  const handleProjectsGet = useCallback(async () => {
+    try {
+      const response = await projectsApi.getProjects(searchState);
 
-//       if (isMounted()) {
-//         setState({
-//           donors: response.data,
-//           donorsCount: response.count,
-//         });
-//       }
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   }, [searchState, isMounted]);
+      if (isMounted()) {
+        setState({
+          projects: response.data,
+          projectsCount: response.count,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, [searchState, isMounted]);
 
-//   useEffect(
-//     () => {
-//       handledonorsGet();
-//     },
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     [searchState]
-//   );
+  useEffect(
+    () => {
+      handleProjectsGet();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchState]
+  );
 
-//   return {
-//     ...state,
-//   };
-// };
+  return {
+    ...state,
+  };
+};
 
-const useProjectIds = (donors: Project[] = []) => {
+const useProjectIds = (projects: Project[] = []) => {
   return useMemo(() => {
-    return donors.map((project) => project.id);
-  }, [donors]);
+    return projects.map((project) => project.id);
+  }, [projects]);
 };
 
 const Page: NextPage = () => {
+  const router = useRouter();
+  const { projectId } = router.query;
+
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const donorsSearch = usedonorsSearch();
-  // const donorsStore = usedonorsStore(donorsSearch.state);
-  // const donorsIds = useProjectIds(donorsStore.donors);
+  const projectsSearch = useProjectsSearch();
+  const projectsStore = useProjectsStore(projectsSearch.state);
+  // const projectsIds = useProjectIds(projectsStore.projects);
   const dialog = useDialog<string>();
+
   const settings = useSettings();
   const { t } = useTranslation();
   usePageView();
-  const {
-    loading: donorsLoading,
-    error: donorsError,
-    data: donorsData,
-    refetch: donorsRefetsh,
-  } = useGetDonorsQuery();
 
   const {
-    loading: donorLoading,
-    error: donorError,
-    data: donorData,
-    refetch: donorRefetsh,
-  } = useGetDonorByIdQuery({
+    loading: grantsLoading,
+    error: grantsError,
+    data: grantsData,
+    refetch: grantsRefetsh,
+  } = useGetGrantProjectAgreementByProjectQuery({
+    variables: {
+      projectId: Number(projectId),
+    },
+  });
+
+  const {
+    loading: grantLoading,
+    error: grantError,
+    data: grantData,
+    refetch: grantRefetsh,
+  } = useGetOneGrantProjectAgreementQuery({
     variables: {
       id: Number(dialog.data),
     },
   });
-
-  const donorsNode = donorData?.donorsCollection?.edges?.map((edge) => edge.node) ?? [];
-  const donor = donorsNode[0] || null;
+  console.log(grantData);
 
   const handleMemberOpen = useCallback(
-    (memberId: string): void => {
+    (grantId: string): void => {
       // Close drawer if is the same order
 
-      if (dialog.open && dialog.data === memberId) {
+      if (dialog.open && dialog.data === grantId) {
         dialog.handleClose();
         return;
       }
 
-      dialog.handleOpen(memberId);
+      dialog.handleOpen(grantId);
     },
     [dialog]
   );
-  console.log(dialog);
-  const donors = donorsData?.donorsCollection?.edges?.map((edge) => edge.node) ?? [];
+  // console.log(dialog);
+  const grants =
+    grantsData?.grant_project_agreementCollection?.edges?.map((edge) => edge.node) ?? [];
 
   return (
     <>
@@ -213,51 +227,33 @@ const Page: NextPage = () => {
               spacing={4}
             >
               <Stack spacing={1}>
-                <Typography variant="h4">{t(tokens.nav.donors_management)}</Typography>
-              </Stack>
-              <Stack
-                alignItems="center"
-                direction="row"
-                spacing={3}
-              >
-                <Button
-                  component={RouterLink}
-                  href={paths.donors.create}
-                  startIcon={
-                    <SvgIcon>
-                      <PlusIcon />
-                    </SvgIcon>
-                  }
-                  variant="contained"
-                >
-                  Nouveau bailleur
-                </Button>
+                <Typography variant="h4">{t(tokens.nav.grants_management)}</Typography>
               </Stack>
             </Stack>
           </Box>
 
-          <DonorListSearch onFiltersChange={donorsSearch.handleFiltersChange} />
-          <DonorListTable
-            // count={donorsStore.donorsCount}
-            // items={donorsStore.donors}
-            items={donors}
+          <GrantListSearch onFiltersChange={projectsSearch.handleFiltersChange} />
+          <GrantListTable
+            count={projectsStore.projectsCount}
+            // items={projectsStore.projects}
+            items={grants}
             onSelect={handleMemberOpen}
-            onPageChange={donorsSearch.handlePageChange}
-            onRowsPerPageChange={donorsSearch.handleRowsPerPageChange}
-            page={donorsSearch.state.page}
-            rowsPerPage={donorsSearch.state.rowsPerPage}
+            onPageChange={projectsSearch.handlePageChange}
+            onRowsPerPageChange={projectsSearch.handleRowsPerPageChange}
+            page={projectsSearch.state.page}
+            rowsPerPage={projectsSearch.state.rowsPerPage}
           />
           {/* <Card></Card> */}
           {/* </Stack> */}
         </MemberListContainer>
 
         {/* </Container> */}
-        <DonorsDrawer
+        <GrantDrawer
           container={rootRef.current}
           onClose={dialog.handleClose}
           open={dialog.open}
           // member={singleMemberData?.membersCollection?.edges[0]?.node}
-          donor={donorData?.donorsCollection?.edges[0]?.node}
+          grant={grantData?.grant_project_agreementCollection?.edges[0]?.node}
           onUpdateMember={function (): void {
             throw new Error('Function not implemented.');
           }}

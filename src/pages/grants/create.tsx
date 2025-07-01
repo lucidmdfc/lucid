@@ -104,7 +104,7 @@ const Page: NextPage = () => {
       <Box
         sx={{
           width: '100%',
-          px: { xs: 2, sm: 4, md: 8, lg: 36 },
+          px: { xs: 2, sm: 4, md: 10, lg: 33 },
           // py: { xs: 4, sm: 6, md: 8 },
         }}
       >

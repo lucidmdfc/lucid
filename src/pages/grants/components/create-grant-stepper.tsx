@@ -112,7 +112,6 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
 
         const accessToken = session?.access_token;
 
-
         if (values.file) {
           await uploadFile({
             variables: {
@@ -154,7 +153,29 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
 
   // ----- internal helpers ---------------------------------------------------
 
-  const next = () => setActiveStep((s) => s + 1);
+  // const next = () => setActiveStep((s) => s + 1);
+  const stepFields: Record<number, (keyof typeof formik.initialValues)[]> = {
+    0: ['project'],
+    1: ['donor', 'grant'],
+    2: ['agreementDate', 'file'],
+  };
+  const next = async () => {
+    const fieldsToValidate = stepFields[activeStep];
+
+    const touchedFields = Object.fromEntries(fieldsToValidate.map((field) => [field, true]));
+    await formik.setTouched(touchedFields, true);
+
+    const errors = await formik.validateForm();
+
+    const hasStepErrors = fieldsToValidate.some((field) => Boolean(errors[field]));
+
+    if (hasStepErrors) {
+      return;
+    }
+
+    setActiveStep((s) => s + 1);
+  };
+
   const back = () => setActiveStep((s) => s - 1);
 
   const submitStepper = async () => {
@@ -371,11 +392,19 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
   /* ----------------------------------------------------------------------- */
 
   return (
-    <Box width="100%">
+    <Box
+      width="100%"
+      sx={{
+        maxWidth: '900px',
+        margin: '0 auto',
+      }}
+    >
       <Stepper
         activeStep={activeStep}
         alternativeLabel
-        sx={{ paddingBottom: '40px' }}
+        sx={{
+          paddingBottom: '40px',
+        }}
       >
         {steps.map((label) => (
           <Step key={label}>
@@ -384,7 +413,12 @@ const GrantAgreementStepper: React.FC<StepperProps> = ({
         ))}
       </Stepper>
 
-      <Box mt={4}>{renderStepContent(activeStep)}</Box>
+      <Box
+        mt={4}
+        px={{ xs: 2, sm: 4, md: 7, lg: 4 }}
+      >
+        {renderStepContent(activeStep)}
+      </Box>
 
       <Box
         display="flex"

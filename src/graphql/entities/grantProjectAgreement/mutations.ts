@@ -25,3 +25,18 @@ export const CREATE_GRANT_AGREEMENT = gql`
   }
   ${GRANT_PROJECT_AGREEMENT_FRAGMENT}
 `;
+
+export const UPDATE_GRANT_AGREEMENT = gql`
+  mutation UpdateGrantAgreement(
+    $set: grant_project_agreementUpdateInput!
+    $filter: grantsFilter
+    $atMost: Int!
+  ) {
+    updategrant_project_agreementCollection(set: $set, filter: $filter, atMost: $atMost) {
+      records {
+        ...GrantProjectAgreementFragment
+      }
+    }
+  }
+  ${GRANT_PROJECT_AGREEMENT_FRAGMENT}
+`;

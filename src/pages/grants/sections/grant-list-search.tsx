@@ -18,7 +18,7 @@ interface ProjectListSearchProps {
   onFiltersChange?: (filters: Filters) => void;
 }
 
-const ProjectListSearch: FC<ProjectListSearchProps> = (props) => {
+const GrantListSearch: FC<ProjectListSearchProps> = (props) => {
   const { onFiltersChange } = props;
   const queryRef = useRef<HTMLInputElement | null>(null);
   const [filters, setFilters] = useState<Filters>({});
@@ -71,7 +71,7 @@ const ProjectListSearch: FC<ProjectListSearchProps> = (props) => {
     </>
   );
 };
-export default ProjectListSearch;
-ProjectListSearch.propTypes = {
+export default GrantListSearch;
+GrantListSearch.propTypes = {
   onFiltersChange: PropTypes.func,
 };

@@ -154,7 +154,6 @@ const Page: NextPage = () => {
   // console.log(currentMember);
 
   const members = data?.membersCollection?.edges?.map((edge: { node: any }) => edge.node) || [];
-  console.log(members);
   const handleMemberOpen = useCallback(
     (memberId: string): void => {
       // Close drawer if is the same order
